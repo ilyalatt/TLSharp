@@ -28,35 +28,27 @@ namespace TeleSharp.Generator
             var json = DownloadLatestSchema();
             var schema = JsonConvert.DeserializeObject<Schema>(json);
 
-            foreach (var c in schema.Constructors)
-            {
-                InterfacesList.Add(c.Type);
-                ClassesList.Add(c.Predicate);
-            }
+            var ignoredIfaces = new HashSet<string>(new[] { "Bool", "True", "Vector t", "Null" });
+            var cases = schema.Constructors
+                .Where(x => !ignoredIfaces.Contains(x.Type))
+                .ToList();
+            InterfacesList.AddRange(cases.Select(x => x.Type).Distinct());
+            ClassesList.AddRange(cases.Select(x => x.Predicate));
 
-            foreach (var c in schema.Constructors)
+            foreach (var iface in InterfacesList)
             {
-                var list = schema.Constructors.Where(x => x.Type == c.Type || x.Params.Exists(y => y.Type == c.Type));
-                if (list.Count() > 1)
+                var path = (GetNameSpace(iface).Replace("TeleSharp.TL", "TL/").Replace(".", "") + "/" + GetNameofClass(iface, true) + ".cs").Replace("//", "/");
+                var classFile = MakeFile(path);
+                using (var writer = new StreamWriter(classFile))
                 {
-                    var path = (GetNameSpace(c.Type).Replace("TeleSharp.TL", "TL/").Replace(".", "") + "/" + GetNameofClass(c.Type, true) + ".cs").Replace("//", "/");
-                    var classFile = MakeFile(path);
-                    using (var writer = new StreamWriter(classFile))
-                    {
-                        var nspace = (GetNameSpace(c.Type).Replace("TeleSharp.TL", "TL/").Replace(".", "")).Replace("//", "/").Replace("/", ".");
-                        if (nspace.EndsWith("."))
-                            nspace = nspace.Remove(nspace.Length - 1, 1);
-                        var temp = absStyle.Replace("/* NAMESPACE */", "TeleSharp." + nspace);
-                        temp = temp.Replace("/* NAME */", GetNameofClass(c.Type, true));
-                        writer.Write(temp);
-                        writer.Close();
-                        classFile.Close();
-                    }
-                }
-                else
-                {
-                    InterfacesList.Remove(list.First().Type);
-                    list.First().Type = "himself";
+                    var nspace = (GetNameSpace(iface).Replace("TeleSharp.TL", "TL/").Replace(".", "")).Replace("//", "/").Replace("/", ".");
+                    if (nspace.EndsWith("."))
+                        nspace = nspace.Remove(nspace.Length - 1, 1);
+                    var temp = absStyle.Replace("/* NAMESPACE */", "TeleSharp." + nspace);
+                    temp = temp.Replace("/* NAME */", GetNameofClass(iface, true));
+                    writer.Write(temp);
+                    writer.Close();
+                    classFile.Close();
                 }
             }
 
