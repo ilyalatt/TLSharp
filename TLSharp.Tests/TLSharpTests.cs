@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +10,6 @@ using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core;
 using TLSharp.Core.Network;
-using TLSharp.Core.Requests;
 using TLSharp.Core.Utils;
 
 namespace TLSharp.Tests
@@ -135,12 +133,12 @@ namespace TLSharp.Tests
                 throw new Exception("CodeToAuthenticate is empty in the app.config file, fill it with the code you just got now by SMS/Telegram");
             }
 
-            TLUser user = null;
+            TLUser user;
             try
             {
                 user = await client.MakeAuthAsync(NumberToAuthenticate, hash, code);
             }
-            catch (CloudPasswordNeededException ex)
+            catch (CloudPasswordNeededException)
             {
                 var password = await client.GetPasswordSetting();
                 var password_str = PasswordToAuthenticate;
@@ -180,7 +178,7 @@ namespace TLSharp.Tests
 
             if (user == null)
             {
-                throw new System.Exception("Number was not found in Contacts List of user: " + NumberToSendMessage);
+                throw new Exception("Number was not found in Contacts List of user: " + NumberToSendMessage);
             }
 
             await client.SendTypingAsync(new TLInputPeerUser() { UserId = user.Id });
@@ -382,7 +380,7 @@ namespace TLSharp.Tests
 
             if (user == null)
             {
-                throw new System.Exception("Username was not found: " + UserNameToSendMessage);
+                throw new Exception("Username was not found: " + UserNameToSendMessage);
             }
 
             await client.SendTypingAsync(new TLInputPeerUser() { UserId = user.Id });

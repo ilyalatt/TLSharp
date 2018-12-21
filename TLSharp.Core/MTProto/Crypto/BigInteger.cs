@@ -181,25 +181,25 @@ namespace TLSharp.Core.MTProto.Crypto
                 if (i == mag.Length)
                 {
                     //					this.sign = 0;
-                    this.magnitude = ZeroMagnitude;
+                    magnitude = ZeroMagnitude;
                 }
                 else {
-                    this.sign = signum;
+                    sign = signum;
 
                     if (i == 0)
                     {
-                        this.magnitude = mag;
+                        magnitude = mag;
                     }
                     else {
                         // strip leading 0 words
-                        this.magnitude = new int[mag.Length - i];
-                        Array.Copy(mag, i, this.magnitude, 0, this.magnitude.Length);
+                        magnitude = new int[mag.Length - i];
+                        Array.Copy(mag, i, magnitude, 0, magnitude.Length);
                     }
                 }
             }
             else {
-                this.sign = signum;
-                this.magnitude = mag;
+                sign = signum;
+                magnitude = mag;
             }
         }
 
@@ -382,7 +382,7 @@ namespace TLSharp.Core.MTProto.Crypto
             // TODO Move this processing into MakeMagnitude (provide sign argument)
             if ((sbyte)bytes[offset] < 0)
             {
-                this.sign = -1;
+                sign = -1;
 
                 int end = offset + length;
 
@@ -394,7 +394,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
                 if (iBval >= end)
                 {
-                    this.magnitude = One.magnitude;
+                    magnitude = One.magnitude;
                 }
                 else {
                     int numBytes = end - iBval;
@@ -415,13 +415,13 @@ namespace TLSharp.Core.MTProto.Crypto
 
                     inverse[index]++;
 
-                    this.magnitude = MakeMagnitude(inverse, 0, inverse.Length);
+                    magnitude = MakeMagnitude(inverse, 0, inverse.Length);
                 }
             }
             else {
                 // strip leading zero bytes and return magnitude bytes
-                this.magnitude = MakeMagnitude(bytes, offset, length);
-                this.sign = this.magnitude.Length > 0 ? 1 : 0;
+                magnitude = MakeMagnitude(bytes, offset, length);
+                sign = magnitude.Length > 0 ? 1 : 0;
             }
         }
 
@@ -501,12 +501,12 @@ namespace TLSharp.Core.MTProto.Crypto
             if (sign == 0)
             {
                 //this.sign = 0;
-                this.magnitude = ZeroMagnitude;
+                magnitude = ZeroMagnitude;
             }
             else {
                 // copy bytes
-                this.magnitude = MakeMagnitude(bytes, offset, length);
-                this.sign = this.magnitude.Length < 1 ? 0 : sign;
+                magnitude = MakeMagnitude(bytes, offset, length);
+                this.sign = magnitude.Length < 1 ? 0 : sign;
             }
         }
 
@@ -517,13 +517,13 @@ namespace TLSharp.Core.MTProto.Crypto
             if (sizeInBits < 0)
                 throw new ArgumentException("sizeInBits must be non-negative");
 
-            this.nBits = -1;
-            this.nBitLength = -1;
+            nBits = -1;
+            nBitLength = -1;
 
             if (sizeInBits == 0)
             {
                 //				this.sign = 0;
-                this.magnitude = ZeroMagnitude;
+                magnitude = ZeroMagnitude;
                 return;
             }
 
@@ -534,8 +534,8 @@ namespace TLSharp.Core.MTProto.Crypto
             // strip off any excess bits in the MSB
             b[0] &= rndMask[BitsPerByte * nBytes - sizeInBits];
 
-            this.magnitude = MakeMagnitude(b, 0, b.Length);
-            this.sign = this.magnitude.Length < 1 ? 0 : 1;
+            magnitude = MakeMagnitude(b, 0, b.Length);
+            sign = magnitude.Length < 1 ? 0 : 1;
         }
 
         private static readonly byte[] rndMask = { 255, 127, 63, 31, 15, 7, 3, 1 };
@@ -548,12 +548,12 @@ namespace TLSharp.Core.MTProto.Crypto
             if (bitLength < 2)
                 throw new ArithmeticException("bitLength < 2");
 
-            this.sign = 1;
-            this.nBitLength = bitLength;
+            sign = 1;
+            nBitLength = bitLength;
 
             if (bitLength == 2)
             {
-                this.magnitude = random.Next(2) == 0
+                magnitude = random.Next(2) == 0
                     ? Two.magnitude
                     : Three.magnitude;
                 return;
@@ -578,9 +578,9 @@ namespace TLSharp.Core.MTProto.Crypto
                 // ensure the trailing bit is 1 (i.e. must be odd)
                 b[nBytes - 1] |= 1;
 
-                this.magnitude = MakeMagnitude(b, 0, b.Length);
-                this.nBits = -1;
-                this.mQuote = -1L;
+                magnitude = MakeMagnitude(b, 0, b.Length);
+                nBits = -1;
+                mQuote = -1L;
 
                 if (certainty < 1)
                     break;
@@ -593,9 +593,9 @@ namespace TLSharp.Core.MTProto.Crypto
                     for (int rep = 0; rep < 10000; ++rep)
                     {
                         int n = 33 + random.Next(bitLength - 2);
-                        this.magnitude[this.magnitude.Length - (n >> 5)] ^= (1 << (n & 31));
-                        this.magnitude[this.magnitude.Length - 1] ^= ((random.Next() + 1) << 1);
-                        this.mQuote = -1L;
+                        magnitude[magnitude.Length - (n >> 5)] ^= (1 << (n & 31));
+                        magnitude[magnitude.Length - 1] ^= ((random.Next() + 1) << 1);
+                        mQuote = -1L;
 
                         if (CheckProbablePrime(certainty, random))
                             return;
@@ -640,10 +640,10 @@ namespace TLSharp.Core.MTProto.Crypto
         public BigInteger Add(
             BigInteger value)
         {
-            if (this.sign == 0)
+            if (sign == 0)
                 return value;
 
-            if (this.sign != value.sign)
+            if (sign != value.sign)
             {
                 if (value.sign == 0)
                     return this;
@@ -661,13 +661,13 @@ namespace TLSharp.Core.MTProto.Crypto
             int[] magToAdd)
         {
             int[] big, small;
-            if (this.magnitude.Length < magToAdd.Length)
+            if (magnitude.Length < magToAdd.Length)
             {
                 big = magToAdd;
-                small = this.magnitude;
+                small = magnitude;
             }
             else {
-                big = this.magnitude;
+                big = magnitude;
                 small = magToAdd;
             }
 
@@ -690,19 +690,19 @@ namespace TLSharp.Core.MTProto.Crypto
 
             bigCopy = AddMagnitudes(bigCopy, small);
 
-            return new BigInteger(this.sign, bigCopy, possibleOverflow);
+            return new BigInteger(sign, bigCopy, possibleOverflow);
         }
 
         public BigInteger And(
             BigInteger value)
         {
-            if (this.sign == 0 || value.sign == 0)
+            if (sign == 0 || value.sign == 0)
             {
                 return Zero;
             }
 
-            int[] aMag = this.sign > 0
-                ? this.magnitude
+            int[] aMag = sign > 0
+                ? magnitude
                 : Add(One).magnitude;
 
             int[] bMag = value.sign > 0
@@ -710,7 +710,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 : value.Add(One).magnitude;
 
             bool resultNeg = sign < 0 && value.sign < 0;
-            int resultLength = System.Math.Max(aMag.Length, bMag.Length);
+            int resultLength = Math.Max(aMag.Length, bMag.Length);
             int[] resultMag = new int[resultLength];
 
             int aStart = resultMag.Length - aMag.Length;
@@ -721,7 +721,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 int aWord = i >= aStart ? aMag[i - aStart] : 0;
                 int bWord = i >= bStart ? bMag[i - bStart] : 0;
 
-                if (this.sign < 0)
+                if (sign < 0)
                 {
                     aWord = ~aWord;
                 }
@@ -1102,13 +1102,13 @@ namespace TLSharp.Core.MTProto.Crypto
 
             if (val.QuickPow2Check()) // val is power of two
             {
-                BigInteger result = this.Abs().ShiftRight(val.Abs().BitLength - 1);
-                return val.sign == this.sign ? result : result.Negate();
+                BigInteger result = Abs().ShiftRight(val.Abs().BitLength - 1);
+                return val.sign == sign ? result : result.Negate();
             }
 
-            int[] mag = (int[])this.magnitude.Clone();
+            int[] mag = (int[])magnitude.Clone();
 
-            return new BigInteger(this.sign * val.sign, Divide(mag, val.magnitude), true);
+            return new BigInteger(sign * val.sign, Divide(mag, val.magnitude), true);
         }
 
         public BigInteger[] DivideAndRemainder(
@@ -1127,18 +1127,18 @@ namespace TLSharp.Core.MTProto.Crypto
             else if (val.QuickPow2Check()) // val is power of two
             {
                 int e = val.Abs().BitLength - 1;
-                BigInteger quotient = this.Abs().ShiftRight(e);
-                int[] remainder = this.LastNBits(e);
+                BigInteger quotient = Abs().ShiftRight(e);
+                int[] remainder = LastNBits(e);
 
-                biggies[0] = val.sign == this.sign ? quotient : quotient.Negate();
-                biggies[1] = new BigInteger(this.sign, remainder, true);
+                biggies[0] = val.sign == sign ? quotient : quotient.Negate();
+                biggies[1] = new BigInteger(sign, remainder, true);
             }
             else {
-                int[] remainder = (int[])this.magnitude.Clone();
+                int[] remainder = (int[])magnitude.Clone();
                 int[] quotient = Divide(remainder, val.magnitude);
 
-                biggies[0] = new BigInteger(this.sign * val.sign, quotient, true);
-                biggies[1] = new BigInteger(this.sign, remainder, true);
+                biggies[0] = new BigInteger(sign * val.sign, quotient, true);
+                biggies[1] = new BigInteger(sign, remainder, true);
             }
 
             return biggies;
@@ -1210,11 +1210,11 @@ namespace TLSharp.Core.MTProto.Crypto
         // TODO Make public?
         private BigInteger Inc()
         {
-            if (this.sign == 0)
+            if (sign == 0)
                 return One;
 
-            if (this.sign < 0)
-                return new BigInteger(-1, doSubBigLil(this.magnitude, One.magnitude), true);
+            if (sign < 0)
+                return new BigInteger(-1, doSubBigLil(magnitude, One.magnitude), true);
 
             return AddToMagnitude(One.magnitude);
         }
@@ -1261,7 +1261,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
 
             // Try to reduce the penalty for really small numbers
-            int numLists = System.Math.Min(BitLength - 1, primeLists.Length);
+            int numLists = Math.Min(BitLength - 1, primeLists.Length);
 
             for (int i = 0; i < numLists; ++i)
             {
@@ -1529,7 +1529,7 @@ namespace TLSharp.Core.MTProto.Crypto
             //			}
 
             BigInteger x = new BigInteger();
-            BigInteger gcd = ExtEuclid(this.Mod(m), m, x, null);
+            BigInteger gcd = ExtEuclid(Mod(m), m, x, null);
 
             if (!gcd.Equals(One))
                 throw new ArithmeticException("Numbers not relatively prime.");
@@ -1951,7 +1951,7 @@ namespace TLSharp.Core.MTProto.Crypto
          */
         private long GetMQuote()
         {
-            Debug.Assert(this.sign > 0);
+            Debug.Assert(sign > 0);
 
             if (mQuote != -1)
             {
@@ -1963,7 +1963,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 return -1; // not for even numbers
             }
 
-            long v = (((~this.magnitude[this.magnitude.Length - 1]) | 1) & 0xffffffffL);
+            long v = (((~magnitude[magnitude.Length - 1]) | 1) & 0xffffffffL);
             mQuote = FastModInverse(v, 0x100000000L);
 
             return mQuote;
@@ -2069,25 +2069,25 @@ namespace TLSharp.Core.MTProto.Crypto
 
             if (val.QuickPow2Check()) // val is power of two
             {
-                BigInteger result = this.ShiftLeft(val.Abs().BitLength - 1);
+                BigInteger result = ShiftLeft(val.Abs().BitLength - 1);
                 return val.sign > 0 ? result : result.Negate();
             }
 
-            if (this.QuickPow2Check()) // this is power of two
+            if (QuickPow2Check()) // this is power of two
             {
-                BigInteger result = val.ShiftLeft(this.Abs().BitLength - 1);
-                return this.sign > 0 ? result : result.Negate();
+                BigInteger result = val.ShiftLeft(Abs().BitLength - 1);
+                return sign > 0 ? result : result.Negate();
             }
 
-            int resLength = (this.BitLength + val.BitLength) / BitsPerInt + 1;
+            int resLength = (BitLength + val.BitLength) / BitsPerInt + 1;
             int[] res = new int[resLength];
 
             if (val == this)
             {
-                Square(res, this.magnitude);
+                Square(res, magnitude);
             }
             else {
-                Multiply(res, this.magnitude, val.magnitude);
+                Multiply(res, magnitude, val.magnitude);
             }
 
             return new BigInteger(sign * val.sign, res, true);
@@ -2295,7 +2295,7 @@ namespace TLSharp.Core.MTProto.Crypto
             if (n.sign == 0)
                 throw new ArithmeticException("Division by zero error");
 
-            if (this.sign == 0)
+            if (sign == 0)
                 return Zero;
 
             // For small values, use fast remainder method
@@ -2327,7 +2327,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 result = LastNBits(n.Abs().BitLength - 1);
             }
             else {
-                result = (int[])this.magnitude.Clone();
+                result = (int[])magnitude.Clone();
                 result = Remainder(result, n.magnitude);
             }
 
@@ -2341,10 +2341,10 @@ namespace TLSharp.Core.MTProto.Crypto
                 return ZeroMagnitude;
 
             int numWords = (n + BitsPerInt - 1) / BitsPerInt;
-            numWords = System.Math.Min(numWords, this.magnitude.Length);
+            numWords = Math.Min(numWords, magnitude.Length);
             int[] result = new int[numWords];
 
-            Array.Copy(this.magnitude, this.magnitude.Length - numWords, result, 0, numWords);
+            Array.Copy(magnitude, magnitude.Length - numWords, result, 0, numWords);
 
             int hiBits = n % 32;
             if (hiBits != 0)
@@ -2415,16 +2415,16 @@ namespace TLSharp.Core.MTProto.Crypto
 
             BigInteger result = new BigInteger(sign, ShiftLeft(magnitude, n), true);
 
-            if (this.nBits != -1)
+            if (nBits != -1)
             {
                 result.nBits = sign > 0
-                    ? this.nBits
-                    : this.nBits + n;
+                    ? nBits
+                    : nBits + n;
             }
 
-            if (this.nBitLength != -1)
+            if (nBitLength != -1)
             {
-                result.nBitLength = this.nBitLength + n;
+                result.nBitLength = nBitLength + n;
             }
 
             return result;
@@ -2503,7 +2503,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 return ShiftLeft(-n);
 
             if (n >= BitLength)
-                return (this.sign < 0 ? One.Negate() : Zero);
+                return (sign < 0 ? One.Negate() : Zero);
 
             //			int[] res = (int[]) this.magnitude.Clone();
             //
@@ -2519,26 +2519,26 @@ namespace TLSharp.Core.MTProto.Crypto
 
             if (numBits == 0)
             {
-                Array.Copy(this.magnitude, 0, res, 0, res.Length);
+                Array.Copy(magnitude, 0, res, 0, res.Length);
             }
             else {
                 int numBits2 = 32 - numBits;
 
-                int magPos = this.magnitude.Length - 1 - numInts;
+                int magPos = magnitude.Length - 1 - numInts;
                 for (int i = resultLength - 1; i >= 0; --i)
                 {
-                    res[i] = (int)((uint)this.magnitude[magPos--] >> numBits);
+                    res[i] = (int)((uint)magnitude[magPos--] >> numBits);
 
                     if (magPos >= 0)
                     {
-                        res[i] |= this.magnitude[magPos] << numBits2;
+                        res[i] |= magnitude[magPos] << numBits2;
                     }
                 }
             }
 
             Debug.Assert(res[0] != 0);
 
-            return new BigInteger(this.sign, res, false);
+            return new BigInteger(sign, res, false);
         }
 
         public int SignValue
@@ -2589,10 +2589,10 @@ namespace TLSharp.Core.MTProto.Crypto
             if (n.sign == 0)
                 return this;
 
-            if (this.sign == 0)
+            if (sign == 0)
                 return n.Negate();
 
-            if (this.sign != n.sign)
+            if (sign != n.sign)
                 return Add(n.Negate());
 
             int compare = CompareNoLeadingZeroes(0, magnitude, 0, n.magnitude);
@@ -2610,7 +2610,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 lilun = n;
             }
 
-            return new BigInteger(this.sign * compare, doSubBigLil(bigun.magnitude, lilun.magnitude), true);
+            return new BigInteger(sign * compare, doSubBigLil(bigun.magnitude, lilun.magnitude), true);
         }
 
         private static int[] doSubBigLil(
@@ -2772,7 +2772,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 // the Sun engineers made a c'tor for BigIntegers taking a BigInteger as parameter?
                 // (Answer: Becuase Sun's BigIntger is clonable, something bouncycastle's isn't.)
                 //				BigInteger u = new BigInteger(Abs().ToString(16), 16);
-                BigInteger u = this.Abs();
+                BigInteger u = Abs();
                 BigInteger b;
 
                 while (u.sign != 0)
@@ -2886,7 +2886,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
         public int GetLowestSetBit()
         {
-            if (this.sign == 0)
+            if (sign == 0)
                 return -1;
 
             int w = magnitude.Length;
@@ -2939,14 +2939,14 @@ namespace TLSharp.Core.MTProto.Crypto
         public BigInteger Or(
             BigInteger value)
         {
-            if (this.sign == 0)
+            if (sign == 0)
                 return value;
 
             if (value.sign == 0)
                 return this;
 
-            int[] aMag = this.sign > 0
-                ? this.magnitude
+            int[] aMag = sign > 0
+                ? magnitude
                 : Add(One).magnitude;
 
             int[] bMag = value.sign > 0
@@ -2954,7 +2954,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 : value.Add(One).magnitude;
 
             bool resultNeg = sign < 0 || value.sign < 0;
-            int resultLength = System.Math.Max(aMag.Length, bMag.Length);
+            int resultLength = Math.Max(aMag.Length, bMag.Length);
             int[] resultMag = new int[resultLength];
 
             int aStart = resultMag.Length - aMag.Length;
@@ -2965,7 +2965,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 int aWord = i >= aStart ? aMag[i - aStart] : 0;
                 int bWord = i >= bStart ? bMag[i - bStart] : 0;
 
-                if (this.sign < 0)
+                if (sign < 0)
                 {
                     aWord = ~aWord;
                 }
@@ -2997,14 +2997,14 @@ namespace TLSharp.Core.MTProto.Crypto
         public BigInteger Xor(
             BigInteger value)
         {
-            if (this.sign == 0)
+            if (sign == 0)
                 return value;
 
             if (value.sign == 0)
                 return this;
 
-            int[] aMag = this.sign > 0
-                ? this.magnitude
+            int[] aMag = sign > 0
+                ? magnitude
                 : Add(One).magnitude;
 
             int[] bMag = value.sign > 0
@@ -3013,7 +3013,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
             // TODO Can just replace with sign != value.sign?
             bool resultNeg = (sign < 0 && value.sign >= 0) || (sign >= 0 && value.sign < 0);
-            int resultLength = System.Math.Max(aMag.Length, bMag.Length);
+            int resultLength = Math.Max(aMag.Length, bMag.Length);
             int[] resultMag = new int[resultLength];
 
             int aStart = resultMag.Length - aMag.Length;
@@ -3024,7 +3024,7 @@ namespace TLSharp.Core.MTProto.Crypto
                 int aWord = i >= aStart ? aMag[i - aStart] : 0;
                 int bWord = i >= bStart ? bMag[i - bStart] : 0;
 
-                if (this.sign < 0)
+                if (sign < 0)
                 {
                     aWord = ~aWord;
                 }
@@ -3105,10 +3105,10 @@ namespace TLSharp.Core.MTProto.Crypto
             Debug.Assert(n >= 0);
             Debug.Assert(n < BitLength - 1);
 
-            int[] mag = (int[])this.magnitude.Clone();
+            int[] mag = (int[])magnitude.Clone();
             mag[mag.Length - 1 - (n >> 5)] ^= (1 << (n & 31)); // Flip bit
             //mag[mag.Length - 1 - (n / 32)] ^= (1 << (n % 32));
-            return new BigInteger(this.sign, mag, false);
+            return new BigInteger(sign, mag, false);
         }
     }
 }

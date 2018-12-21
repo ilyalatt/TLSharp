@@ -33,13 +33,8 @@ namespace TeleSharp.TL
             ConfirmReceived = true;
         }
 
-        public bool NeedResend
-        {
-            get
-            {
-                return Dirty || (Confirmed && !ConfirmReceived && DateTime.Now - SendTime > TimeSpan.FromSeconds(3));
-            }
-        }
+        public bool NeedResend => Dirty || (Confirmed && !ConfirmReceived && DateTime.Now - SendTime > TimeSpan.FromSeconds(3));
+
         #endregion
 
     }

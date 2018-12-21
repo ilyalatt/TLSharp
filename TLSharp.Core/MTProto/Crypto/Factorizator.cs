@@ -37,7 +37,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
         public override string ToString()
         {
-            return string.Format("P: {0}, Q: {1}", p, q);
+            return $"P: {p}, Q: {q}";
         }
     }
     public class Factorizator

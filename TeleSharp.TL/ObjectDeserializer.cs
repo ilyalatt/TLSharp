@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using TeleSharp.TL;
 namespace TeleSharp.TL
 {
-    public class ObjectUtils
+    public static class ObjectUtils
     {
         public static object DeserializeObject(BinaryReader reader)
         {
-            int Constructor = reader.ReadInt32();
+            var constructor = reader.ReadInt32();
             object obj;
             Type t = null;
             try
             {
-                t = TLContext.getType(Constructor);
+                t = TLContext.GetType(constructor);
                 obj = Activator.CreateInstance(t);
             }
             catch (Exception ex)
@@ -43,7 +38,7 @@ namespace TeleSharp.TL
         public static TLVector<T> DeserializeVector<T>(BinaryReader reader)
         {
             if (reader.ReadInt32() != 481674261) throw new InvalidDataException("Bad Constructor");
-            TLVector<T> t = new TLVector<T>();
+            var t = new TLVector<T>();
             t.DeserializeBody(reader);
             return t;
         }

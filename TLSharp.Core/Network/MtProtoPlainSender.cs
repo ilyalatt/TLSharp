@@ -6,16 +6,15 @@ namespace TLSharp.Core.Network
 {
     public class MtProtoPlainSender
     {
-        private int sequence = 0;
-        private int timeOffset;
-        private long lastMessageId;
-        private Random random;
-        private TcpTransport _transport;
+        private readonly int _timeOffset;
+        private long _lastMessageId;
+        private readonly Random _random;
+        private readonly TcpTransport _transport;
 
         public MtProtoPlainSender(TcpTransport transport)
         {
             _transport = transport;
-            random = new Random();
+            _random = new Random();
         }
 
         public async Task Send(byte[] data)
@@ -29,7 +28,7 @@ namespace TLSharp.Core.Network
                     binaryWriter.Write(data.Length);
                     binaryWriter.Write(data);
 
-                    byte[] packet = memoryStream.ToArray();
+                    var packet = memoryStream.ToArray();
 
                     await _transport.Send(packet);
                 }
@@ -38,17 +37,17 @@ namespace TLSharp.Core.Network
 
         public async Task<byte[]> Receive()
         {
-            var result = await _transport.Receieve();
+            var result = await _transport.Receive();
 
             using (var memoryStream = new MemoryStream(result.Body))
             {
-                using (BinaryReader binaryReader = new BinaryReader(memoryStream))
+                using (var binaryReader = new BinaryReader(memoryStream))
                 {
-                    long authKeyid = binaryReader.ReadInt64();
-                    long messageId = binaryReader.ReadInt64();
-                    int messageLength = binaryReader.ReadInt32();
+                    var authKeyId = binaryReader.ReadInt64();
+                    var messageId = binaryReader.ReadInt64();
+                    var messageLength = binaryReader.ReadInt32();
 
-                    byte[] response = binaryReader.ReadBytes(messageLength);
+                    var response = binaryReader.ReadBytes(messageLength);
 
                     return response;
                 }
@@ -57,21 +56,19 @@ namespace TLSharp.Core.Network
 
         private long GetNewMessageId()
         {
-            long time = Convert.ToInt64((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds);
-            long newMessageId = ((time / 1000 + timeOffset) << 32) |
+            var time = Convert.ToInt64((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds);
+            var newMessageId = ((time / 1000 + _timeOffset) << 32) |
                                 ((time % 1000) << 22) |
-                                (random.Next(524288) << 2); // 2^19
+                                (_random.Next(524288) << 2); // 2^19
                                                             // [ unix timestamp : 32 bit] [ milliseconds : 10 bit ] [ buffer space : 1 bit ] [ random : 19 bit ] [ msg_id type : 2 bit ] = [ msg_id : 64 bit ]
 
-            if (lastMessageId >= newMessageId)
+            if (_lastMessageId >= newMessageId)
             {
-                newMessageId = lastMessageId + 4;
+                newMessageId = _lastMessageId + 4;
             }
 
-            lastMessageId = newMessageId;
+            _lastMessageId = newMessageId;
             return newMessageId;
         }
-
-
     }
 }

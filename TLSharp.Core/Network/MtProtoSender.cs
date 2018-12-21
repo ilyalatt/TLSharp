@@ -21,7 +21,7 @@ namespace TLSharp.Core.Network
         private readonly TcpTransport _transport;
         private readonly Session _session;
 
-        public readonly List<ulong> needConfirmation = new List<ulong>();
+        public readonly List<ulong> NeedConfirmation = new List<ulong>();
 
         public MtProtoSender(TcpTransport transport, Session session)
         {
@@ -37,15 +37,15 @@ namespace TLSharp.Core.Network
         public async Task Send(TeleSharp.TL.TLMethod request)
         {
             // TODO: refactor
-            if (needConfirmation.Any())
+            if (NeedConfirmation.Any())
             {
-                var ackRequest = new AckRequest(needConfirmation);
+                var ackRequest = new AckRequest(NeedConfirmation);
                 using (var memory = new MemoryStream())
                 using (var writer = new BinaryWriter(memory))
                 {
                     ackRequest.SerializeBody(writer);
                     await Send(memory.ToArray(), ackRequest);
-                    needConfirmation.Clear();
+                    NeedConfirmation.Clear();
                 }
             }
 
@@ -65,10 +65,10 @@ namespace TLSharp.Core.Network
             request.MessageId = _session.GetNewMessageId();
 
             byte[] msgKey;
-            byte[] ciphertext;
-            using (MemoryStream plaintextPacket = makeMemory(8 + 8 + 8 + 4 + 4 + packet.Length))
+            byte[] cipherText;
+            using (var plaintextPacket = makeMemory(8 + 8 + 8 + 4 + 4 + packet.Length))
             {
-                using (BinaryWriter plaintextWriter = new BinaryWriter(plaintextPacket))
+                using (var plaintextWriter = new BinaryWriter(plaintextPacket))
                 {
                     plaintextWriter.Write(_session.Salt);
                     plaintextWriter.Write(_session.Id);
@@ -78,19 +78,19 @@ namespace TLSharp.Core.Network
                     plaintextWriter.Write(packet);
 
                     msgKey = Helpers.CalcMsgKey(plaintextPacket.GetBuffer());
-                    ciphertext = AES.EncryptAES(Helpers.CalcKey(_session.AuthKey.Data, msgKey, true), plaintextPacket.GetBuffer());
+                    cipherText = AES.EncryptAES(Helpers.CalcKey(_session.AuthKey.Data, msgKey, true), plaintextPacket.GetBuffer());
                 }
             }
 
-            using (MemoryStream ciphertextPacket = makeMemory(8 + 16 + ciphertext.Length))
+            using (var cipherTextPacket = makeMemory(8 + 16 + cipherText.Length))
             {
-                using (BinaryWriter writer = new BinaryWriter(ciphertextPacket))
+                using (var writer = new BinaryWriter(cipherTextPacket))
                 {
                     writer.Write(_session.AuthKey.Id);
                     writer.Write(msgKey);
-                    writer.Write(ciphertext);
+                    writer.Write(cipherText);
 
-                    await _transport.Send(ciphertextPacket.GetBuffer());
+                    await _transport.Send(cipherTextPacket.GetBuffer());
                 }
             }
         }
@@ -107,20 +107,20 @@ namespace TLSharp.Core.Network
                 if (inputReader.BaseStream.Length < 8)
                     throw new InvalidOperationException($"Can't decode packet");
 
-                ulong remoteAuthKeyId = inputReader.ReadUInt64(); // TODO: check auth key id
-                byte[] msgKey = inputReader.ReadBytes(16); // TODO: check msg_key correctness
-                AESKeyData keyData = Helpers.CalcKey(_session.AuthKey.Data, msgKey, false);
+                var remoteAuthKeyId = inputReader.ReadUInt64(); // TODO: check auth key id
+                var msgKey = inputReader.ReadBytes(16); // TODO: check msg_key correctness
+                var keyData = Helpers.CalcKey(_session.AuthKey.Data, msgKey, false);
 
-                byte[] plaintext = AES.DecryptAES(keyData, inputReader.ReadBytes((int)(inputStream.Length - inputStream.Position)));
+                var plaintext = AES.DecryptAES(keyData, inputReader.ReadBytes((int)(inputStream.Length - inputStream.Position)));
 
-                using (MemoryStream plaintextStream = new MemoryStream(plaintext))
-                using (BinaryReader plaintextReader = new BinaryReader(plaintextStream))
+                using (var plaintextStream = new MemoryStream(plaintext))
+                using (var plaintextReader = new BinaryReader(plaintextStream))
                 {
                     var remoteSalt = plaintextReader.ReadUInt64();
                     var remoteSessionId = plaintextReader.ReadUInt64();
                     remoteMessageId = plaintextReader.ReadUInt64();
                     remoteSequence = plaintextReader.ReadInt32();
-                    int msgLen = plaintextReader.ReadInt32();
+                    var msgLen = plaintextReader.ReadInt32();
                     message = plaintextReader.ReadBytes(msgLen);
                 }
             }
@@ -131,12 +131,12 @@ namespace TLSharp.Core.Network
         {
             while (!request.ConfirmReceived)
             {
-                var result = DecodeMessage((await _transport.Receieve()).Body);
+                var (item1, item2, item3) = DecodeMessage((await _transport.Receive()).Body);
 
-                using (var messageStream = new MemoryStream(result.Item1, false))
+                using (var messageStream = new MemoryStream(item1, false))
                 using (var messageReader = new BinaryReader(messageStream))
                 {
-                    processMessage(result.Item2, result.Item3, messageReader, request);
+                    processMessage(item2, item3, messageReader, request);
                 }
             }
 
@@ -163,9 +163,9 @@ namespace TLSharp.Core.Network
             // TODO: check seqno
 
             //logger.debug("processMessage: msg_id {0}, sequence {1}, data {2}", BitConverter.ToString(((MemoryStream)messageReader.BaseStream).GetBuffer(), (int) messageReader.BaseStream.Position, (int) (messageReader.BaseStream.Length - messageReader.BaseStream.Position)).Replace("-","").ToLower());
-            needConfirmation.Add(messageId);
+            NeedConfirmation.Add(messageId);
 
-            uint code = messageReader.ReadUInt32();
+            var code = messageReader.ReadUInt32();
             messageReader.BaseStream.Position -= 4;
             switch (code)
             {
@@ -235,10 +235,10 @@ namespace TLSharp.Core.Network
 
         private bool HandleGzipPacked(ulong messageId, int sequence, BinaryReader messageReader, TeleSharp.TL.TLMethod request)
         {
-            uint code = messageReader.ReadUInt32();
-            byte[] packedData = GZipStream.UncompressBuffer(Serializers.Bytes.read(messageReader));
-            using (MemoryStream packedStream = new MemoryStream(packedData, false))
-            using (BinaryReader compressedReader = new BinaryReader(packedStream))
+            var code = messageReader.ReadUInt32();
+            var packedData = GZipStream.UncompressBuffer(Serializers.Bytes.Read(messageReader));
+            using (var packedStream = new MemoryStream(packedData, false))
+            using (var compressedReader = new BinaryReader(packedStream))
             {
                 processMessage(messageId, sequence, compressedReader, request);
             }
@@ -248,8 +248,8 @@ namespace TLSharp.Core.Network
 
         private bool HandleRpcResult(ulong messageId, int sequence, BinaryReader messageReader, TeleSharp.TL.TLMethod request)
         {
-            uint code = messageReader.ReadUInt32();
-            ulong requestId = messageReader.ReadUInt64();
+            var code = messageReader.ReadUInt32();
+            var requestId = messageReader.ReadUInt64();
 
             if (requestId == (ulong)request.MessageId)
                 request.ConfirmReceived = true;
@@ -270,11 +270,11 @@ namespace TLSharp.Core.Network
 			}
 			*/
 
-            uint innerCode = messageReader.ReadUInt32();
+            var innerCode = messageReader.ReadUInt32();
             if (innerCode == 0x2144ca19)
             { // rpc_error
-                int errorCode = messageReader.ReadInt32();
-                string errorMessage = Serializers.String.read(messageReader);
+                var errorCode = messageReader.ReadInt32();
+                var errorMessage = Serializers.String.Read(messageReader);
 
                 if (errorMessage.StartsWith("FLOOD_WAIT_"))
                 {
@@ -325,7 +325,7 @@ namespace TLSharp.Core.Network
                 try
                 {
                     // gzip_packed
-                    byte[] packedData = Serializers.Bytes.read(messageReader);
+                    var packedData = Serializers.Bytes.Read(messageReader);
                     using (var ms = new MemoryStream())
                     {
                         using (var packedStream = new MemoryStream(packedData, false))
@@ -340,7 +340,7 @@ namespace TLSharp.Core.Network
                         }
                     }
                 }
-                catch (ZlibException ex)
+                catch (ZlibException)
                 {
 
                 }
@@ -361,10 +361,10 @@ namespace TLSharp.Core.Network
 
         private bool HandleBadMsgNotification(ulong messageId, int sequence, BinaryReader messageReader)
         {
-            uint code = messageReader.ReadUInt32();
-            ulong requestId = messageReader.ReadUInt64();
-            int requestSequence = messageReader.ReadInt32();
-            int errorCode = messageReader.ReadInt32();
+            var code = messageReader.ReadUInt32();
+            var requestId = messageReader.ReadUInt64();
+            var requestSequence = messageReader.ReadInt32();
+            var errorCode = messageReader.ReadInt32();
 
             switch (errorCode)
             {
@@ -408,17 +408,15 @@ namespace TLSharp.Core.Network
             //OnBrokenSessionEvent();
             //MTProtoRequest request = runningRequests[requestId];
             //request.OnException(new MTProtoBadMessageException(errorCode));
-
-            return true;
         }
 
         private bool HandleBadServerSalt(ulong messageId, int sequence, BinaryReader messageReader, TeleSharp.TL.TLMethod request)
         {
-            uint code = messageReader.ReadUInt32();
-            ulong badMsgId = messageReader.ReadUInt64();
-            int badMsgSeqNo = messageReader.ReadInt32();
-            int errorCode = messageReader.ReadInt32();
-            ulong newSalt = messageReader.ReadUInt64();
+            var code = messageReader.ReadUInt32();
+            var badMsgId = messageReader.ReadUInt64();
+            var badMsgSeqNo = messageReader.ReadInt32();
+            var errorCode = messageReader.ReadInt32();
+            var newSalt = messageReader.ReadUInt64();
 
             //logger.debug("bad_server_salt: msgid {0}, seq {1}, errorcode {2}, newsalt {3}", badMsgId, badMsgSeqNo, errorCode, newSalt);
 
@@ -452,8 +450,8 @@ namespace TLSharp.Core.Network
 
         private bool HandleFutureSalts(ulong messageId, int sequence, BinaryReader messageReader)
         {
-            uint code = messageReader.ReadUInt32();
-            ulong requestId = messageReader.ReadUInt64();
+            var code = messageReader.ReadUInt32();
+            var requestId = messageReader.ReadUInt64();
 
             messageReader.BaseStream.Position -= 12;
 
@@ -469,14 +467,12 @@ namespace TLSharp.Core.Network
             //	MTProtoRequest request = runningRequests[requestId];
             //	runningRequests.Remove(requestId);
             //	request.OnResponse(messageReader);
-
-            return true;
         }
 
-        private bool HandlePong(ulong messageId, int sequence, BinaryReader messageReader, TeleSharp.TL.TLMethod request)
+        private static bool HandlePong(ulong messageId, int sequence, BinaryReader messageReader, TeleSharp.TL.TLMethod request)
         {
-            uint code = messageReader.ReadUInt32();
-            ulong msgId = messageReader.ReadUInt64();
+            var code = messageReader.ReadUInt32();
+            var msgId = messageReader.ReadUInt64();
 
             if (msgId == (ulong)request.MessageId)
             {
@@ -493,14 +489,14 @@ namespace TLSharp.Core.Network
 
         private bool HandleContainer(ulong messageId, int sequence, BinaryReader messageReader, TeleSharp.TL.TLMethod request)
         {
-            uint code = messageReader.ReadUInt32();
-            int size = messageReader.ReadInt32();
-            for (int i = 0; i < size; i++)
+            var code = messageReader.ReadUInt32();
+            var size = messageReader.ReadInt32();
+            for (var i = 0; i < size; i++)
             {
-                ulong innerMessageId = messageReader.ReadUInt64();
-                int innerSequence = messageReader.ReadInt32();
-                int innerLength = messageReader.ReadInt32();
-                long beginPosition = messageReader.BaseStream.Position;
+                var innerMessageId = messageReader.ReadUInt64();
+                var innerSequence = messageReader.ReadInt32();
+                var innerLength = messageReader.ReadInt32();
+                var beginPosition = messageReader.BaseStream.Position;
                 try
                 {
                     if (!processMessage(innerMessageId, sequence, messageReader, request))
@@ -508,7 +504,7 @@ namespace TLSharp.Core.Network
                         messageReader.BaseStream.Position = beginPosition + innerLength;
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     //	logger.error("failed to process message in contailer: {0}", e);
                     messageReader.BaseStream.Position = beginPosition + innerLength;
@@ -572,7 +568,7 @@ namespace TLSharp.Core.Network
         {
         }
     }
-    
+
     internal class NetworkMigrationException : DataCenterMigrationException
     {
         internal NetworkMigrationException(int dc)

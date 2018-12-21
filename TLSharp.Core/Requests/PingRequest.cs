@@ -6,12 +6,8 @@ using TLSharp.Core.Utils;
 
 namespace TLSharp.Core.Requests
 {
-    public class PingRequest : TeleSharp.TL.TLMethod
+    public class PingRequest : TLMethod
     {
-        public PingRequest()
-        {
-        }
-
         public override void SerializeBody(BinaryWriter writer)
         {
             writer.Write(Constructor);
@@ -28,12 +24,6 @@ namespace TLSharp.Core.Requests
             throw new NotImplementedException();
         }
 
-        public override int Constructor
-        {
-            get
-            {
-                return 0x7abe77ec;
-            }
-        }
+        public override int Constructor => 0x7abe77ec;
     }
 }

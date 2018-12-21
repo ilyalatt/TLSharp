@@ -22,7 +22,7 @@ namespace TeleSharp.TL
     {
         private static byte[] read(BinaryReader binaryReader)
         {
-            byte firstByte = binaryReader.ReadByte();
+            var firstByte = binaryReader.ReadByte();
             int len, padding;
             if (firstByte == 254)
             {
@@ -35,7 +35,7 @@ namespace TeleSharp.TL
                 padding = (len + 1) % 4;
             }
 
-            byte[] data = binaryReader.ReadBytes(len);
+            var data = binaryReader.ReadBytes(len);
             if (padding > 0)
             {
                 padding = 4 - padding;
@@ -45,7 +45,7 @@ namespace TeleSharp.TL
             return data;
         }
 
-        private static BinaryWriter write(BinaryWriter binaryWriter, byte[] data)
+        private static BinaryWriter Write(BinaryWriter binaryWriter, byte[] data)
         {
             int padding;
             if (data.Length < 254)
@@ -75,7 +75,7 @@ namespace TeleSharp.TL
             }
 
 
-            for (int i = 0; i < padding; i++)
+            for (var i = 0; i < padding; i++)
             {
                 binaryWriter.Write((byte)0);
             }
@@ -89,14 +89,14 @@ namespace TeleSharp.TL
 
         public static void Serialize(byte[] src, BinaryWriter writer)
         {
-            write(writer, src);
+            Write(writer, src);
         }
     }
     public class StringUtil
     {
         public static string Deserialize(BinaryReader reader)
         {
-            byte[] data = BytesUtil.Deserialize(reader);
+            var data = BytesUtil.Deserialize(reader);
             return Encoding.UTF8.GetString(data, 0, data.Length);
         }
         public static void Serialize(string src, BinaryWriter writer)
@@ -108,18 +108,18 @@ namespace TeleSharp.TL
     {
         public static bool Deserialize(BinaryReader reader)
         {
-            var FalseCNumber = -1132882121;
-            var TrueCNumber = -1720552011;
+            const int falseCNumber = -1132882121;
+            const int trueCNumber = -1720552011;
             var readed = reader.ReadInt32();
-            if (readed == FalseCNumber) return false;
-            else if (readed == TrueCNumber) return true;
-            else throw new InvalidDataException(String.Format("Invalid Boolean Data : {0}", readed.ToString()));
+            if (readed == falseCNumber) return false;
+            else if (readed == trueCNumber) return true;
+            else throw new InvalidDataException($"Invalid Boolean Data : {readed.ToString()}");
         }
         public static void Serialize(bool src, BinaryWriter writer)
         {
-            var FalseCNumber = -1132882121;
-            var TrueCNumber = -1720552011;
-            writer.Write(src ? TrueCNumber : FalseCNumber);
+            const int falseCNumber = -1132882121;
+            const int trueCNumber = -1720552011;
+            writer.Write(src ? trueCNumber : falseCNumber);
         }
     }
     public class UIntUtil

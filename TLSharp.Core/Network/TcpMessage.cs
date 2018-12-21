@@ -6,16 +6,13 @@ namespace TLSharp.Core.Network
 {
     public class TcpMessage
     {
-        public int SequneceNumber { get; private set; }
-        public byte[] Body { get; private set; }
+        public int SequenceNumber { get; }
+        public byte[] Body { get; }
 
         public TcpMessage(int seqNumber, byte[] body)
         {
-            if (body == null)
-                throw new ArgumentNullException(nameof(body));
-
-            SequneceNumber = seqNumber;
-            Body = body;
+            SequenceNumber = seqNumber;
+            Body = body ?? throw new ArgumentNullException(nameof(body));
         }
 
         public byte[] Encode()
@@ -33,7 +30,7 @@ namespace TLSharp.Core.Network
                         and 4 CRC32 bytes at the end (length, sequence number, and payload together).
                     */
                     binaryWriter.Write(Body.Length + 12);
-                    binaryWriter.Write(SequneceNumber);
+                    binaryWriter.Write(SequenceNumber);
                     binaryWriter.Write(Body);
                     var crc32 = new CRC32();
                     crc32.SlurpBlock(memoryStream.GetBuffer(), 0, 8 + Body.Length);
@@ -41,7 +38,7 @@ namespace TLSharp.Core.Network
 
                     var transportPacket = memoryStream.ToArray();
 
-                    //					Debug.WriteLine("Tcp packet #{0}\n{1}", SequneceNumber, BitConverter.ToString(transportPacket));
+                    //					Debug.WriteLine("Tcp packet #{0}\n{1}", SequenceNumber, BitConverter.ToString(transportPacket));
 
                     return transportPacket;
                 }
@@ -63,10 +60,10 @@ namespace TLSharp.Core.Network
                     var packetLength = binaryReader.ReadInt32();
 
                     if (packetLength < 12)
-                        throw new InvalidOperationException(string.Format("invalid packet length: {0}", packetLength));
+                        throw new InvalidOperationException($"invalid packet length: {packetLength}");
 
                     var seq = binaryReader.ReadInt32();
-                    byte[] packet = binaryReader.ReadBytes(packetLength - 12);
+                    var packet = binaryReader.ReadBytes(packetLength - 12);
                     var checksum = (int)binaryReader.ReadInt32();
 
                     var crc32 = new CRC32();

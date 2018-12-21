@@ -14,19 +14,16 @@ namespace TLSharp.Core.Utils
     {
         private static string GetFileHash(byte[] data)
         {
-            string md5_checksum;
             using (var md5 = MD5.Create())
             {
                 var hash = md5.ComputeHash(data);
                 var hashResult = new StringBuilder(hash.Length * 2);
 
-                foreach (byte t in hash)
+                foreach (var t in hash)
                     hashResult.Append(t.ToString("x2"));
 
-                md5_checksum = hashResult.ToString();
+                return hashResult.ToString();
             }
-
-            return md5_checksum;
         }
 
         public static async Task<TLAbsInputFile> UploadFile(this TelegramClient client, string name, StreamReader reader)
@@ -82,9 +79,9 @@ namespace TLSharp.Core.Utils
             var file = GetFile(reader);
             var fileParts = GetFileParts(file);
 
-            int partNumber = 0;
-            int partsCount = fileParts.Count;
-            long file_id = BitConverter.ToInt64(Helpers.GenerateRandomBytes(8), 0);
+            var partNumber = 0;
+            var partsCount = fileParts.Count;
+            var fileId = BitConverter.ToInt64(Helpers.GenerateRandomBytes(8), 0);
             while (fileParts.Count != 0)
             {
                 var part = fileParts.Dequeue();
@@ -93,7 +90,7 @@ namespace TLSharp.Core.Utils
                 {
                     await client.SendRequestAsync<bool>(new TLRequestSaveBigFilePart
                     {
-                        FileId = file_id,
+                        FileId = fileId,
                         FilePart = partNumber,
                         Bytes = part,
                         FileTotalParts = partsCount
@@ -103,7 +100,7 @@ namespace TLSharp.Core.Utils
                 {
                     await client.SendRequestAsync<bool>(new TLRequestSaveFilePart
                     {
-                        FileId = file_id,
+                        FileId = fileId,
                         FilePart = partNumber,
                         Bytes = part
                     });
@@ -111,25 +108,20 @@ namespace TLSharp.Core.Utils
                 partNumber++;
             }
 
-            if (isBigFileUpload)
-            {
-                return new TLInputFileBig
+            return isBigFileUpload
+                ? (TLAbsInputFile) new TLInputFileBig
                 {
-                    Id = file_id,
+                    Id = fileId,
                     Name = name,
                     Parts = partsCount
-                };
-            }
-            else
-            {
-                return new TLInputFile
+                }
+                : new TLInputFile
                 {
-                    Id = file_id,
+                    Id = fileId,
                     Name = name,
                     Parts = partsCount,
                     Md5Checksum = GetFileHash(file)
                 };
-            }
         }
     }
 }

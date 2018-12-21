@@ -5,7 +5,7 @@ namespace TLSharp.Core.Auth
 {
     public static class Authenticator
     {
-        public static async Task<Step3_Response> DoAuthentication(TcpTransport transport)
+        public static async Task<Step3Response> DoAuthentication(TcpTransport transport)
         {
             var sender = new MtProtoPlainSender(transport);
             var step1 = new Step1_PQRequest();
@@ -18,16 +18,18 @@ namespace TLSharp.Core.Auth
                 step1Response.Nonce,
                 step1Response.ServerNonce,
                 step1Response.Fingerprints,
-                step1Response.Pq));
+                step1Response.Pq
+            ));
 
             var step2Response = step2.FromBytes(await sender.Receive());
 
-            var step3 = new Step3_CompleteDHExchange();
+            var step3 = new Step3CompleteDhExchange();
             await sender.Send(step3.ToBytes(
                 step2Response.Nonce,
                 step2Response.ServerNonce,
                 step2Response.NewNonce,
-                step2Response.EncryptedAnswer));
+                step2Response.EncryptedAnswer
+            ));
 
             var step3Response = step3.FromBytes(await sender.Receive());
 

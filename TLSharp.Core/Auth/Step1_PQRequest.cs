@@ -17,16 +17,16 @@ namespace TLSharp.Core.Auth
 
     public class Step1_PQRequest
     {
-        private byte[] nonce;
+        private readonly byte[] _nonce;
 
         public Step1_PQRequest()
         {
-            nonce = new byte[16];
+            _nonce = new byte[16];
         }
 
         public byte[] ToBytes()
         {
-            new Random().NextBytes(nonce);
+            new Random().NextBytes(_nonce);
             const int constructorNumber = 0x60469778;
 
             using (var memoryStream = new MemoryStream())
@@ -34,7 +34,7 @@ namespace TLSharp.Core.Auth
                 using (var binaryWriter = new BinaryWriter(memoryStream))
                 {
                     binaryWriter.Write(constructorNumber);
-                    binaryWriter.Write(nonce);
+                    binaryWriter.Write(_nonce);
 
                     return memoryStream.ToArray();
                 }
@@ -58,15 +58,15 @@ namespace TLSharp.Core.Auth
 
                     var nonceFromServer = binaryReader.ReadBytes(16);
 
-                    if (!nonceFromServer.SequenceEqual(nonce))
+                    if (!nonceFromServer.SequenceEqual(_nonce))
                     {
                         throw new InvalidOperationException("invalid nonce from server");
                     }
 
                     var serverNonce = binaryReader.ReadBytes(16);
 
-                    byte[] pqbytes = Serializers.Bytes.read(binaryReader);
-                    var pq = new BigInteger(1, pqbytes);
+                    var pqBytes = Serializers.Bytes.Read(binaryReader);
+                    var pq = new BigInteger(1, pqBytes);
 
                     var vectorId = binaryReader.ReadInt32();
                     const int vectorConstructorNumber = 0x1cb5c415;
@@ -78,14 +78,14 @@ namespace TLSharp.Core.Auth
                     var fingerprintCount = binaryReader.ReadInt32();
                     for (var i = 0; i < fingerprintCount; i++)
                     {
-                        byte[] fingerprint = binaryReader.ReadBytes(8);
+                        var fingerprint = binaryReader.ReadBytes(8);
                         fingerprints.Add(fingerprint);
                     }
 
                     return new Step1_Response
                     {
                         Fingerprints = fingerprints,
-                        Nonce = nonce,
+                        Nonce = _nonce,
                         Pq = pq,
                         ServerNonce = serverNonce
                     };

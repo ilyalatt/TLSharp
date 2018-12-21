@@ -16,65 +16,65 @@ namespace TLSharp.Core.Auth
 
     public class Step2_DHExchange
     {
-        public byte[] newNonce;
+        public byte[] NewNonce { get; }
 
         public Step2_DHExchange()
         {
-            newNonce = new byte[32];
+            NewNonce = new byte[32];
         }
 
         public byte[] ToBytes(byte[] nonce, byte[] serverNonce, List<byte[]> fingerprints, BigInteger pq)
         {
-            new Random().NextBytes(newNonce);
+            new Random().NextBytes(NewNonce);
 
             var pqPair = Factorizator.Factorize(pq);
 
             byte[] reqDhParamsBytes;
 
-            using (MemoryStream pqInnerData = new MemoryStream(255))
+            using (var pqInnerData = new MemoryStream(255))
             {
-                using (BinaryWriter pqInnerDataWriter = new BinaryWriter(pqInnerData))
+                using (var pqInnerDataWriter = new BinaryWriter(pqInnerData))
                 {
                     pqInnerDataWriter.Write(0x83c95aec); // pq_inner_data
-                    Serializers.Bytes.write(pqInnerDataWriter, pq.ToByteArrayUnsigned());
-                    Serializers.Bytes.write(pqInnerDataWriter, pqPair.Min.ToByteArrayUnsigned());
-                    Serializers.Bytes.write(pqInnerDataWriter, pqPair.Max.ToByteArrayUnsigned());
+                    Serializers.Bytes.Write(pqInnerDataWriter, pq.ToByteArrayUnsigned());
+                    Serializers.Bytes.Write(pqInnerDataWriter, pqPair.Min.ToByteArrayUnsigned());
+                    Serializers.Bytes.Write(pqInnerDataWriter, pqPair.Max.ToByteArrayUnsigned());
                     pqInnerDataWriter.Write(nonce);
                     pqInnerDataWriter.Write(serverNonce);
-                    pqInnerDataWriter.Write(newNonce);
+                    pqInnerDataWriter.Write(NewNonce);
 
-                    byte[] ciphertext = null;
+                    byte[] cipherText = null;
                     byte[] targetFingerprint = null;
-                    foreach (byte[] fingerprint in fingerprints)
+                    foreach (var fingerprint in fingerprints)
                     {
-                        ciphertext = RSA.Encrypt(BitConverter.ToString(fingerprint).Replace("-", string.Empty),
+                        cipherText = RSA.Encrypt(BitConverter.ToString(fingerprint).Replace("-", string.Empty),
                                                  pqInnerData.GetBuffer(), 0, (int)pqInnerData.Position);
-                        if (ciphertext != null)
+                        if (cipherText != null)
                         {
                             targetFingerprint = fingerprint;
                             break;
                         }
                     }
 
-                    if (ciphertext == null)
+                    if (cipherText == null)
                     {
                         throw new InvalidOperationException(
-                            String.Format("not found valid key for fingerprints: {0}", String.Join(", ", fingerprints)));
+                            $"not found valid key for fingerprints: {string.Join(", ", fingerprints)}");
                     }
 
-                    using (MemoryStream reqDHParams = new MemoryStream(1024))
+                    using (var reqDhParams = new MemoryStream(1024))
                     {
-                        using (BinaryWriter reqDHParamsWriter = new BinaryWriter(reqDHParams))
+                        using (var reqDhParamsWriter = new BinaryWriter(reqDhParams))
                         {
-                            reqDHParamsWriter.Write(0xd712e4be); // req_dh_params
-                            reqDHParamsWriter.Write(nonce);
-                            reqDHParamsWriter.Write(serverNonce);
-                            Serializers.Bytes.write(reqDHParamsWriter, pqPair.Min.ToByteArrayUnsigned());
-                            Serializers.Bytes.write(reqDHParamsWriter, pqPair.Max.ToByteArrayUnsigned());
-                            reqDHParamsWriter.Write(targetFingerprint);
-                            Serializers.Bytes.write(reqDHParamsWriter, ciphertext);
+                            reqDhParamsWriter.Write(0xd712e4be); // req_dh_params
+                            reqDhParamsWriter.Write(nonce);
+                            reqDhParamsWriter.Write(serverNonce);
+                            Serializers.Bytes.Write(reqDhParamsWriter, pqPair.Min.ToByteArrayUnsigned());
+                            Serializers.Bytes.Write(reqDhParamsWriter, pqPair.Max.ToByteArrayUnsigned());
+                            reqDhParamsWriter.Write(targetFingerprint);
+                            Serializers.Bytes.Write(reqDhParamsWriter, cipherText);
 
-                            reqDhParamsBytes = reqDHParams.ToArray();
+                            reqDhParamsBytes = reqDhParams.ToArray();
                         }
                     }
                 }
@@ -84,13 +84,11 @@ namespace TLSharp.Core.Auth
 
         public Step2_Response FromBytes(byte[] response)
         {
-            byte[] encryptedAnswer;
-
-            using (MemoryStream responseStream = new MemoryStream(response, false))
+            using (var responseStream = new MemoryStream(response, false))
             {
-                using (BinaryReader responseReader = new BinaryReader(responseStream))
+                using (var responseReader = new BinaryReader(responseStream))
                 {
-                    uint responseCode = responseReader.ReadUInt32();
+                    var responseCode = responseReader.ReadUInt32();
 
                     if (responseCode == 0x79cb045d)
                     {
@@ -103,7 +101,7 @@ namespace TLSharp.Core.Auth
                         throw new InvalidOperationException($"invalid response code: {responseCode}");
                     }
 
-                    byte[] nonceFromServer = responseReader.ReadBytes(16);
+                    var nonceFromServer = responseReader.ReadBytes(16);
 
                     // TODO:!
                     /*
@@ -115,7 +113,7 @@ namespace TLSharp.Core.Auth
 					*/
 
 
-                    byte[] serverNonceFromServer = responseReader.ReadBytes(16);
+                    var serverNonceFromServer = responseReader.ReadBytes(16);
 
                     // TODO: !
                     /*
@@ -126,14 +124,14 @@ namespace TLSharp.Core.Auth
 					}
 					*/
 
-                    encryptedAnswer = Serializers.Bytes.read(responseReader);
+                    var encryptedAnswer = Serializers.Bytes.Read(responseReader);
 
-                    return new Step2_Response()
+                    return new Step2_Response
                     {
                         EncryptedAnswer = encryptedAnswer,
                         ServerNonce = serverNonceFromServer,
                         Nonce = nonceFromServer,
-                        NewNonce = newNonce
+                        NewNonce = NewNonce
                     };
                 }
             }

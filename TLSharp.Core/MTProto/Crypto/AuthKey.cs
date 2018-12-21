@@ -81,7 +81,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
         public override string ToString()
         {
-            return string.Format("(Key: {0}, KeyId: {1}, AuxHash: {2})", key, keyId, auxHash);
+            return $"(Key: {key}, KeyId: {keyId}, AuxHash: {auxHash})";
         }
     }
 }

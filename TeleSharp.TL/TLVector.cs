@@ -11,109 +11,103 @@ namespace TeleSharp.TL
     public class TLVector<T> : TLObject, IList<T>
     {
         [TLObject(481674261)]
-        private List<T> lists = new List<T>();
+        private readonly List<T> _lists = new List<T>();
 
         public T this[int index]
         {
-            get { return lists[index]; }
-            set { lists[index] = value; }
+            get => _lists[index];
+            set => _lists[index] = value;
         }
 
-        public override int Constructor
-        {
-            get
-            {
-                return 481674261;
-            }
-        }
+        public override int Constructor => 481674261;
 
-        public int Count => lists.Count;
+        public int Count => _lists.Count;
 
-        public bool IsReadOnly => ((IList<T>)lists).IsReadOnly;
+        public bool IsReadOnly => ((IList<T>)_lists).IsReadOnly;
 
         public void Add(T item)
         {
-            lists.Add(item);
+            _lists.Add(item);
         }
 
         public void Clear()
         {
-            lists.Clear();
+            _lists.Clear();
         }
 
         public bool Contains(T item)
         {
-            return lists.Contains(item);
+            return _lists.Contains(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            lists.CopyTo(array, arrayIndex);
+            _lists.CopyTo(array, arrayIndex);
         }
 
         public override void DeserializeBody(BinaryReader br)
         {
-            int count = br.ReadInt32();
+            var count = br.ReadInt32();
             for (var i = 0; i < count; i++)
             {
                 if (typeof(T) == typeof(int))
                 {
-                    lists.Add((T)Convert.ChangeType(br.ReadInt32(), typeof(T)));
+                    _lists.Add((T)Convert.ChangeType(br.ReadInt32(), typeof(T)));
                 }
                 else if (typeof(T) == typeof(long))
                 {
-                    lists.Add((T)Convert.ChangeType(br.ReadInt64(), typeof(T)));
+                    _lists.Add((T)Convert.ChangeType(br.ReadInt64(), typeof(T)));
                 }
                 else if (typeof(T) == typeof(string))
                 {
-                    lists.Add((T)Convert.ChangeType(StringUtil.Deserialize(br), typeof(T)));
+                    _lists.Add((T)Convert.ChangeType(StringUtil.Deserialize(br), typeof(T)));
                 }
                 else if (typeof(T) == typeof(double))
                 {
-                    lists.Add((T)Convert.ChangeType(br.ReadDouble(), typeof(T)));
+                    _lists.Add((T)Convert.ChangeType(br.ReadDouble(), typeof(T)));
                 }
                 else if (typeof(T).BaseType == typeof(TLObject))
                 {
-                    int constructor = br.ReadInt32();
-                    Type type = TLContext.getType(constructor);
-                    object obj = Activator.CreateInstance(type);
+                    var constructor = br.ReadInt32();
+                    var type = TLContext.GetType(constructor);
+                    var obj = Activator.CreateInstance(type);
                     type.GetMethod("DeserializeBody").Invoke(obj, new object[] { br });
-                    lists.Add((T)Convert.ChangeType(obj, type));
+                    _lists.Add((T)Convert.ChangeType(obj, type));
                 }
             }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return lists.GetEnumerator();
+            return _lists.GetEnumerator();
         }
 
         public int IndexOf(T item)
         {
-            return lists.IndexOf(item);
+            return _lists.IndexOf(item);
         }
 
         public void Insert(int index, T item)
         {
-            lists.Insert(index, item);
+            _lists.Insert(index, item);
         }
 
         public bool Remove(T item)
         {
-            return lists.Remove(item);
+            return _lists.Remove(item);
         }
 
         public void RemoveAt(int index)
         {
-            lists.RemoveAt(index);
+            _lists.RemoveAt(index);
         }
 
         public override void SerializeBody(BinaryWriter bw)
         {
             bw.Write(Constructor);
-            bw.Write(lists.Count());
+            bw.Write(_lists.Count());
 
-            foreach (var item in lists)
+            foreach (var item in _lists)
             {
                 if (typeof(T) == typeof(int))
                 {
@@ -146,7 +140,7 @@ namespace TeleSharp.TL
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return lists.GetEnumerator();
+            return _lists.GetEnumerator();
         }
     }
 }

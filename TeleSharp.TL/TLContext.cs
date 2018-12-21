@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-using TeleSharp.TL;
 namespace TeleSharp.TL
 {
     public static class TLContext
     {
-        private static Dictionary<int, Type> Types;
+        static readonly Dictionary<int, Type> Types;
 
         static TLContext()
         {
@@ -23,9 +20,9 @@ namespace TeleSharp.TL
             Types.Add(481674261, typeof(TLVector<>));
         }
 
-        public static Type getType(int Constructor)
+        public static Type GetType(int constructor)
         {
-            return Types[Constructor];
+            return Types[constructor];
         }
     }
 }
