@@ -1,36 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Schema;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace TeleSharp.Generator
 {
     class Method
     {
-        public int id { get; set; }
-        public string method { get; set; }
-        [Newtonsoft.Json.JsonProperty("params")]
+        public int Id { get; set; }
+        [JsonProperty("method")]
+        public string MethodName { get; set; }
         public List<Param> Params { get; set; }
-        public string type { get; set; }
-
+        public string Type { get; set; }
     }
+
     class Param
     {
-        public string name { get; set; }
-        public string type { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
     }
+
     class Constructor
     {
-        public int id { get; set; }
-        public string predicate { get; set; }
-        [Newtonsoft.Json.JsonProperty("params")]
+        public int Id { get; set; }
+        public string Predicate { get; set; }
         public List<Param> Params { get; set; }
-        public string type { get; set; }
+        public string Type { get; set; }
     }
+
     class Schema
     {
-        public List<Constructor> constructors { get; set; }
-        public List<Method> methods { get; set; }
+        public List<Constructor> Constructors { get; set; }
+        public List<Method> Methods { get; set; }
     }
 }
