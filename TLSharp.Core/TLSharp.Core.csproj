@@ -4,13 +4,39 @@
     <OutputType>Library</OutputType>
   </PropertyGroup>
   
+  <PropertyGroup>
+    <PackageId>TLSharp.Fork</PackageId>
+    <PackageProjectUrl>https://github.com/ilyalatt/TLSharp.Fork</PackageProjectUrl>
+    <PackageIconUrl>https://core.telegram.org/favicon.ico</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>Telegram client library</Description>
+    <Authors>sochix, ilyalatt</Authors>
+    
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <VersionSuffix>preview001</VersionSuffix>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
-    <!--<package id="DotNetZip" version="1.9.3" targetFramework="net451" />-->
   </ItemGroup>
     
   <ItemGroup>
-    <ProjectReference Include="..\TeleSharp.TL\TeleSharp.TL.csproj" />
+    <ProjectReference Include="../TeleSharp.TL/TeleSharp.TL.csproj" PrivateAssets="All" />
   </ItemGroup>
-</Project>
 
+  <!--
+  Copypasted from https://github.com/dasMulli/AdvancedMSBuildDemos/tree/master/IncludeP2P
+  Check https://github.com/NuGet/Home/issues/3891 for newer versions / workarounds / built-in methods
+  -->
+
+  <PropertyGroup>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+
+  <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+    </ItemGroup>
+  </Target>
+  
+</Project>

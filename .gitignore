@@ -221,3 +221,6 @@ _Pvt_Extensions
 
 # idea
 .idea
+
+# macOS
+.DS_Store
