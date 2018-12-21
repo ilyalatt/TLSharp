@@ -36,7 +36,7 @@ namespace TeleSharp.Generator
 
             foreach (var c in schema.Constructors)
             {
-                var list = schema.Constructors.Where(x => x.Type == c.Type);
+                var list = schema.Constructors.Where(x => x.Type == c.Type || x.Params.Exists(y => y.Type == c.Type));
                 if (list.Count() > 1)
                 {
                     var path = (GetNameSpace(c.Type).Replace("TeleSharp.TL", "TL/").Replace(".", "") + "/" + GetNameofClass(c.Type, true) + ".cs").Replace("//", "/");
