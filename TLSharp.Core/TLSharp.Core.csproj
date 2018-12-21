@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <PackageId>TLSharp.Fork</PackageId>
     <PackageProjectUrl>https://github.com/ilyalatt/TLSharp.Fork</PackageProjectUrl>
@@ -11,15 +11,15 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>Telegram client library</Description>
     <Authors>sochix, ilyalatt</Authors>
-    
+
     <VersionPrefix>0.0.1</VersionPrefix>
-    <VersionSuffix>preview001</VersionSuffix>
+    <VersionSuffix>preview002</VersionSuffix>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
   </ItemGroup>
-    
+
   <ItemGroup>
     <ProjectReference Include="../TeleSharp.TL/TeleSharp.TL.csproj" PrivateAssets="All" />
   </ItemGroup>
@@ -38,5 +38,5 @@
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
     </ItemGroup>
   </Target>
-  
+
 </Project>
