@@ -68,7 +68,7 @@ namespace TLSharp.Core
         public int TimeOffset { get; set; }
         public long LastMessageId { get; set; }
         public int SessionExpires { get; set; }
-        public TLUser TlUser { get; set; }
+        public TLUserSelf TlUser { get; set; }
         private readonly Random _random;
 
         private readonly ISessionStore _store;
@@ -124,11 +124,11 @@ namespace TLSharp.Core
 
                 var isAuthExists = reader.ReadInt32() == 1;
                 var sessionExpires = 0;
-                TLUser tlUser = null;
+                TLUserSelf tlUser = null;
                 if (isAuthExists)
                 {
                     sessionExpires = reader.ReadInt32();
-                    tlUser = (TLUser)ObjectUtils.DeserializeObject(reader);
+                    tlUser = (TLUserSelf)ObjectUtils.DeserializeObject(reader);
                 }
 
                 var authData = Serializers.Bytes.Read(reader);
