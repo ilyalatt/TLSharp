@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using NUnit.Framework;
 using TeleSharp.TL;
 using TeleSharp.TL.Messages;
 using TLSharp.Core;
@@ -54,10 +54,11 @@ namespace TLSharp.Tests
         internal static Action<object> IsNotNullHanlder;
         internal static Action<bool> IsTrueHandler;
 
+        [SetUp]
         protected void Init(Action<object> notNullHandler, Action<bool> trueHandler)
         {
-            IsNotNullHanlder = notNullHandler;
-            IsTrueHandler = trueHandler;
+            IsNotNullHanlder = NUnit.Framework.Assert.IsNotNull;
+            IsTrueHandler = NUnit.Framework.Assert.IsTrue;
 
             // Setup your API settings and phone numbers in app.config
             GatherTestConfiguration();
@@ -119,6 +120,7 @@ namespace TLSharp.Tests
                 Debug.WriteLine(appConfigMsgWarning, nameof(NumberToAddToChat));
         }
 
+        [Test]
         public virtual async Task AuthUser()
         {
             var client = NewClient();
@@ -154,6 +156,7 @@ namespace TLSharp.Tests
             Assert.IsTrue(client.IsUserAuthorized());
         }
 
+        [Test]
         public virtual async Task SendMessageTest()
         {
             NumberToSendMessage = ConfigurationManager.AppSettings[nameof(NumberToSendMessage)];
@@ -185,6 +188,7 @@ namespace TLSharp.Tests
             await client.SendMessageAsync(new TLInputPeerUser() { UserId = user.Id }, "TEST");
         }
 
+        [Test]
         public virtual async Task SendMessageToChannelTest()
         {
             var client = NewClient();
@@ -199,6 +203,7 @@ namespace TLSharp.Tests
             await client.SendMessageAsync(new TLInputPeerChannel() { ChannelId = chat.Id, AccessHash = chat.AccessHash.Value }, "TEST MSG");
         }
 
+        [Test]
         public virtual async Task SendPhotoToContactTest()
         {
             var client = NewClient();
@@ -215,6 +220,7 @@ namespace TLSharp.Tests
             await client.SendUploadedPhoto(new TLInputPeerUser() { UserId = user.Id }, fileResult, "kitty");
         }
 
+        [Test]
         public virtual async Task SendBigFileToContactTest()
         {
             var client = NewClient();
@@ -237,6 +243,7 @@ namespace TLSharp.Tests
                 new TLVector<TLAbsDocumentAttribute>());
         }
 
+        [Test]
         public virtual async Task DownloadFileFromContactTest()
         {
             var client = NewClient();
@@ -268,10 +275,11 @@ namespace TLSharp.Tests
                     Version = document.Version
                 },
                 document.Size);
-            
+
             Assert.IsTrue(resFile.Bytes.Length > 0);
         }
 
+        [Test]
         public virtual async Task DownloadFileFromWrongLocationTest()
         {
             var client = NewClient();
@@ -283,7 +291,7 @@ namespace TLSharp.Tests
             var user = result.Users
                 .OfType<TLUser>()
                 .FirstOrDefault(x => x.Id == 5880094);
-    
+
             var photo = ((TLUserProfilePhoto)user.Photo);
             var photoLocation = (TLFileLocation) photo.PhotoBig;
 
@@ -294,11 +302,12 @@ namespace TLSharp.Tests
                 VolumeId = photoLocation.VolumeId
             }, 1024);
 
-            var res = await client.GetUserDialogsAsync(); 
+            var res = await client.GetUserDialogsAsync();
 
             Assert.IsTrue(resFile.Bytes.Length > 0);
         }
 
+        [Test]
         public virtual async Task SignUpNewUser()
         {
             var client = NewClient();
@@ -315,6 +324,7 @@ namespace TLSharp.Tests
             Assert.IsNotNull(loggedInUser);
         }
 
+        [Test]
         public virtual async Task CheckPhones()
         {
             var client = NewClient();
@@ -324,6 +334,8 @@ namespace TLSharp.Tests
             Assert.IsTrue(result);
         }
 
+        [Test]
+        [Ignore("FIXME")]
         public virtual async Task FloodExceptionShouldNotCauseCannotReadPackageLengthError()
         {
             for (int i = 0; i < 50; i++)
@@ -340,6 +352,7 @@ namespace TLSharp.Tests
             }
         }
 
+        [Test]
         public virtual async Task SendMessageByUserNameTest()
         {
             UserNameToSendMessage = ConfigurationManager.AppSettings[nameof(UserNameToSendMessage)];
