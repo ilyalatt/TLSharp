@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using BigMath;
 
-namespace TLSharp.Core.MTProto.Crypto
+namespace TLSharp.Crypto
 {
 
     class RSAServerKey
@@ -60,7 +61,7 @@ namespace TLSharp.Core.MTProto.Crypto
 
         }
     }
-    public class RSA
+    static class RSA
     {
         private static readonly Dictionary<string, RSAServerKey> serverKeys = new Dictionary<string, RSAServerKey>
         {

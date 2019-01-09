@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Security.Cryptography;
-using TLSharp.Core.MTProto.Crypto;
+using TLSharp.Crypto;
 
-namespace TLSharp.Core.Utils
+namespace TLSharp.Utils
 {
-    public class Helpers
+    class Helpers
     {
         private static readonly Random Random = new Random();
 
@@ -91,6 +91,29 @@ namespace TLSharp.Core.Utils
             {
                 return sha1.ComputeHash(data, offset, limit);
             }
+        }
+
+        static TimeSpan EpochTime =>
+            DateTime.UtcNow - new DateTime(1970, 1, 1);
+
+        public static int GetCurrentEpochTime() =>
+            (int) EpochTime.TotalSeconds;
+
+        public static long GetNewMessageId(long lastMessageId, int timeOffset)
+        {
+            var time = EpochTime;
+
+            // [ unix timestamp : 32 bit]
+            // [ milliseconds : 10 bit ]
+            // [ buffer space : 1 bit ]
+            // [ random : 19 bit ]
+            // [ msg_id type : 2 bit ]
+            // = [ msg_id : 64 bit ]
+            var part1 = time.TotalSeconds + timeOffset;
+            var part2 = ((long) time.Milliseconds << 22) | (Random.Next(524288) << 2);
+            var newMessageId = ((long) part1 << 32) | part2;
+
+            return lastMessageId >= newMessageId ? lastMessageId + 4 : newMessageId;
         }
     }
 }

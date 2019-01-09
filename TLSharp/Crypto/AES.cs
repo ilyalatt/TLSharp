@@ -2,9 +2,9 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace TLSharp.Core.MTProto.Crypto
+namespace TLSharp.Crypto
 {
-    public class AESKeyData
+    class AESKeyData
     {
         private readonly byte[] key;
         private readonly byte[] iv;
@@ -26,7 +26,7 @@ namespace TLSharp.Core.MTProto.Crypto
         }
     }
 
-    public class AES
+    class AES
     {
         public static byte[] DecryptWithNonces(byte[] data, byte[] serverNonce, byte[] newNonce)
         {

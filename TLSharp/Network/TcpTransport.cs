@@ -3,11 +3,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace TLSharp.Core.Network
+namespace TLSharp.Network
 {
     public delegate TcpClient TcpClientConnectionHandler(string address, int port);
 
-    public class TcpTransport : IDisposable
+    class TcpTransport : IDisposable
     {
         private readonly TcpClient _tcpClient;
         private int _sendCounter;
@@ -31,8 +31,9 @@ namespace TLSharp.Core.Network
                 throw new InvalidOperationException("Client not connected to server.");
 
             var tcpMessage = new TcpMessage(_sendCounter, packet);
+            var bts = tcpMessage.Encode();
 
-            await _tcpClient.GetStream().WriteAsync(tcpMessage.Encode(), 0, tcpMessage.Encode().Length);
+            await _tcpClient.GetStream().WriteAsync(bts, 0, bts.Length);
             _sendCounter++;
         }
 

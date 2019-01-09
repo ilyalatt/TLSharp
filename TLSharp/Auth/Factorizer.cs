@@ -1,8 +1,9 @@
 ﻿using System;
+using BigMath;
 
-namespace TLSharp.Core.MTProto.Crypto
+namespace TLSharp.Auth
 {
-    public class FactorizedPair
+    class FactorizedPair
     {
         private readonly BigInteger p;
         private readonly BigInteger q;
@@ -40,7 +41,8 @@ namespace TLSharp.Core.MTProto.Crypto
             return $"P: {p}, Q: {q}";
         }
     }
-    public class Factorizator
+
+    class Factorizator
     {
         public static Random random = new Random();
         public static long findSmallMultiplierLopatin(long what)
@@ -131,8 +133,5 @@ namespace TLSharp.Core.MTProto.Crypto
                 // return null;
             }
         }
-
     }
-
-
 }

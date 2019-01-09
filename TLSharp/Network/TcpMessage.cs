@@ -2,9 +2,9 @@
 using System.IO;
 using Ionic.Crc;
 
-namespace TLSharp.Core.Network
+namespace TLSharp.Network
 {
-    public class TcpMessage
+    class TcpMessage
     {
         public int SequenceNumber { get; }
         public byte[] Body { get; }
@@ -23,9 +23,9 @@ namespace TLSharp.Core.Network
                 {
                     // https://core.telegram.org/mtproto#tcp-transport
                     /*
-                        4 length bytes are added at the front 
+                        4 length bytes are added at the front
                         (to include the length, the sequence number, and CRC32; always divisible by 4)
-                        and 4 bytes with the packet sequence number within this TCP connection 
+                        and 4 bytes with the packet sequence number within this TCP connection
                         (the first packet sent is numbered 0, the next one 1, etc.),
                         and 4 CRC32 bytes at the end (length, sequence number, and payload together).
                     */

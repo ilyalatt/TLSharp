@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Ionic.Crc;
 
-namespace TLSharp.Core.MTProto.Crypto
+namespace TLSharp.Crypto
 {
-    public class Crc32 : HashAlgorithm
+    class Crc32 : HashAlgorithm
     {
         public const UInt32 DefaultPolynomial = 0xedb88320u;
         public const UInt32 DefaultSeed = 0xffffffffu;

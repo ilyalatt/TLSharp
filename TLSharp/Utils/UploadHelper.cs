@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using TeleSharp.TL;
-using TeleSharp.TL.Upload;
+using TLSharp.Rpc.Functions.Upload;
+using TLSharp.Rpc.Types;
 
-namespace TLSharp.Core.Utils
+namespace TLSharp.Utils
 {
     public static class UploadHelper
     {
@@ -26,7 +25,7 @@ namespace TLSharp.Core.Utils
             }
         }
 
-        public static async Task<TLAbsInputFile> UploadFile(this TelegramClient client, string name, StreamReader reader)
+        public static async Task<InputFile> UploadFile(this TelegramClient client, string name, StreamReader reader)
         {
             const long tenMb = 10 * 1024 * 1024;
             return await UploadFile(name, reader, client, reader.BaseStream.Length >= tenMb);
@@ -73,7 +72,7 @@ namespace TLSharp.Core.Utils
             return fileParts;
         }
 
-        private static async Task<TLAbsInputFile> UploadFile(string name, StreamReader reader,
+        private static async Task<InputFile> UploadFile(string name, StreamReader reader,
             TelegramClient client, bool isBigFileUpload)
         {
             var file = GetFile(reader);
@@ -88,40 +87,36 @@ namespace TLSharp.Core.Utils
 
                 if (isBigFileUpload)
                 {
-                    await client.SendRequestAsync<bool>(new TLRequestSaveBigFilePart
-                    {
-                        FileId = fileId,
-                        FilePart = partNumber,
-                        Bytes = part,
-                        FileTotalParts = partsCount
-                    });
+                    await client.SendRequestAsync(new SaveBigFilePart(
+                        fileId: fileId,
+                        filePart: partNumber,
+                        bytes: part.ToArr(),
+                        fileTotalParts: partsCount
+                    ));
                 }
                 else
                 {
-                    await client.SendRequestAsync<bool>(new TLRequestSaveFilePart
-                    {
-                        FileId = fileId,
-                        FilePart = partNumber,
-                        Bytes = part
-                    });
+                    await client.SendRequestAsync(new SaveFilePart(
+                        fileId: fileId,
+                        filePart: partNumber,
+                        bytes: part.ToArr()
+                    ));
                 }
                 partNumber++;
             }
 
             return isBigFileUpload
-                ? (TLAbsInputFile) new TLInputFileBig
-                {
-                    Id = fileId,
-                    Name = name,
-                    Parts = partsCount
-                }
-                : new TLInputFile
-                {
-                    Id = fileId,
-                    Name = name,
-                    Parts = partsCount,
-                    Md5Checksum = GetFileHash(file)
-                };
+                ? (InputFile) new InputFile.BigTag(
+                    id: fileId,
+                    name: name,
+                    parts: partsCount
+                )
+                : (InputFile) new InputFile.Tag(
+                    id: fileId,
+                    name: name,
+                    parts: partsCount,
+                    md5Checksum: GetFileHash(file)
+                );
         }
     }
 }

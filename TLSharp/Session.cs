@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
-using TeleSharp.TL;
-using TLSharp.Core.MTProto;
-using TLSharp.Core.MTProto.Crypto;
+using System.Linq;
+using TLSharp.Auth;
+using TLSharp.Rpc;
+using TLSharp.Rpc.Types;
+using TLSharp.Utils;
 
-namespace TLSharp.Core
+namespace TLSharp
 {
     public interface ISessionStore
     {
@@ -64,11 +66,11 @@ namespace TLSharp.Core
         public AuthKey AuthKey { get; set; }
         public ulong Id { get; set; }
         public int Sequence { get; set; }
-        public ulong Salt { get; set; }
+        public long Salt { get; set; }
         public int TimeOffset { get; set; }
         public long LastMessageId { get; set; }
         public int SessionExpires { get; set; }
-        public TLUserSelf TlUser { get; set; }
+        public User TlUser { get; set; }
         private readonly Random _random;
 
         private readonly ISessionStore _store;
@@ -89,22 +91,21 @@ namespace TLSharp.Core
                 writer.Write(Salt);
                 writer.Write(LastMessageId);
                 writer.Write(TimeOffset);
-                Serializers.String.Write(writer, ServerAddress);
+                TlMarshal.WriteString(writer, ServerAddress);
                 writer.Write(Port);
 
                 if (TlUser != null)
                 {
                     writer.Write(1);
                     writer.Write(SessionExpires);
-                    ObjectUtils.SerializeObject(TlUser, writer);
+                    TlMarshal.WriteSerializable(writer, TlUser);
                 }
                 else
                 {
                     writer.Write(0);
                 }
 
-                Serializers.Bytes.Write(writer, AuthKey.Data);
-
+                TlMarshal.WriteBytes(writer, AuthKey.Key);
                 return stream.ToArray();
             }
         }
@@ -116,26 +117,26 @@ namespace TLSharp.Core
             {
                 var id = reader.ReadUInt64();
                 var sequence = reader.ReadInt32();
-                var salt = reader.ReadUInt64();
+                var salt = reader.ReadInt64();
                 var lastMessageId = reader.ReadInt64();
                 var timeOffset = reader.ReadInt32();
-                var serverAddress = Serializers.String.Read(reader);
+                var serverAddress = TlMarshal.ReadString(reader);
                 var port = reader.ReadInt32();
 
                 var isAuthExists = reader.ReadInt32() == 1;
                 var sessionExpires = 0;
-                TLUserSelf tlUser = null;
+                User tlUser = null;
                 if (isAuthExists)
                 {
                     sessionExpires = reader.ReadInt32();
-                    tlUser = (TLUserSelf)ObjectUtils.DeserializeObject(reader);
+                    tlUser = User.Deserialize(reader);
                 }
 
-                var authData = Serializers.Bytes.Read(reader);
+                var authData = TlMarshal.ReadBytes(reader).ToArray();
 
                 return new Session(store)
                 {
-                    AuthKey = new AuthKey(authData),
+                    AuthKey = AuthKey.Deserialize(authData),
                     Id = id,
                     Salt = salt,
                     Sequence = sequence,
@@ -183,21 +184,7 @@ namespace TLSharp.Core
             return rand;
         }
 
-        public long GetNewMessageId()
-        {
-            var time = Convert.ToInt64((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds);
-            var newMessageId = ((time / 1000 + TimeOffset) << 32) |
-                                ((time % 1000) << 22) |
-                                (_random.Next(524288) << 2); // 2^19
-                                                            // [ unix timestamp : 32 bit] [ milliseconds : 10 bit ] [ buffer space : 1 bit ] [ random : 19 bit ] [ msg_id type : 2 bit ] = [ msg_id : 64 bit ]
-
-            if (LastMessageId >= newMessageId)
-            {
-                newMessageId = LastMessageId + 4;
-            }
-
-            LastMessageId = newMessageId;
-            return newMessageId;
-        }
+        public long GetNewMessageId() =>
+            LastMessageId = Helpers.GetNewMessageId(LastMessageId, TimeOffset);
     }
 }

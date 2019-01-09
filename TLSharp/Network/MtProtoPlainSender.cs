@@ -1,15 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using TLSharp.Rpc;
+using TLSharp.Utils;
 
-namespace TLSharp.Core.Network
+namespace TLSharp.Network
 {
-    public class MtProtoPlainSender
+    class MtProtoPlainSender
     {
-        private readonly int _timeOffset;
-        private long _lastMessageId;
-        private readonly Random _random;
-        private readonly TcpTransport _transport;
+        long _lastMessageId;
+        readonly Random _random;
+        readonly TcpTransport _transport;
 
         public MtProtoPlainSender(TcpTransport transport)
         {
@@ -17,13 +18,13 @@ namespace TLSharp.Core.Network
             _random = new Random();
         }
 
-        public async Task Send(byte[] data)
+        async Task Send(byte[] data)
         {
             using (var memoryStream = new MemoryStream())
             {
                 using (var binaryWriter = new BinaryWriter(memoryStream))
                 {
-                    binaryWriter.Write((long)0);
+                    binaryWriter.Write((long) 0);
                     binaryWriter.Write(GetNewMessageId());
                     binaryWriter.Write(data.Length);
                     binaryWriter.Write(data);
@@ -35,7 +36,7 @@ namespace TLSharp.Core.Network
             }
         }
 
-        public async Task<byte[]> Receive()
+        async Task<byte[]> Receive()
         {
             var result = await _transport.Receive();
 
@@ -54,21 +55,19 @@ namespace TLSharp.Core.Network
             }
         }
 
-        private long GetNewMessageId()
+        public async Task<T> Call<T>(ITlFunc<T> func)
         {
-            var time = Convert.ToInt64((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds);
-            var newMessageId = ((time / 1000 + _timeOffset) << 32) |
-                                ((time % 1000) << 22) |
-                                (_random.Next(524288) << 2); // 2^19
-                                                            // [ unix timestamp : 32 bit] [ milliseconds : 10 bit ] [ buffer space : 1 bit ] [ random : 19 bit ] [ msg_id type : 2 bit ] = [ msg_id : 64 bit ]
+            var ms1 = new MemoryStream();
+            var bw = new BinaryWriter(ms1);
+            TlMarshal.WriteSerializable(bw, func);
+            await Send(ms1.ToArray());
 
-            if (_lastMessageId >= newMessageId)
-            {
-                newMessageId = _lastMessageId + 4;
-            }
-
-            _lastMessageId = newMessageId;
-            return newMessageId;
+            var ms2 = new MemoryStream(await Receive());
+            var br = new BinaryReader(ms2);
+            return func.DeserializeResult(br);
         }
+
+        public long GetNewMessageId() =>
+            _lastMessageId = Helpers.GetNewMessageId(_lastMessageId, timeOffset: 0);
     }
 }
