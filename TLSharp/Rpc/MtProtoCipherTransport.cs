@@ -64,7 +64,7 @@ namespace TLSharp.Rpc
 
         async Task<byte[]> ReceivePlainText()
         {
-            var (tcpSeqNum, body) = await _transport.Receive();
+            var body = await _transport.Receive();
 
             const uint sessionClosed = 0xfffffe6c; // i dunno why
             if (body.Length == 4 && BitConverter.ToUInt32(body, 0) == sessionClosed)

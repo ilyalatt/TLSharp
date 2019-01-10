@@ -48,7 +48,7 @@ namespace TLSharp.Rpc
             await _tcpClient.GetStream().WriteAsync(bts, 0, bts.Length);
         }
 
-        public async Task<(int, byte[])> Receive()
+        public async Task<byte[]> Receive()
         {
             var stream = _tcpClient.GetStream();
 
@@ -60,7 +60,7 @@ namespace TLSharp.Rpc
             var seqBytes = new byte[4];
             if (await stream.ReadAsync(seqBytes, 0, 4) != 4)
                 throw new InvalidOperationException("Couldn't read the sequence");
-            var seq = BitConverter.ToInt32(seqBytes, 0);
+            var seqNo = BitConverter.ToInt32(seqBytes, 0);
 
             var readBytes = 0;
             var bodyLen = packetLength - 12;
@@ -87,7 +87,7 @@ namespace TLSharp.Rpc
                 throw new InvalidOperationException("invalid checksum! skip");
             }
 
-            return (seq, body);
+            return  body;
         }
 
         public bool IsConnected => _tcpClient.Connected;

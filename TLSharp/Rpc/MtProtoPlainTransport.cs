@@ -27,7 +27,7 @@ namespace TLSharp.Rpc
 
         async Task<byte[]> Receive()
         {
-            var (seqNum, body) = await _transport.Receive();
+            var body = await _transport.Receive();
             return body.Apply(BtHelpers.Deserialize(br =>
             {
                 var authKeyId = br.ReadInt64(); // 0
