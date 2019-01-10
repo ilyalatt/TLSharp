@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class StatusTimestampTag : Record<StatusTimestampTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4f96cb18;
+            internal const uint TypeNumber = 0x4f96cb18;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatInviteTag : Record<ChatInviteTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbdfb0426;
+            internal const uint TypeNumber = 0xbdfb0426;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhoneCallTag : Record<PhoneCallTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfabadc5f;
+            internal const uint TypeNumber = 0xfabadc5f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x4f96cb18: return (InputPrivacyKey) StatusTimestampTag.DeserializeTag(br);
-                case 0xbdfb0426: return (InputPrivacyKey) ChatInviteTag.DeserializeTag(br);
-                case 0xfabadc5f: return (InputPrivacyKey) PhoneCallTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x4f96cb18, 0xbdfb0426, 0xfabadc5f });
+                case StatusTimestampTag.TypeNumber: return (InputPrivacyKey) StatusTimestampTag.DeserializeTag(br);
+                case ChatInviteTag.TypeNumber: return (InputPrivacyKey) ChatInviteTag.DeserializeTag(br);
+                case PhoneCallTag.TypeNumber: return (InputPrivacyKey) PhoneCallTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { StatusTimestampTag.TypeNumber, ChatInviteTag.TypeNumber, PhoneCallTag.TypeNumber });
             }
         }
 

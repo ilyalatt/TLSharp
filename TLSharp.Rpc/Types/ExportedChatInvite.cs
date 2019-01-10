@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class ChatInviteEmptyTag : Record<ChatInviteEmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x69df3769;
+            internal const uint TypeNumber = 0x69df3769;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatInviteExportedTag : Record<ChatInviteExportedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfc2e05bc;
+            internal const uint TypeNumber = 0xfc2e05bc;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Link { get; }
             
@@ -74,9 +76,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x69df3769: return (ExportedChatInvite) ChatInviteEmptyTag.DeserializeTag(br);
-                case 0xfc2e05bc: return (ExportedChatInvite) ChatInviteExportedTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x69df3769, 0xfc2e05bc });
+                case ChatInviteEmptyTag.TypeNumber: return (ExportedChatInvite) ChatInviteEmptyTag.DeserializeTag(br);
+                case ChatInviteExportedTag.TypeNumber: return (ExportedChatInvite) ChatInviteExportedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { ChatInviteEmptyTag.TypeNumber, ChatInviteExportedTag.TypeNumber });
             }
         }
 

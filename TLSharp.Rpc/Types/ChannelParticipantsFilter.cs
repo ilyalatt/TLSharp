@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class RecentTag : Record<RecentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xde3f3c79;
+            internal const uint TypeNumber = 0xde3f3c79;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AdminsTag : Record<AdminsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb4608969;
+            internal const uint TypeNumber = 0xb4608969;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class KickedTag : Record<KickedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3c37bb7a;
+            internal const uint TypeNumber = 0x3c37bb7a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotsTag : Record<BotsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb0d1865b;
+            internal const uint TypeNumber = 0xb0d1865b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -124,11 +128,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xde3f3c79: return (ChannelParticipantsFilter) RecentTag.DeserializeTag(br);
-                case 0xb4608969: return (ChannelParticipantsFilter) AdminsTag.DeserializeTag(br);
-                case 0x3c37bb7a: return (ChannelParticipantsFilter) KickedTag.DeserializeTag(br);
-                case 0xb0d1865b: return (ChannelParticipantsFilter) BotsTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xde3f3c79, 0xb4608969, 0x3c37bb7a, 0xb0d1865b });
+                case RecentTag.TypeNumber: return (ChannelParticipantsFilter) RecentTag.DeserializeTag(br);
+                case AdminsTag.TypeNumber: return (ChannelParticipantsFilter) AdminsTag.DeserializeTag(br);
+                case KickedTag.TypeNumber: return (ChannelParticipantsFilter) KickedTag.DeserializeTag(br);
+                case BotsTag.TypeNumber: return (ChannelParticipantsFilter) BotsTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { RecentTag.TypeNumber, AdminsTag.TypeNumber, KickedTag.TypeNumber, BotsTag.TypeNumber });
             }
         }
 

@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x15ebac1d;
+            internal const uint TypeNumber = 0x15ebac1d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int Date { get; }
@@ -40,7 +41,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SelfTag : Record<SelfTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa3289a6d;
+            internal const uint TypeNumber = 0xa3289a6d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int InviterId { get; }
@@ -74,7 +76,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ModeratorTag : Record<ModeratorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x91057fef;
+            internal const uint TypeNumber = 0x91057fef;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int InviterId { get; }
@@ -108,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EditorTag : Record<EditorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x98192d61;
+            internal const uint TypeNumber = 0x98192d61;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int InviterId { get; }
@@ -142,7 +146,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class KickedTag : Record<KickedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8cc5e69a;
+            internal const uint TypeNumber = 0x8cc5e69a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int KickedBy { get; }
@@ -176,7 +181,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CreatorTag : Record<CreatorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe3e2e1f9;
+            internal const uint TypeNumber = 0xe3e2e1f9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             
@@ -219,13 +225,13 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x15ebac1d: return (ChannelParticipant) Tag.DeserializeTag(br);
-                case 0xa3289a6d: return (ChannelParticipant) SelfTag.DeserializeTag(br);
-                case 0x91057fef: return (ChannelParticipant) ModeratorTag.DeserializeTag(br);
-                case 0x98192d61: return (ChannelParticipant) EditorTag.DeserializeTag(br);
-                case 0x8cc5e69a: return (ChannelParticipant) KickedTag.DeserializeTag(br);
-                case 0xe3e2e1f9: return (ChannelParticipant) CreatorTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x15ebac1d, 0xa3289a6d, 0x91057fef, 0x98192d61, 0x8cc5e69a, 0xe3e2e1f9 });
+                case Tag.TypeNumber: return (ChannelParticipant) Tag.DeserializeTag(br);
+                case SelfTag.TypeNumber: return (ChannelParticipant) SelfTag.DeserializeTag(br);
+                case ModeratorTag.TypeNumber: return (ChannelParticipant) ModeratorTag.DeserializeTag(br);
+                case EditorTag.TypeNumber: return (ChannelParticipant) EditorTag.DeserializeTag(br);
+                case KickedTag.TypeNumber: return (ChannelParticipant) KickedTag.DeserializeTag(br);
+                case CreatorTag.TypeNumber: return (ChannelParticipant) CreatorTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, SelfTag.TypeNumber, ModeratorTag.TypeNumber, EditorTag.TypeNumber, KickedTag.TypeNumber, CreatorTag.TypeNumber });
             }
         }
 

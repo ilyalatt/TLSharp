@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Updates
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3e11affb;
+            internal const uint TypeNumber = 0x3e11affb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Final { get; }
             public int Pts { get; }
@@ -46,7 +47,8 @@ namespace TLSharp.Rpc.Types.Updates
 
         public sealed class TooLongTag : Record<TooLongTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x410dee07;
+            internal const uint TypeNumber = 0x410dee07;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Final { get; }
             public int Pts { get; }
@@ -116,7 +118,8 @@ namespace TLSharp.Rpc.Types.Updates
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2064674e;
+            internal const uint TypeNumber = 0x2064674e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Final { get; }
             public int Pts { get; }
@@ -187,10 +190,10 @@ namespace TLSharp.Rpc.Types.Updates
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x3e11affb: return (ChannelDifference) EmptyTag.DeserializeTag(br);
-                case 0x410dee07: return (ChannelDifference) TooLongTag.DeserializeTag(br);
-                case 0x2064674e: return (ChannelDifference) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x3e11affb, 0x410dee07, 0x2064674e });
+                case EmptyTag.TypeNumber: return (ChannelDifference) EmptyTag.DeserializeTag(br);
+                case TooLongTag.TypeNumber: return (ChannelDifference) TooLongTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (ChannelDifference) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, TooLongTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

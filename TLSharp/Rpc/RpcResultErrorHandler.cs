@@ -2,18 +2,33 @@ using System;
 using System.Text.RegularExpressions;
 using LanguageExt;
 using TLSharp.Rpc.Types;
+using static LanguageExt.Prelude;
 
 namespace TLSharp.Rpc
 {
+    class TlRpcResultUnknownError : TlInternalException
+    {
+        public int Code { get; }
+        public string Message { get; }
+
+        public TlRpcResultUnknownError(int code, Some<string> message) : base(
+            $"Unknown rpc error ({code}, '{message}').",
+            None
+        ) {
+            Code = code;
+            Message = message;
+        }
+    }
+
     static class RpcResultErrorHandler
     {
-        public static Exception ToException(Some<RpcError.Tag> someError)
+        public static TlException ToException(RpcError.Tag error)
         {
-            var error = someError.Value;
             var code = error.ErrorCode;
             var msg = error.ErrorMessage;
 
             // TODO: get some of these messages and simplify the extraction
+            // I guess we can get a last index of '_' and parse a number after that
             int ExtractInt() =>
                 Regex.Match(msg, @"\d+").Value.Apply(int.Parse);
 
@@ -24,6 +39,7 @@ namespace TLSharp.Rpc
                 new TlDataCenterMigrationException(reason, ExtractInt());
 
             if (msg.StartsWith("FLOOD_WAIT_")) return new TlFloodException(ExtractTimeSpan());
+
             if (msg.StartsWith("PHONE_MIGRATE_")) return ExtractDcMigration(DcMigrationReason.Phone);
             if (msg.StartsWith("FILE_MIGRATE_")) return ExtractDcMigration(DcMigrationReason.File);
             if (msg.StartsWith("USER_MIGRATE_")) return ExtractDcMigration(DcMigrationReason.User);

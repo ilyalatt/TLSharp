@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class TypingTag : Record<TypingTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x16bf744e;
+            internal const uint TypeNumber = 0x16bf744e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CancelTag : Record<CancelTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfd5ec8f5;
+            internal const uint TypeNumber = 0xfd5ec8f5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RecordVideoTag : Record<RecordVideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa187d66f;
+            internal const uint TypeNumber = 0xa187d66f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadVideoTag : Record<UploadVideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe9763aec;
+            internal const uint TypeNumber = 0xe9763aec;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Progress { get; }
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RecordAudioTag : Record<RecordAudioTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd52f73f7;
+            internal const uint TypeNumber = 0xd52f73f7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadAudioTag : Record<UploadAudioTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf351d7ab;
+            internal const uint TypeNumber = 0xf351d7ab;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Progress { get; }
             
@@ -155,7 +161,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadPhotoTag : Record<UploadPhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd1d34a26;
+            internal const uint TypeNumber = 0xd1d34a26;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Progress { get; }
             
@@ -179,7 +186,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadDocumentTag : Record<UploadDocumentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xaa0cd9e4;
+            internal const uint TypeNumber = 0xaa0cd9e4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Progress { get; }
             
@@ -203,7 +211,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GeoLocationTag : Record<GeoLocationTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x176f8ba1;
+            internal const uint TypeNumber = 0x176f8ba1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -227,7 +236,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChooseContactTag : Record<ChooseContactTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x628cbc6f;
+            internal const uint TypeNumber = 0x628cbc6f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -251,7 +261,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GamePlayTag : Record<GamePlayTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xdd6a8f48;
+            internal const uint TypeNumber = 0xdd6a8f48;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -275,7 +286,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RecordRoundTag : Record<RecordRoundTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x88f27fbc;
+            internal const uint TypeNumber = 0x88f27fbc;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -299,7 +311,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadRoundTag : Record<UploadRoundTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbb718624;
+            internal const uint TypeNumber = 0xbb718624;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -349,20 +362,20 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x16bf744e: return (SendMessageAction) TypingTag.DeserializeTag(br);
-                case 0xfd5ec8f5: return (SendMessageAction) CancelTag.DeserializeTag(br);
-                case 0xa187d66f: return (SendMessageAction) RecordVideoTag.DeserializeTag(br);
-                case 0xe9763aec: return (SendMessageAction) UploadVideoTag.DeserializeTag(br);
-                case 0xd52f73f7: return (SendMessageAction) RecordAudioTag.DeserializeTag(br);
-                case 0xf351d7ab: return (SendMessageAction) UploadAudioTag.DeserializeTag(br);
-                case 0xd1d34a26: return (SendMessageAction) UploadPhotoTag.DeserializeTag(br);
-                case 0xaa0cd9e4: return (SendMessageAction) UploadDocumentTag.DeserializeTag(br);
-                case 0x176f8ba1: return (SendMessageAction) GeoLocationTag.DeserializeTag(br);
-                case 0x628cbc6f: return (SendMessageAction) ChooseContactTag.DeserializeTag(br);
-                case 0xdd6a8f48: return (SendMessageAction) GamePlayTag.DeserializeTag(br);
-                case 0x88f27fbc: return (SendMessageAction) RecordRoundTag.DeserializeTag(br);
-                case 0xbb718624: return (SendMessageAction) UploadRoundTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x16bf744e, 0xfd5ec8f5, 0xa187d66f, 0xe9763aec, 0xd52f73f7, 0xf351d7ab, 0xd1d34a26, 0xaa0cd9e4, 0x176f8ba1, 0x628cbc6f, 0xdd6a8f48, 0x88f27fbc, 0xbb718624 });
+                case TypingTag.TypeNumber: return (SendMessageAction) TypingTag.DeserializeTag(br);
+                case CancelTag.TypeNumber: return (SendMessageAction) CancelTag.DeserializeTag(br);
+                case RecordVideoTag.TypeNumber: return (SendMessageAction) RecordVideoTag.DeserializeTag(br);
+                case UploadVideoTag.TypeNumber: return (SendMessageAction) UploadVideoTag.DeserializeTag(br);
+                case RecordAudioTag.TypeNumber: return (SendMessageAction) RecordAudioTag.DeserializeTag(br);
+                case UploadAudioTag.TypeNumber: return (SendMessageAction) UploadAudioTag.DeserializeTag(br);
+                case UploadPhotoTag.TypeNumber: return (SendMessageAction) UploadPhotoTag.DeserializeTag(br);
+                case UploadDocumentTag.TypeNumber: return (SendMessageAction) UploadDocumentTag.DeserializeTag(br);
+                case GeoLocationTag.TypeNumber: return (SendMessageAction) GeoLocationTag.DeserializeTag(br);
+                case ChooseContactTag.TypeNumber: return (SendMessageAction) ChooseContactTag.DeserializeTag(br);
+                case GamePlayTag.TypeNumber: return (SendMessageAction) GamePlayTag.DeserializeTag(br);
+                case RecordRoundTag.TypeNumber: return (SendMessageAction) RecordRoundTag.DeserializeTag(br);
+                case UploadRoundTag.TypeNumber: return (SendMessageAction) UploadRoundTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { TypingTag.TypeNumber, CancelTag.TypeNumber, RecordVideoTag.TypeNumber, UploadVideoTag.TypeNumber, RecordAudioTag.TypeNumber, UploadAudioTag.TypeNumber, UploadPhotoTag.TypeNumber, UploadDocumentTag.TypeNumber, GeoLocationTag.TypeNumber, ChooseContactTag.TypeNumber, GamePlayTag.TypeNumber, RecordRoundTag.TypeNumber, UploadRoundTag.TypeNumber });
             }
         }
 

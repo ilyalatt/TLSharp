@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class MissedTag : Record<MissedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x85e42301;
+            internal const uint TypeNumber = 0x85e42301;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DisconnectTag : Record<DisconnectTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe095c1a0;
+            internal const uint TypeNumber = 0xe095c1a0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class HangupTag : Record<HangupTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x57adc690;
+            internal const uint TypeNumber = 0x57adc690;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BusyTag : Record<BusyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfaf7e8c9;
+            internal const uint TypeNumber = 0xfaf7e8c9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -124,11 +128,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x85e42301: return (PhoneCallDiscardReason) MissedTag.DeserializeTag(br);
-                case 0xe095c1a0: return (PhoneCallDiscardReason) DisconnectTag.DeserializeTag(br);
-                case 0x57adc690: return (PhoneCallDiscardReason) HangupTag.DeserializeTag(br);
-                case 0xfaf7e8c9: return (PhoneCallDiscardReason) BusyTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x85e42301, 0xe095c1a0, 0x57adc690, 0xfaf7e8c9 });
+                case MissedTag.TypeNumber: return (PhoneCallDiscardReason) MissedTag.DeserializeTag(br);
+                case DisconnectTag.TypeNumber: return (PhoneCallDiscardReason) DisconnectTag.DeserializeTag(br);
+                case HangupTag.TypeNumber: return (PhoneCallDiscardReason) HangupTag.DeserializeTag(br);
+                case BusyTag.TypeNumber: return (PhoneCallDiscardReason) BusyTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { MissedTag.TypeNumber, DisconnectTag.TypeNumber, HangupTag.TypeNumber, BusyTag.TypeNumber });
             }
         }
 

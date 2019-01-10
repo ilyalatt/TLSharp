@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class IdTag : Record<IdTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x032c3e77;
+            internal const uint TypeNumber = 0x032c3e77;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -40,7 +41,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ShortNameTag : Record<ShortNameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc331e80a;
+            internal const uint TypeNumber = 0xc331e80a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.InputUser BotId { get; }
             public string ShortName { get; }
@@ -84,9 +86,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x032c3e77: return (InputGame) IdTag.DeserializeTag(br);
-                case 0xc331e80a: return (InputGame) ShortNameTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x032c3e77, 0xc331e80a });
+                case IdTag.TypeNumber: return (InputGame) IdTag.DeserializeTag(br);
+                case ShortNameTag.TypeNumber: return (InputGame) ShortNameTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { IdTag.TypeNumber, ShortNameTag.TypeNumber });
             }
         }
 

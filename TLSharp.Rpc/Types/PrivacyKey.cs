@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class StatusTimestampTag : Record<StatusTimestampTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbc2eab30;
+            internal const uint TypeNumber = 0xbc2eab30;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatInviteTag : Record<ChatInviteTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x500e6dfa;
+            internal const uint TypeNumber = 0x500e6dfa;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhoneCallTag : Record<PhoneCallTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3d662b7b;
+            internal const uint TypeNumber = 0x3d662b7b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xbc2eab30: return (PrivacyKey) StatusTimestampTag.DeserializeTag(br);
-                case 0x500e6dfa: return (PrivacyKey) ChatInviteTag.DeserializeTag(br);
-                case 0x3d662b7b: return (PrivacyKey) PhoneCallTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xbc2eab30, 0x500e6dfa, 0x3d662b7b });
+                case StatusTimestampTag.TypeNumber: return (PrivacyKey) StatusTimestampTag.DeserializeTag(br);
+                case ChatInviteTag.TypeNumber: return (PrivacyKey) ChatInviteTag.DeserializeTag(br);
+                case PhoneCallTag.TypeNumber: return (PrivacyKey) PhoneCallTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { StatusTimestampTag.TypeNumber, ChatInviteTag.TypeNumber, PhoneCallTag.TypeNumber });
             }
         }
 

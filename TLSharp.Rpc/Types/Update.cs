@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class NewMessageTag : Record<NewMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1f2b0afd;
+            internal const uint TypeNumber = 0x1f2b0afd;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Message Message { get; }
             public int Pts { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MessageIdTag : Record<MessageIdTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4e90bfd6;
+            internal const uint TypeNumber = 0x4e90bfd6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Id { get; }
             public long RandomId { get; }
@@ -74,7 +76,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DeleteMessagesTag : Record<DeleteMessagesTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa20db0e5;
+            internal const uint TypeNumber = 0xa20db0e5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<int> Messages { get; }
             public int Pts { get; }
@@ -108,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserTypingTag : Record<UserTypingTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5c486927;
+            internal const uint TypeNumber = 0x5c486927;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public T.SendMessageAction Action { get; }
@@ -137,7 +141,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatUserTypingTag : Record<ChatUserTypingTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9a65ea1f;
+            internal const uint TypeNumber = 0x9a65ea1f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public int UserId { get; }
@@ -171,7 +176,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatParticipantsTag : Record<ChatParticipantsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x07761198;
+            internal const uint TypeNumber = 0x07761198;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.ChatParticipants Participants { get; }
             
@@ -195,7 +201,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserStatusTag : Record<UserStatusTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1bfbd823;
+            internal const uint TypeNumber = 0x1bfbd823;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public T.UserStatus Status { get; }
@@ -224,7 +231,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserNameTag : Record<UserNameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa7332b73;
+            internal const uint TypeNumber = 0xa7332b73;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public string FirstName { get; }
@@ -263,7 +271,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserPhotoTag : Record<UserPhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x95313b0c;
+            internal const uint TypeNumber = 0x95313b0c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int Date { get; }
@@ -302,7 +311,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ContactRegisteredTag : Record<ContactRegisteredTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2575bbb9;
+            internal const uint TypeNumber = 0x2575bbb9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int Date { get; }
@@ -331,7 +341,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ContactLinkTag : Record<ContactLinkTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9d2e67c5;
+            internal const uint TypeNumber = 0x9d2e67c5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public T.ContactLink MyLink { get; }
@@ -365,7 +376,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NewEncryptedMessageTag : Record<NewEncryptedMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x12bcbd9a;
+            internal const uint TypeNumber = 0x12bcbd9a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.EncryptedMessage Message { get; }
             public int Qts { get; }
@@ -394,7 +406,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EncryptedChatTypingTag : Record<EncryptedChatTypingTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1710f156;
+            internal const uint TypeNumber = 0x1710f156;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             
@@ -418,7 +431,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EncryptionTag : Record<EncryptionTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb4a2e88d;
+            internal const uint TypeNumber = 0xb4a2e88d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.EncryptedChat Chat { get; }
             public int Date { get; }
@@ -447,7 +461,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EncryptedMessagesReadTag : Record<EncryptedMessagesReadTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x38fe25b7;
+            internal const uint TypeNumber = 0x38fe25b7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public int MaxDate { get; }
@@ -481,7 +496,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatParticipantAddTag : Record<ChatParticipantAddTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xea4b0e5c;
+            internal const uint TypeNumber = 0xea4b0e5c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public int UserId { get; }
@@ -525,7 +541,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatParticipantDeleteTag : Record<ChatParticipantDeleteTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6e5f8c22;
+            internal const uint TypeNumber = 0x6e5f8c22;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public int UserId { get; }
@@ -559,7 +576,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DcOptionsTag : Record<DcOptionsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8e5e9873;
+            internal const uint TypeNumber = 0x8e5e9873;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.DcOption> DcOptions { get; }
             
@@ -583,7 +601,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserBlockedTag : Record<UserBlockedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x80ece81a;
+            internal const uint TypeNumber = 0x80ece81a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public bool Blocked { get; }
@@ -612,7 +631,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NotifySettingsTag : Record<NotifySettingsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbec268ef;
+            internal const uint TypeNumber = 0xbec268ef;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.NotifyPeer Peer { get; }
             public T.PeerNotifySettings NotifySettings { get; }
@@ -641,7 +661,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ServiceNotificationTag : Record<ServiceNotificationTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xebe46819;
+            internal const uint TypeNumber = 0xebe46819;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Popup { get; }
             public Option<int> InboxDate { get; }
@@ -691,7 +712,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PrivacyTag : Record<PrivacyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xee3b272a;
+            internal const uint TypeNumber = 0xee3b272a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.PrivacyKey Key { get; }
             public Arr<T.PrivacyRule> Rules { get; }
@@ -720,7 +742,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserPhoneTag : Record<UserPhoneTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x12b9417b;
+            internal const uint TypeNumber = 0x12b9417b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public string Phone { get; }
@@ -749,7 +772,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ReadHistoryInboxTag : Record<ReadHistoryInboxTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9961fd5c;
+            internal const uint TypeNumber = 0x9961fd5c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Peer Peer { get; }
             public int MaxId { get; }
@@ -788,7 +812,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ReadHistoryOutboxTag : Record<ReadHistoryOutboxTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2f2f21bf;
+            internal const uint TypeNumber = 0x2f2f21bf;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Peer Peer { get; }
             public int MaxId { get; }
@@ -827,7 +852,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class WebPageTag : Record<WebPageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7f891213;
+            internal const uint TypeNumber = 0x7f891213;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.WebPage Webpage { get; }
             public int Pts { get; }
@@ -861,7 +887,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ReadMessagesContentsTag : Record<ReadMessagesContentsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x68c13933;
+            internal const uint TypeNumber = 0x68c13933;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<int> Messages { get; }
             public int Pts { get; }
@@ -895,7 +922,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTooLongTag : Record<ChannelTooLongTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xeb0467fb;
+            internal const uint TypeNumber = 0xeb0467fb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public Option<int> Pts { get; }
@@ -926,7 +954,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTag : Record<ChannelTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb6d45656;
+            internal const uint TypeNumber = 0xb6d45656;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             
@@ -950,7 +979,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NewChannelMessageTag : Record<NewChannelMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x62ba04d9;
+            internal const uint TypeNumber = 0x62ba04d9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Message Message { get; }
             public int Pts { get; }
@@ -984,7 +1014,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ReadChannelInboxTag : Record<ReadChannelInboxTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4214f37f;
+            internal const uint TypeNumber = 0x4214f37f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public int MaxId { get; }
@@ -1013,7 +1044,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DeleteChannelMessagesTag : Record<DeleteChannelMessagesTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc37521c9;
+            internal const uint TypeNumber = 0xc37521c9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public Arr<int> Messages { get; }
@@ -1052,7 +1084,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelMessageViewsTag : Record<ChannelMessageViewsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x98a12b4b;
+            internal const uint TypeNumber = 0x98a12b4b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public int Id { get; }
@@ -1086,7 +1119,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatAdminsTag : Record<ChatAdminsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6e947941;
+            internal const uint TypeNumber = 0x6e947941;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public bool Enabled { get; }
@@ -1120,7 +1154,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatParticipantAdminTag : Record<ChatParticipantAdminTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb6901959;
+            internal const uint TypeNumber = 0xb6901959;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public int UserId { get; }
@@ -1159,7 +1194,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NewStickerSetTag : Record<NewStickerSetTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x688a30aa;
+            internal const uint TypeNumber = 0x688a30aa;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Messages.StickerSet Stickerset { get; }
             
@@ -1183,7 +1219,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class StickerSetsOrderTag : Record<StickerSetsOrderTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0bb2d201;
+            internal const uint TypeNumber = 0x0bb2d201;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Masks { get; }
             public Arr<long> Order { get; }
@@ -1213,7 +1250,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class StickerSetsTag : Record<StickerSetsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x43ae3dec;
+            internal const uint TypeNumber = 0x43ae3dec;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -1237,7 +1275,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SavedGifsTag : Record<SavedGifsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9375341e;
+            internal const uint TypeNumber = 0x9375341e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -1261,7 +1300,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotInlineQueryTag : Record<BotInlineQueryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x54826690;
+            internal const uint TypeNumber = 0x54826690;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long QueryId { get; }
             public int UserId { get; }
@@ -1307,7 +1347,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotInlineSendTag : Record<BotInlineSendTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0e48f964;
+            internal const uint TypeNumber = 0x0e48f964;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public string Query { get; }
@@ -1353,7 +1394,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EditChannelMessageTag : Record<EditChannelMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1b3f4df7;
+            internal const uint TypeNumber = 0x1b3f4df7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Message Message { get; }
             public int Pts { get; }
@@ -1387,7 +1429,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelPinnedMessageTag : Record<ChannelPinnedMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x98592475;
+            internal const uint TypeNumber = 0x98592475;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public int Id { get; }
@@ -1416,7 +1459,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotCallbackQueryTag : Record<BotCallbackQueryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe73547e1;
+            internal const uint TypeNumber = 0xe73547e1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long QueryId { get; }
             public int UserId { get; }
@@ -1472,7 +1516,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EditMessageTag : Record<EditMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe40370a3;
+            internal const uint TypeNumber = 0xe40370a3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Message Message { get; }
             public int Pts { get; }
@@ -1506,7 +1551,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InlineBotCallbackQueryTag : Record<InlineBotCallbackQueryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf9d27a5a;
+            internal const uint TypeNumber = 0xf9d27a5a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long QueryId { get; }
             public int UserId { get; }
@@ -1557,7 +1603,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ReadChannelOutboxTag : Record<ReadChannelOutboxTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x25d6c9c7;
+            internal const uint TypeNumber = 0x25d6c9c7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public int MaxId { get; }
@@ -1586,7 +1633,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DraftMessageTag : Record<DraftMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xee2bb969;
+            internal const uint TypeNumber = 0xee2bb969;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Peer Peer { get; }
             public T.DraftMessage Draft { get; }
@@ -1615,7 +1663,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ReadFeaturedStickersTag : Record<ReadFeaturedStickersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x571d2742;
+            internal const uint TypeNumber = 0x571d2742;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -1639,7 +1688,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RecentStickersTag : Record<RecentStickersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9a422c20;
+            internal const uint TypeNumber = 0x9a422c20;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -1663,7 +1713,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ConfigTag : Record<ConfigTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa229dd06;
+            internal const uint TypeNumber = 0xa229dd06;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -1687,7 +1738,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PtsChangedTag : Record<PtsChangedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3354678f;
+            internal const uint TypeNumber = 0x3354678f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -1711,7 +1763,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelWebPageTag : Record<ChannelWebPageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x40771900;
+            internal const uint TypeNumber = 0x40771900;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public T.WebPage Webpage { get; }
@@ -1750,7 +1803,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DialogPinnedTag : Record<DialogPinnedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd711a2cc;
+            internal const uint TypeNumber = 0xd711a2cc;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Pinned { get; }
             public T.Peer Peer { get; }
@@ -1780,7 +1834,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PinnedDialogsTag : Record<PinnedDialogsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd8caf68d;
+            internal const uint TypeNumber = 0xd8caf68d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Option<Arr<T.Peer>> Order { get; }
             
@@ -1806,7 +1861,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotWebhookJsonTag : Record<BotWebhookJsonTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8317c0c3;
+            internal const uint TypeNumber = 0x8317c0c3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.DataJson Data { get; }
             
@@ -1830,7 +1886,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotWebhookJsonQueryTag : Record<BotWebhookJsonQueryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9b9240a6;
+            internal const uint TypeNumber = 0x9b9240a6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long QueryId { get; }
             public T.DataJson Data { get; }
@@ -1864,7 +1921,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotShippingQueryTag : Record<BotShippingQueryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe0cdc940;
+            internal const uint TypeNumber = 0xe0cdc940;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long QueryId { get; }
             public int UserId { get; }
@@ -1903,7 +1961,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotPrecheckoutQueryTag : Record<BotPrecheckoutQueryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5d2f3aa9;
+            internal const uint TypeNumber = 0x5d2f3aa9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long QueryId { get; }
             public int UserId { get; }
@@ -1959,7 +2018,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhoneCallTag : Record<PhoneCallTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xab0f6b1e;
+            internal const uint TypeNumber = 0xab0f6b1e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.PhoneCall PhoneCall { get; }
             
@@ -2056,67 +2116,67 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x1f2b0afd: return (Update) NewMessageTag.DeserializeTag(br);
-                case 0x4e90bfd6: return (Update) MessageIdTag.DeserializeTag(br);
-                case 0xa20db0e5: return (Update) DeleteMessagesTag.DeserializeTag(br);
-                case 0x5c486927: return (Update) UserTypingTag.DeserializeTag(br);
-                case 0x9a65ea1f: return (Update) ChatUserTypingTag.DeserializeTag(br);
-                case 0x07761198: return (Update) ChatParticipantsTag.DeserializeTag(br);
-                case 0x1bfbd823: return (Update) UserStatusTag.DeserializeTag(br);
-                case 0xa7332b73: return (Update) UserNameTag.DeserializeTag(br);
-                case 0x95313b0c: return (Update) UserPhotoTag.DeserializeTag(br);
-                case 0x2575bbb9: return (Update) ContactRegisteredTag.DeserializeTag(br);
-                case 0x9d2e67c5: return (Update) ContactLinkTag.DeserializeTag(br);
-                case 0x12bcbd9a: return (Update) NewEncryptedMessageTag.DeserializeTag(br);
-                case 0x1710f156: return (Update) EncryptedChatTypingTag.DeserializeTag(br);
-                case 0xb4a2e88d: return (Update) EncryptionTag.DeserializeTag(br);
-                case 0x38fe25b7: return (Update) EncryptedMessagesReadTag.DeserializeTag(br);
-                case 0xea4b0e5c: return (Update) ChatParticipantAddTag.DeserializeTag(br);
-                case 0x6e5f8c22: return (Update) ChatParticipantDeleteTag.DeserializeTag(br);
-                case 0x8e5e9873: return (Update) DcOptionsTag.DeserializeTag(br);
-                case 0x80ece81a: return (Update) UserBlockedTag.DeserializeTag(br);
-                case 0xbec268ef: return (Update) NotifySettingsTag.DeserializeTag(br);
-                case 0xebe46819: return (Update) ServiceNotificationTag.DeserializeTag(br);
-                case 0xee3b272a: return (Update) PrivacyTag.DeserializeTag(br);
-                case 0x12b9417b: return (Update) UserPhoneTag.DeserializeTag(br);
-                case 0x9961fd5c: return (Update) ReadHistoryInboxTag.DeserializeTag(br);
-                case 0x2f2f21bf: return (Update) ReadHistoryOutboxTag.DeserializeTag(br);
-                case 0x7f891213: return (Update) WebPageTag.DeserializeTag(br);
-                case 0x68c13933: return (Update) ReadMessagesContentsTag.DeserializeTag(br);
-                case 0xeb0467fb: return (Update) ChannelTooLongTag.DeserializeTag(br);
-                case 0xb6d45656: return (Update) ChannelTag.DeserializeTag(br);
-                case 0x62ba04d9: return (Update) NewChannelMessageTag.DeserializeTag(br);
-                case 0x4214f37f: return (Update) ReadChannelInboxTag.DeserializeTag(br);
-                case 0xc37521c9: return (Update) DeleteChannelMessagesTag.DeserializeTag(br);
-                case 0x98a12b4b: return (Update) ChannelMessageViewsTag.DeserializeTag(br);
-                case 0x6e947941: return (Update) ChatAdminsTag.DeserializeTag(br);
-                case 0xb6901959: return (Update) ChatParticipantAdminTag.DeserializeTag(br);
-                case 0x688a30aa: return (Update) NewStickerSetTag.DeserializeTag(br);
-                case 0x0bb2d201: return (Update) StickerSetsOrderTag.DeserializeTag(br);
-                case 0x43ae3dec: return (Update) StickerSetsTag.DeserializeTag(br);
-                case 0x9375341e: return (Update) SavedGifsTag.DeserializeTag(br);
-                case 0x54826690: return (Update) BotInlineQueryTag.DeserializeTag(br);
-                case 0x0e48f964: return (Update) BotInlineSendTag.DeserializeTag(br);
-                case 0x1b3f4df7: return (Update) EditChannelMessageTag.DeserializeTag(br);
-                case 0x98592475: return (Update) ChannelPinnedMessageTag.DeserializeTag(br);
-                case 0xe73547e1: return (Update) BotCallbackQueryTag.DeserializeTag(br);
-                case 0xe40370a3: return (Update) EditMessageTag.DeserializeTag(br);
-                case 0xf9d27a5a: return (Update) InlineBotCallbackQueryTag.DeserializeTag(br);
-                case 0x25d6c9c7: return (Update) ReadChannelOutboxTag.DeserializeTag(br);
-                case 0xee2bb969: return (Update) DraftMessageTag.DeserializeTag(br);
-                case 0x571d2742: return (Update) ReadFeaturedStickersTag.DeserializeTag(br);
-                case 0x9a422c20: return (Update) RecentStickersTag.DeserializeTag(br);
-                case 0xa229dd06: return (Update) ConfigTag.DeserializeTag(br);
-                case 0x3354678f: return (Update) PtsChangedTag.DeserializeTag(br);
-                case 0x40771900: return (Update) ChannelWebPageTag.DeserializeTag(br);
-                case 0xd711a2cc: return (Update) DialogPinnedTag.DeserializeTag(br);
-                case 0xd8caf68d: return (Update) PinnedDialogsTag.DeserializeTag(br);
-                case 0x8317c0c3: return (Update) BotWebhookJsonTag.DeserializeTag(br);
-                case 0x9b9240a6: return (Update) BotWebhookJsonQueryTag.DeserializeTag(br);
-                case 0xe0cdc940: return (Update) BotShippingQueryTag.DeserializeTag(br);
-                case 0x5d2f3aa9: return (Update) BotPrecheckoutQueryTag.DeserializeTag(br);
-                case 0xab0f6b1e: return (Update) PhoneCallTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x1f2b0afd, 0x4e90bfd6, 0xa20db0e5, 0x5c486927, 0x9a65ea1f, 0x07761198, 0x1bfbd823, 0xa7332b73, 0x95313b0c, 0x2575bbb9, 0x9d2e67c5, 0x12bcbd9a, 0x1710f156, 0xb4a2e88d, 0x38fe25b7, 0xea4b0e5c, 0x6e5f8c22, 0x8e5e9873, 0x80ece81a, 0xbec268ef, 0xebe46819, 0xee3b272a, 0x12b9417b, 0x9961fd5c, 0x2f2f21bf, 0x7f891213, 0x68c13933, 0xeb0467fb, 0xb6d45656, 0x62ba04d9, 0x4214f37f, 0xc37521c9, 0x98a12b4b, 0x6e947941, 0xb6901959, 0x688a30aa, 0x0bb2d201, 0x43ae3dec, 0x9375341e, 0x54826690, 0x0e48f964, 0x1b3f4df7, 0x98592475, 0xe73547e1, 0xe40370a3, 0xf9d27a5a, 0x25d6c9c7, 0xee2bb969, 0x571d2742, 0x9a422c20, 0xa229dd06, 0x3354678f, 0x40771900, 0xd711a2cc, 0xd8caf68d, 0x8317c0c3, 0x9b9240a6, 0xe0cdc940, 0x5d2f3aa9, 0xab0f6b1e });
+                case NewMessageTag.TypeNumber: return (Update) NewMessageTag.DeserializeTag(br);
+                case MessageIdTag.TypeNumber: return (Update) MessageIdTag.DeserializeTag(br);
+                case DeleteMessagesTag.TypeNumber: return (Update) DeleteMessagesTag.DeserializeTag(br);
+                case UserTypingTag.TypeNumber: return (Update) UserTypingTag.DeserializeTag(br);
+                case ChatUserTypingTag.TypeNumber: return (Update) ChatUserTypingTag.DeserializeTag(br);
+                case ChatParticipantsTag.TypeNumber: return (Update) ChatParticipantsTag.DeserializeTag(br);
+                case UserStatusTag.TypeNumber: return (Update) UserStatusTag.DeserializeTag(br);
+                case UserNameTag.TypeNumber: return (Update) UserNameTag.DeserializeTag(br);
+                case UserPhotoTag.TypeNumber: return (Update) UserPhotoTag.DeserializeTag(br);
+                case ContactRegisteredTag.TypeNumber: return (Update) ContactRegisteredTag.DeserializeTag(br);
+                case ContactLinkTag.TypeNumber: return (Update) ContactLinkTag.DeserializeTag(br);
+                case NewEncryptedMessageTag.TypeNumber: return (Update) NewEncryptedMessageTag.DeserializeTag(br);
+                case EncryptedChatTypingTag.TypeNumber: return (Update) EncryptedChatTypingTag.DeserializeTag(br);
+                case EncryptionTag.TypeNumber: return (Update) EncryptionTag.DeserializeTag(br);
+                case EncryptedMessagesReadTag.TypeNumber: return (Update) EncryptedMessagesReadTag.DeserializeTag(br);
+                case ChatParticipantAddTag.TypeNumber: return (Update) ChatParticipantAddTag.DeserializeTag(br);
+                case ChatParticipantDeleteTag.TypeNumber: return (Update) ChatParticipantDeleteTag.DeserializeTag(br);
+                case DcOptionsTag.TypeNumber: return (Update) DcOptionsTag.DeserializeTag(br);
+                case UserBlockedTag.TypeNumber: return (Update) UserBlockedTag.DeserializeTag(br);
+                case NotifySettingsTag.TypeNumber: return (Update) NotifySettingsTag.DeserializeTag(br);
+                case ServiceNotificationTag.TypeNumber: return (Update) ServiceNotificationTag.DeserializeTag(br);
+                case PrivacyTag.TypeNumber: return (Update) PrivacyTag.DeserializeTag(br);
+                case UserPhoneTag.TypeNumber: return (Update) UserPhoneTag.DeserializeTag(br);
+                case ReadHistoryInboxTag.TypeNumber: return (Update) ReadHistoryInboxTag.DeserializeTag(br);
+                case ReadHistoryOutboxTag.TypeNumber: return (Update) ReadHistoryOutboxTag.DeserializeTag(br);
+                case WebPageTag.TypeNumber: return (Update) WebPageTag.DeserializeTag(br);
+                case ReadMessagesContentsTag.TypeNumber: return (Update) ReadMessagesContentsTag.DeserializeTag(br);
+                case ChannelTooLongTag.TypeNumber: return (Update) ChannelTooLongTag.DeserializeTag(br);
+                case ChannelTag.TypeNumber: return (Update) ChannelTag.DeserializeTag(br);
+                case NewChannelMessageTag.TypeNumber: return (Update) NewChannelMessageTag.DeserializeTag(br);
+                case ReadChannelInboxTag.TypeNumber: return (Update) ReadChannelInboxTag.DeserializeTag(br);
+                case DeleteChannelMessagesTag.TypeNumber: return (Update) DeleteChannelMessagesTag.DeserializeTag(br);
+                case ChannelMessageViewsTag.TypeNumber: return (Update) ChannelMessageViewsTag.DeserializeTag(br);
+                case ChatAdminsTag.TypeNumber: return (Update) ChatAdminsTag.DeserializeTag(br);
+                case ChatParticipantAdminTag.TypeNumber: return (Update) ChatParticipantAdminTag.DeserializeTag(br);
+                case NewStickerSetTag.TypeNumber: return (Update) NewStickerSetTag.DeserializeTag(br);
+                case StickerSetsOrderTag.TypeNumber: return (Update) StickerSetsOrderTag.DeserializeTag(br);
+                case StickerSetsTag.TypeNumber: return (Update) StickerSetsTag.DeserializeTag(br);
+                case SavedGifsTag.TypeNumber: return (Update) SavedGifsTag.DeserializeTag(br);
+                case BotInlineQueryTag.TypeNumber: return (Update) BotInlineQueryTag.DeserializeTag(br);
+                case BotInlineSendTag.TypeNumber: return (Update) BotInlineSendTag.DeserializeTag(br);
+                case EditChannelMessageTag.TypeNumber: return (Update) EditChannelMessageTag.DeserializeTag(br);
+                case ChannelPinnedMessageTag.TypeNumber: return (Update) ChannelPinnedMessageTag.DeserializeTag(br);
+                case BotCallbackQueryTag.TypeNumber: return (Update) BotCallbackQueryTag.DeserializeTag(br);
+                case EditMessageTag.TypeNumber: return (Update) EditMessageTag.DeserializeTag(br);
+                case InlineBotCallbackQueryTag.TypeNumber: return (Update) InlineBotCallbackQueryTag.DeserializeTag(br);
+                case ReadChannelOutboxTag.TypeNumber: return (Update) ReadChannelOutboxTag.DeserializeTag(br);
+                case DraftMessageTag.TypeNumber: return (Update) DraftMessageTag.DeserializeTag(br);
+                case ReadFeaturedStickersTag.TypeNumber: return (Update) ReadFeaturedStickersTag.DeserializeTag(br);
+                case RecentStickersTag.TypeNumber: return (Update) RecentStickersTag.DeserializeTag(br);
+                case ConfigTag.TypeNumber: return (Update) ConfigTag.DeserializeTag(br);
+                case PtsChangedTag.TypeNumber: return (Update) PtsChangedTag.DeserializeTag(br);
+                case ChannelWebPageTag.TypeNumber: return (Update) ChannelWebPageTag.DeserializeTag(br);
+                case DialogPinnedTag.TypeNumber: return (Update) DialogPinnedTag.DeserializeTag(br);
+                case PinnedDialogsTag.TypeNumber: return (Update) PinnedDialogsTag.DeserializeTag(br);
+                case BotWebhookJsonTag.TypeNumber: return (Update) BotWebhookJsonTag.DeserializeTag(br);
+                case BotWebhookJsonQueryTag.TypeNumber: return (Update) BotWebhookJsonQueryTag.DeserializeTag(br);
+                case BotShippingQueryTag.TypeNumber: return (Update) BotShippingQueryTag.DeserializeTag(br);
+                case BotPrecheckoutQueryTag.TypeNumber: return (Update) BotPrecheckoutQueryTag.DeserializeTag(br);
+                case PhoneCallTag.TypeNumber: return (Update) PhoneCallTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { NewMessageTag.TypeNumber, MessageIdTag.TypeNumber, DeleteMessagesTag.TypeNumber, UserTypingTag.TypeNumber, ChatUserTypingTag.TypeNumber, ChatParticipantsTag.TypeNumber, UserStatusTag.TypeNumber, UserNameTag.TypeNumber, UserPhotoTag.TypeNumber, ContactRegisteredTag.TypeNumber, ContactLinkTag.TypeNumber, NewEncryptedMessageTag.TypeNumber, EncryptedChatTypingTag.TypeNumber, EncryptionTag.TypeNumber, EncryptedMessagesReadTag.TypeNumber, ChatParticipantAddTag.TypeNumber, ChatParticipantDeleteTag.TypeNumber, DcOptionsTag.TypeNumber, UserBlockedTag.TypeNumber, NotifySettingsTag.TypeNumber, ServiceNotificationTag.TypeNumber, PrivacyTag.TypeNumber, UserPhoneTag.TypeNumber, ReadHistoryInboxTag.TypeNumber, ReadHistoryOutboxTag.TypeNumber, WebPageTag.TypeNumber, ReadMessagesContentsTag.TypeNumber, ChannelTooLongTag.TypeNumber, ChannelTag.TypeNumber, NewChannelMessageTag.TypeNumber, ReadChannelInboxTag.TypeNumber, DeleteChannelMessagesTag.TypeNumber, ChannelMessageViewsTag.TypeNumber, ChatAdminsTag.TypeNumber, ChatParticipantAdminTag.TypeNumber, NewStickerSetTag.TypeNumber, StickerSetsOrderTag.TypeNumber, StickerSetsTag.TypeNumber, SavedGifsTag.TypeNumber, BotInlineQueryTag.TypeNumber, BotInlineSendTag.TypeNumber, EditChannelMessageTag.TypeNumber, ChannelPinnedMessageTag.TypeNumber, BotCallbackQueryTag.TypeNumber, EditMessageTag.TypeNumber, InlineBotCallbackQueryTag.TypeNumber, ReadChannelOutboxTag.TypeNumber, DraftMessageTag.TypeNumber, ReadFeaturedStickersTag.TypeNumber, RecentStickersTag.TypeNumber, ConfigTag.TypeNumber, PtsChangedTag.TypeNumber, ChannelWebPageTag.TypeNumber, DialogPinnedTag.TypeNumber, PinnedDialogsTag.TypeNumber, BotWebhookJsonTag.TypeNumber, BotWebhookJsonQueryTag.TypeNumber, BotShippingQueryTag.TypeNumber, BotPrecheckoutQueryTag.TypeNumber, PhoneCallTag.TypeNumber });
             }
         }
 

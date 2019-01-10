@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Messages
     {
         public sealed class NotModifiedTag : Record<NotModifiedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0b17f890;
+            internal const uint TypeNumber = 0x0b17f890;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types.Messages
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5ce20970;
+            internal const uint TypeNumber = 0x5ce20970;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Hash { get; }
             public Arr<T.Document> Stickers { get; }
@@ -79,9 +81,9 @@ namespace TLSharp.Rpc.Types.Messages
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x0b17f890: return (RecentStickers) NotModifiedTag.DeserializeTag(br);
-                case 0x5ce20970: return (RecentStickers) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x0b17f890, 0x5ce20970 });
+                case NotModifiedTag.TypeNumber: return (RecentStickers) NotModifiedTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (RecentStickers) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { NotModifiedTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

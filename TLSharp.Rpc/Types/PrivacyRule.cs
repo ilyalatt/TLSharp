@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class ValueAllowContactsTag : Record<ValueAllowContactsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfffe1bac;
+            internal const uint TypeNumber = 0xfffe1bac;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueAllowAllTag : Record<ValueAllowAllTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x65427b82;
+            internal const uint TypeNumber = 0x65427b82;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueAllowUsersTag : Record<ValueAllowUsersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4d5bbe0c;
+            internal const uint TypeNumber = 0x4d5bbe0c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<int> Users { get; }
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueDisallowContactsTag : Record<ValueDisallowContactsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf888fa1a;
+            internal const uint TypeNumber = 0xf888fa1a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueDisallowAllTag : Record<ValueDisallowAllTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8b73e763;
+            internal const uint TypeNumber = 0x8b73e763;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueDisallowUsersTag : Record<ValueDisallowUsersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0c7f49b7;
+            internal const uint TypeNumber = 0x0c7f49b7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<int> Users { get; }
             
@@ -174,13 +180,13 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xfffe1bac: return (PrivacyRule) ValueAllowContactsTag.DeserializeTag(br);
-                case 0x65427b82: return (PrivacyRule) ValueAllowAllTag.DeserializeTag(br);
-                case 0x4d5bbe0c: return (PrivacyRule) ValueAllowUsersTag.DeserializeTag(br);
-                case 0xf888fa1a: return (PrivacyRule) ValueDisallowContactsTag.DeserializeTag(br);
-                case 0x8b73e763: return (PrivacyRule) ValueDisallowAllTag.DeserializeTag(br);
-                case 0x0c7f49b7: return (PrivacyRule) ValueDisallowUsersTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xfffe1bac, 0x65427b82, 0x4d5bbe0c, 0xf888fa1a, 0x8b73e763, 0x0c7f49b7 });
+                case ValueAllowContactsTag.TypeNumber: return (PrivacyRule) ValueAllowContactsTag.DeserializeTag(br);
+                case ValueAllowAllTag.TypeNumber: return (PrivacyRule) ValueAllowAllTag.DeserializeTag(br);
+                case ValueAllowUsersTag.TypeNumber: return (PrivacyRule) ValueAllowUsersTag.DeserializeTag(br);
+                case ValueDisallowContactsTag.TypeNumber: return (PrivacyRule) ValueDisallowContactsTag.DeserializeTag(br);
+                case ValueDisallowAllTag.TypeNumber: return (PrivacyRule) ValueDisallowAllTag.DeserializeTag(br);
+                case ValueDisallowUsersTag.TypeNumber: return (PrivacyRule) ValueDisallowUsersTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { ValueAllowContactsTag.TypeNumber, ValueAllowAllTag.TypeNumber, ValueAllowUsersTag.TypeNumber, ValueDisallowContactsTag.TypeNumber, ValueDisallowAllTag.TypeNumber, ValueDisallowUsersTag.TypeNumber });
             }
         }
 

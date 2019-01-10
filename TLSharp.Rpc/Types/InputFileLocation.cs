@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x14637196;
+            internal const uint TypeNumber = 0x14637196;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long VolumeId { get; }
             public int LocalId { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EncryptedTag : Record<EncryptedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf5235d55;
+            internal const uint TypeNumber = 0xf5235d55;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -74,7 +76,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DocumentTag : Record<DocumentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x430f0724;
+            internal const uint TypeNumber = 0x430f0724;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -124,10 +127,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x14637196: return (InputFileLocation) Tag.DeserializeTag(br);
-                case 0xf5235d55: return (InputFileLocation) EncryptedTag.DeserializeTag(br);
-                case 0x430f0724: return (InputFileLocation) DocumentTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x14637196, 0xf5235d55, 0x430f0724 });
+                case Tag.TypeNumber: return (InputFileLocation) Tag.DeserializeTag(br);
+                case EncryptedTag.TypeNumber: return (InputFileLocation) EncryptedTag.DeserializeTag(br);
+                case DocumentTag.TypeNumber: return (InputFileLocation) DocumentTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, EncryptedTag.TypeNumber, DocumentTag.TypeNumber });
             }
         }
 

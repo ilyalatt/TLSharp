@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Account
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x86916deb;
+            internal const uint TypeNumber = 0x86916deb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Option<Arr<byte>> NewSalt { get; }
             public Option<Arr<byte>> NewPasswordHash { get; }
@@ -66,8 +67,8 @@ namespace TLSharp.Rpc.Types.Account
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x86916deb: return (PasswordInputSettings) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x86916deb });
+                case Tag.TypeNumber: return (PasswordInputSettings) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

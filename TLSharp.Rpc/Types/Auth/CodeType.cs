@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Auth
     {
         public sealed class SmsTag : Record<SmsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x72a3158c;
+            internal const uint TypeNumber = 0x72a3158c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types.Auth
 
         public sealed class CallTag : Record<CallTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x741cd3e3;
+            internal const uint TypeNumber = 0x741cd3e3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types.Auth
 
         public sealed class FlashCallTag : Record<FlashCallTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x226ccefb;
+            internal const uint TypeNumber = 0x226ccefb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types.Auth
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x72a3158c: return (CodeType) SmsTag.DeserializeTag(br);
-                case 0x741cd3e3: return (CodeType) CallTag.DeserializeTag(br);
-                case 0x226ccefb: return (CodeType) FlashCallTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x72a3158c, 0x741cd3e3, 0x226ccefb });
+                case SmsTag.TypeNumber: return (CodeType) SmsTag.DeserializeTag(br);
+                case CallTag.TypeNumber: return (CodeType) CallTag.DeserializeTag(br);
+                case FlashCallTag.TypeNumber: return (CodeType) FlashCallTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { SmsTag.TypeNumber, CallTag.TypeNumber, FlashCallTag.TypeNumber });
             }
         }
 

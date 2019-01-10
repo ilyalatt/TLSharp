@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class UnavailableTag : Record<UnavailableTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7c596b46;
+            internal const uint TypeNumber = 0x7c596b46;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long VolumeId { get; }
             public int LocalId { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x53d69076;
+            internal const uint TypeNumber = 0x53d69076;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int DcId { get; }
             public long VolumeId { get; }
@@ -99,9 +101,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x7c596b46: return (FileLocation) UnavailableTag.DeserializeTag(br);
-                case 0x53d69076: return (FileLocation) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x7c596b46, 0x53d69076 });
+                case UnavailableTag.TypeNumber: return (FileLocation) UnavailableTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (FileLocation) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnavailableTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

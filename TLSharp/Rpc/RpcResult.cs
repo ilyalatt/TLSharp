@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 namespace TLSharp.Rpc
@@ -22,9 +21,7 @@ namespace TLSharp.Rpc
         public static RpcResult OfFail(long msgId, TlException exception) =>
             new RpcResult(msgId, null, exception);
 
-        public T Match<T>(Func<BinaryReader, T> success, Func<TlException, T> fail) =>
-            Body != null ? success(Body)
-            : Exception != null ? fail(Exception)
-            : throw new Exception("WTF");
+        public bool IsSuccess => Body != null;
+        public bool IsFail => Exception != null;
     }
 }

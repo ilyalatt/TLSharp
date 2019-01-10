@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf141b5e1;
+            internal const uint TypeNumber = 0xf141b5e1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             public long AccessHash { get; }
@@ -54,8 +55,8 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xf141b5e1: return (InputEncryptedChat) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xf141b5e1 });
+                case Tag.TypeNumber: return (InputEncryptedChat) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

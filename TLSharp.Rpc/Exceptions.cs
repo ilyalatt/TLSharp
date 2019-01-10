@@ -2,32 +2,43 @@ using System;
 using LanguageExt;
 using static LanguageExt.Prelude;
 
-namespace TLSharp.Rpc
+namespace TLSharp
 {
-    public abstract class TlRpcException : Exception
+    public abstract class TlException : Exception
     {
-        public TlRpcException(Some<string> message, Option<Exception> innerException) : base(
+        internal TlException(Some<string> message, Option<Exception> innerException) : base(
             message,
             innerException.IfNoneUnsafe(() => null)
         ) { }
     }
+}
 
-    public class TlTransportException : TlRpcException
+namespace TLSharp.Rpc
+{
+    public abstract class TlRpcException : TlException
     {
-        public TlTransportException(Some<string> message) : base(message, None) { }
+        internal TlRpcException(Some<string> message, Option<Exception> innerException) : base(
+            message,
+            innerException
+        ) { }
+    }
+
+    public class TlRpcDeserializeException : TlRpcException
+    {
+        internal TlRpcDeserializeException(Some<string> message) : base(message, None) { }
 
         static string TypeNumber(uint n) => "0x" + n.ToString("x8");
 
-        internal static TlTransportException UnexpectedTypeNumber(uint actual, uint[] expected) => new TlTransportException(
+        internal static TlRpcDeserializeException UnexpectedTypeNumber(uint actual, uint[] expected) => new TlRpcDeserializeException(
             $"Unexpected type number, got ${TypeNumber(actual)}, "+
             $"expected {expected.Map(TypeNumber).Apply(xs => string.Join(" or ", xs))}."
         );
 
-        internal static TlTransportException UnexpectedBoolTypeNumber(uint actual) => new TlTransportException(
+        internal static TlRpcDeserializeException UnexpectedBoolTypeNumber(uint actual) => new TlRpcDeserializeException(
             $"Unexpected 'Bool' type number ${TypeNumber(actual)}"
         );
 
-        internal static TlTransportException UnexpectedVectorTypeNumber(uint actual) => new TlTransportException(
+        internal static TlRpcDeserializeException UnexpectedVectorTypeNumber(uint actual) => new TlRpcDeserializeException(
             $"Unexpected 'Vector' type number ${TypeNumber(actual)}"
         );
     }

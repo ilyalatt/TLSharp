@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class InputSpamTag : Record<InputSpamTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x58dbcab8;
+            internal const uint TypeNumber = 0x58dbcab8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputViolenceTag : Record<InputViolenceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1e22c78d;
+            internal const uint TypeNumber = 0x1e22c78d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputPornographyTag : Record<InputPornographyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2e59d922;
+            internal const uint TypeNumber = 0x2e59d922;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputOtherTag : Record<InputOtherTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe1746d0a;
+            internal const uint TypeNumber = 0xe1746d0a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -124,11 +128,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x58dbcab8: return (ReportReason) InputSpamTag.DeserializeTag(br);
-                case 0x1e22c78d: return (ReportReason) InputViolenceTag.DeserializeTag(br);
-                case 0x2e59d922: return (ReportReason) InputPornographyTag.DeserializeTag(br);
-                case 0xe1746d0a: return (ReportReason) InputOtherTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x58dbcab8, 0x1e22c78d, 0x2e59d922, 0xe1746d0a });
+                case InputSpamTag.TypeNumber: return (ReportReason) InputSpamTag.DeserializeTag(br);
+                case InputViolenceTag.TypeNumber: return (ReportReason) InputViolenceTag.DeserializeTag(br);
+                case InputPornographyTag.TypeNumber: return (ReportReason) InputPornographyTag.DeserializeTag(br);
+                case InputOtherTag.TypeNumber: return (ReportReason) InputOtherTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { InputSpamTag.TypeNumber, InputViolenceTag.TypeNumber, InputPornographyTag.TypeNumber, InputOtherTag.TypeNumber });
             }
         }
 

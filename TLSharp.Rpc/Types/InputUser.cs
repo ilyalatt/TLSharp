@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb98886cf;
+            internal const uint TypeNumber = 0xb98886cf;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SelfTag : Record<SelfTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf7c1b13f;
+            internal const uint TypeNumber = 0xf7c1b13f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd8292816;
+            internal const uint TypeNumber = 0xd8292816;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public long AccessHash { get; }
@@ -104,10 +107,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xb98886cf: return (InputUser) EmptyTag.DeserializeTag(br);
-                case 0xf7c1b13f: return (InputUser) SelfTag.DeserializeTag(br);
-                case 0xd8292816: return (InputUser) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xb98886cf, 0xf7c1b13f, 0xd8292816 });
+                case EmptyTag.TypeNumber: return (InputUser) EmptyTag.DeserializeTag(br);
+                case SelfTag.TypeNumber: return (InputUser) SelfTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (InputUser) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, SelfTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

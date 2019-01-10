@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class UnknownTag : Record<UnknownTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5f4f9247;
+            internal const uint TypeNumber = 0x5f4f9247;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NoneTag : Record<NoneTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfeedd3ad;
+            internal const uint TypeNumber = 0xfeedd3ad;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class HasPhoneTag : Record<HasPhoneTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x268f3f59;
+            internal const uint TypeNumber = 0x268f3f59;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ContactTag : Record<ContactTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd502c2d0;
+            internal const uint TypeNumber = 0xd502c2d0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -124,11 +128,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x5f4f9247: return (ContactLink) UnknownTag.DeserializeTag(br);
-                case 0xfeedd3ad: return (ContactLink) NoneTag.DeserializeTag(br);
-                case 0x268f3f59: return (ContactLink) HasPhoneTag.DeserializeTag(br);
-                case 0xd502c2d0: return (ContactLink) ContactTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x5f4f9247, 0xfeedd3ad, 0x268f3f59, 0xd502c2d0 });
+                case UnknownTag.TypeNumber: return (ContactLink) UnknownTag.DeserializeTag(br);
+                case NoneTag.TypeNumber: return (ContactLink) NoneTag.DeserializeTag(br);
+                case HasPhoneTag.TypeNumber: return (ContactLink) HasPhoneTag.DeserializeTag(br);
+                case ContactTag.TypeNumber: return (ContactLink) ContactTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnknownTag.TypeNumber, NoneTag.TypeNumber, HasPhoneTag.TypeNumber, ContactTag.TypeNumber });
             }
         }
 

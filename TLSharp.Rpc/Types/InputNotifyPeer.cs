@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb8bc5b0c;
+            internal const uint TypeNumber = 0xb8bc5b0c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.InputPeer Peer { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UsersTag : Record<UsersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x193b4417;
+            internal const uint TypeNumber = 0x193b4417;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatsTag : Record<ChatsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4a95e84e;
+            internal const uint TypeNumber = 0x4a95e84e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AllTag : Record<AllTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa429b886;
+            internal const uint TypeNumber = 0xa429b886;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -124,11 +128,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xb8bc5b0c: return (InputNotifyPeer) Tag.DeserializeTag(br);
-                case 0x193b4417: return (InputNotifyPeer) UsersTag.DeserializeTag(br);
-                case 0x4a95e84e: return (InputNotifyPeer) ChatsTag.DeserializeTag(br);
-                case 0xa429b886: return (InputNotifyPeer) AllTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xb8bc5b0c, 0x193b4417, 0x4a95e84e, 0xa429b886 });
+                case Tag.TypeNumber: return (InputNotifyPeer) Tag.DeserializeTag(br);
+                case UsersTag.TypeNumber: return (InputNotifyPeer) UsersTag.DeserializeTag(br);
+                case ChatsTag.TypeNumber: return (InputNotifyPeer) ChatsTag.DeserializeTag(br);
+                case AllTag.TypeNumber: return (InputNotifyPeer) AllTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, UsersTag.TypeNumber, ChatsTag.TypeNumber, AllTag.TypeNumber });
             }
         }
 

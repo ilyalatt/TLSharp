@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Upload
     {
         public sealed class ReuploadNeededTag : Record<ReuploadNeededTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xeea8e46e;
+            internal const uint TypeNumber = 0xeea8e46e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<byte> RequestToken { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types.Upload
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa99fca4f;
+            internal const uint TypeNumber = 0xa99fca4f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<byte> Bytes { get; }
             
@@ -74,9 +76,9 @@ namespace TLSharp.Rpc.Types.Upload
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xeea8e46e: return (CdnFile) ReuploadNeededTag.DeserializeTag(br);
-                case 0xa99fca4f: return (CdnFile) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xeea8e46e, 0xa99fca4f });
+                case ReuploadNeededTag.TypeNumber: return (CdnFile) ReuploadNeededTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (CdnFile) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { ReuploadNeededTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

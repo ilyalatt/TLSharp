@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Messages
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8c718e87;
+            internal const uint TypeNumber = 0x8c718e87;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.Message> Messages { get; }
             public Arr<T.Chat> Chats { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types.Messages
 
         public sealed class SliceTag : Record<SliceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0b446ae3;
+            internal const uint TypeNumber = 0x0b446ae3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Count { get; }
             public Arr<T.Message> Messages { get; }
@@ -84,7 +86,8 @@ namespace TLSharp.Rpc.Types.Messages
 
         public sealed class ChannelTag : Record<ChannelTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x99262e37;
+            internal const uint TypeNumber = 0x99262e37;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Pts { get; }
             public int Count { get; }
@@ -146,10 +149,10 @@ namespace TLSharp.Rpc.Types.Messages
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x8c718e87: return (Messages) Tag.DeserializeTag(br);
-                case 0x0b446ae3: return (Messages) SliceTag.DeserializeTag(br);
-                case 0x99262e37: return (Messages) ChannelTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x8c718e87, 0x0b446ae3, 0x99262e37 });
+                case Tag.TypeNumber: return (Messages) Tag.DeserializeTag(br);
+                case SliceTag.TypeNumber: return (Messages) SliceTag.DeserializeTag(br);
+                case ChannelTag.TypeNumber: return (Messages) ChannelTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, SliceTag.TypeNumber, ChannelTag.TypeNumber });
             }
         }
 

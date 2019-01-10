@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Updates
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5d75a138;
+            internal const uint TypeNumber = 0x5d75a138;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Date { get; }
             public int Seq { get; }
@@ -40,7 +41,8 @@ namespace TLSharp.Rpc.Types.Updates
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x00f49ca0;
+            internal const uint TypeNumber = 0x00f49ca0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.Message> NewMessages { get; }
             public Arr<T.EncryptedMessage> NewEncryptedMessages { get; }
@@ -89,7 +91,8 @@ namespace TLSharp.Rpc.Types.Updates
 
         public sealed class SliceTag : Record<SliceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa8fb1981;
+            internal const uint TypeNumber = 0xa8fb1981;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.Message> NewMessages { get; }
             public Arr<T.EncryptedMessage> NewEncryptedMessages { get; }
@@ -138,7 +141,8 @@ namespace TLSharp.Rpc.Types.Updates
 
         public sealed class TooLongTag : Record<TooLongTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4afe8f6d;
+            internal const uint TypeNumber = 0x4afe8f6d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Pts { get; }
             
@@ -179,11 +183,11 @@ namespace TLSharp.Rpc.Types.Updates
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x5d75a138: return (Difference) EmptyTag.DeserializeTag(br);
-                case 0x00f49ca0: return (Difference) Tag.DeserializeTag(br);
-                case 0xa8fb1981: return (Difference) SliceTag.DeserializeTag(br);
-                case 0x4afe8f6d: return (Difference) TooLongTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x5d75a138, 0x00f49ca0, 0xa8fb1981, 0x4afe8f6d });
+                case EmptyTag.TypeNumber: return (Difference) EmptyTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (Difference) Tag.DeserializeTag(br);
+                case SliceTag.TypeNumber: return (Difference) SliceTag.DeserializeTag(br);
+                case TooLongTag.TypeNumber: return (Difference) TooLongTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, Tag.TypeNumber, SliceTag.TypeNumber, TooLongTag.TypeNumber });
             }
         }
 

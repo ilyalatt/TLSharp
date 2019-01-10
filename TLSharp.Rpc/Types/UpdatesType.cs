@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class TooLongTag : Record<TooLongTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe317af7e;
+            internal const uint TypeNumber = 0xe317af7e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UpdateShortMessageTag : Record<UpdateShortMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x914fbf11;
+            internal const uint TypeNumber = 0x914fbf11;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Out { get; }
             public bool Mentioned { get; }
@@ -122,7 +124,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UpdateShortChatMessageTag : Record<UpdateShortChatMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x16812688;
+            internal const uint TypeNumber = 0x16812688;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Out { get; }
             public bool Mentioned { get; }
@@ -214,7 +217,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UpdateShortTag : Record<UpdateShortTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x78d4dec1;
+            internal const uint TypeNumber = 0x78d4dec1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Update Update { get; }
             public int Date { get; }
@@ -243,7 +247,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CombinedTag : Record<CombinedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x725b04c3;
+            internal const uint TypeNumber = 0x725b04c3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.Update> Updates { get; }
             public Arr<T.User> Users { get; }
@@ -292,7 +297,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x74ae4240;
+            internal const uint TypeNumber = 0x74ae4240;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.Update> Updates { get; }
             public Arr<T.User> Users { get; }
@@ -336,7 +342,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UpdateShortSentMessageTag : Record<UpdateShortSentMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x11f1331c;
+            internal const uint TypeNumber = 0x11f1331c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Out { get; }
             public int Id { get; }
@@ -411,14 +418,14 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xe317af7e: return (UpdatesType) TooLongTag.DeserializeTag(br);
-                case 0x914fbf11: return (UpdatesType) UpdateShortMessageTag.DeserializeTag(br);
-                case 0x16812688: return (UpdatesType) UpdateShortChatMessageTag.DeserializeTag(br);
-                case 0x78d4dec1: return (UpdatesType) UpdateShortTag.DeserializeTag(br);
-                case 0x725b04c3: return (UpdatesType) CombinedTag.DeserializeTag(br);
-                case 0x74ae4240: return (UpdatesType) Tag.DeserializeTag(br);
-                case 0x11f1331c: return (UpdatesType) UpdateShortSentMessageTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xe317af7e, 0x914fbf11, 0x16812688, 0x78d4dec1, 0x725b04c3, 0x74ae4240, 0x11f1331c });
+                case TooLongTag.TypeNumber: return (UpdatesType) TooLongTag.DeserializeTag(br);
+                case UpdateShortMessageTag.TypeNumber: return (UpdatesType) UpdateShortMessageTag.DeserializeTag(br);
+                case UpdateShortChatMessageTag.TypeNumber: return (UpdatesType) UpdateShortChatMessageTag.DeserializeTag(br);
+                case UpdateShortTag.TypeNumber: return (UpdatesType) UpdateShortTag.DeserializeTag(br);
+                case CombinedTag.TypeNumber: return (UpdatesType) CombinedTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (UpdatesType) Tag.DeserializeTag(br);
+                case UpdateShortSentMessageTag.TypeNumber: return (UpdatesType) UpdateShortSentMessageTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { TooLongTag.TypeNumber, UpdateShortMessageTag.TypeNumber, UpdateShortChatMessageTag.TypeNumber, UpdateShortTag.TypeNumber, CombinedTag.TypeNumber, Tag.TypeNumber, UpdateShortSentMessageTag.TypeNumber });
             }
         }
 

@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe4c123d6;
+            internal const uint TypeNumber = 0xe4c123d6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf3b7acc9;
+            internal const uint TypeNumber = 0xf3b7acc9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public double Lat { get; }
             public double Long { get; }
@@ -79,9 +81,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xe4c123d6: return (InputGeoPoint) EmptyTag.DeserializeTag(br);
-                case 0xf3b7acc9: return (InputGeoPoint) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xe4c123d6, 0xf3b7acc9 });
+                case EmptyTag.TypeNumber: return (InputGeoPoint) EmptyTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (InputGeoPoint) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

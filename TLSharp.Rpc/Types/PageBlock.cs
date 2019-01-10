@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class UnsupportedTag : Record<UnsupportedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x13567e8a;
+            internal const uint TypeNumber = 0x13567e8a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TitleTag : Record<TitleTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x70abc3fd;
+            internal const uint TypeNumber = 0x70abc3fd;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SubtitleTag : Record<SubtitleTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8ffa9a1f;
+            internal const uint TypeNumber = 0x8ffa9a1f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AuthorDateTag : Record<AuthorDateTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbaafe5e0;
+            internal const uint TypeNumber = 0xbaafe5e0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Author { get; }
             public int PublishedDate { get; }
@@ -112,7 +116,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class HeaderTag : Record<HeaderTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbfd064ec;
+            internal const uint TypeNumber = 0xbfd064ec;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -136,7 +141,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SubheaderTag : Record<SubheaderTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf12bb6e1;
+            internal const uint TypeNumber = 0xf12bb6e1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -160,7 +166,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ParagraphTag : Record<ParagraphTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x467a0766;
+            internal const uint TypeNumber = 0x467a0766;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -184,7 +191,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PreformattedTag : Record<PreformattedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc070d93e;
+            internal const uint TypeNumber = 0xc070d93e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             public string Language { get; }
@@ -213,7 +221,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class FooterTag : Record<FooterTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x48870999;
+            internal const uint TypeNumber = 0x48870999;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -237,7 +246,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DividerTag : Record<DividerTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xdb20b188;
+            internal const uint TypeNumber = 0xdb20b188;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -261,7 +271,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AnchorTag : Record<AnchorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xce0d37b0;
+            internal const uint TypeNumber = 0xce0d37b0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Name { get; }
             
@@ -285,7 +296,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ListTag : Record<ListTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3a58c7f4;
+            internal const uint TypeNumber = 0x3a58c7f4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Ordered { get; }
             public Arr<T.RichText> Items { get; }
@@ -314,7 +326,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BlockquoteTag : Record<BlockquoteTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x263d7c26;
+            internal const uint TypeNumber = 0x263d7c26;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             public T.RichText Caption { get; }
@@ -343,7 +356,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PullquoteTag : Record<PullquoteTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4f4456d3;
+            internal const uint TypeNumber = 0x4f4456d3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             public T.RichText Caption { get; }
@@ -372,7 +386,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhotoTag : Record<PhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe9c69982;
+            internal const uint TypeNumber = 0xe9c69982;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long PhotoId { get; }
             public T.RichText Caption { get; }
@@ -401,7 +416,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class VideoTag : Record<VideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd9d71866;
+            internal const uint TypeNumber = 0xd9d71866;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Autoplay { get; }
             public bool Loop { get; }
@@ -440,7 +456,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CoverTag : Record<CoverTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x39f23300;
+            internal const uint TypeNumber = 0x39f23300;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.PageBlock Cover { get; }
             
@@ -464,7 +481,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EmbedTag : Record<EmbedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xcde200d1;
+            internal const uint TypeNumber = 0xcde200d1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool FullWidth { get; }
             public bool AllowScrolling { get; }
@@ -523,7 +541,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EmbedPostTag : Record<EmbedPostTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x292c7be9;
+            internal const uint TypeNumber = 0x292c7be9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Url { get; }
             public long WebpageId { get; }
@@ -577,7 +596,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CollageTag : Record<CollageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x08b31c4f;
+            internal const uint TypeNumber = 0x08b31c4f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.PageBlock> Items { get; }
             public T.RichText Caption { get; }
@@ -606,7 +626,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SlideshowTag : Record<SlideshowTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x130c8963;
+            internal const uint TypeNumber = 0x130c8963;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.PageBlock> Items { get; }
             public T.RichText Caption { get; }
@@ -669,28 +690,28 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x13567e8a: return (PageBlock) UnsupportedTag.DeserializeTag(br);
-                case 0x70abc3fd: return (PageBlock) TitleTag.DeserializeTag(br);
-                case 0x8ffa9a1f: return (PageBlock) SubtitleTag.DeserializeTag(br);
-                case 0xbaafe5e0: return (PageBlock) AuthorDateTag.DeserializeTag(br);
-                case 0xbfd064ec: return (PageBlock) HeaderTag.DeserializeTag(br);
-                case 0xf12bb6e1: return (PageBlock) SubheaderTag.DeserializeTag(br);
-                case 0x467a0766: return (PageBlock) ParagraphTag.DeserializeTag(br);
-                case 0xc070d93e: return (PageBlock) PreformattedTag.DeserializeTag(br);
-                case 0x48870999: return (PageBlock) FooterTag.DeserializeTag(br);
-                case 0xdb20b188: return (PageBlock) DividerTag.DeserializeTag(br);
-                case 0xce0d37b0: return (PageBlock) AnchorTag.DeserializeTag(br);
-                case 0x3a58c7f4: return (PageBlock) ListTag.DeserializeTag(br);
-                case 0x263d7c26: return (PageBlock) BlockquoteTag.DeserializeTag(br);
-                case 0x4f4456d3: return (PageBlock) PullquoteTag.DeserializeTag(br);
-                case 0xe9c69982: return (PageBlock) PhotoTag.DeserializeTag(br);
-                case 0xd9d71866: return (PageBlock) VideoTag.DeserializeTag(br);
-                case 0x39f23300: return (PageBlock) CoverTag.DeserializeTag(br);
-                case 0xcde200d1: return (PageBlock) EmbedTag.DeserializeTag(br);
-                case 0x292c7be9: return (PageBlock) EmbedPostTag.DeserializeTag(br);
-                case 0x08b31c4f: return (PageBlock) CollageTag.DeserializeTag(br);
-                case 0x130c8963: return (PageBlock) SlideshowTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x13567e8a, 0x70abc3fd, 0x8ffa9a1f, 0xbaafe5e0, 0xbfd064ec, 0xf12bb6e1, 0x467a0766, 0xc070d93e, 0x48870999, 0xdb20b188, 0xce0d37b0, 0x3a58c7f4, 0x263d7c26, 0x4f4456d3, 0xe9c69982, 0xd9d71866, 0x39f23300, 0xcde200d1, 0x292c7be9, 0x08b31c4f, 0x130c8963 });
+                case UnsupportedTag.TypeNumber: return (PageBlock) UnsupportedTag.DeserializeTag(br);
+                case TitleTag.TypeNumber: return (PageBlock) TitleTag.DeserializeTag(br);
+                case SubtitleTag.TypeNumber: return (PageBlock) SubtitleTag.DeserializeTag(br);
+                case AuthorDateTag.TypeNumber: return (PageBlock) AuthorDateTag.DeserializeTag(br);
+                case HeaderTag.TypeNumber: return (PageBlock) HeaderTag.DeserializeTag(br);
+                case SubheaderTag.TypeNumber: return (PageBlock) SubheaderTag.DeserializeTag(br);
+                case ParagraphTag.TypeNumber: return (PageBlock) ParagraphTag.DeserializeTag(br);
+                case PreformattedTag.TypeNumber: return (PageBlock) PreformattedTag.DeserializeTag(br);
+                case FooterTag.TypeNumber: return (PageBlock) FooterTag.DeserializeTag(br);
+                case DividerTag.TypeNumber: return (PageBlock) DividerTag.DeserializeTag(br);
+                case AnchorTag.TypeNumber: return (PageBlock) AnchorTag.DeserializeTag(br);
+                case ListTag.TypeNumber: return (PageBlock) ListTag.DeserializeTag(br);
+                case BlockquoteTag.TypeNumber: return (PageBlock) BlockquoteTag.DeserializeTag(br);
+                case PullquoteTag.TypeNumber: return (PageBlock) PullquoteTag.DeserializeTag(br);
+                case PhotoTag.TypeNumber: return (PageBlock) PhotoTag.DeserializeTag(br);
+                case VideoTag.TypeNumber: return (PageBlock) VideoTag.DeserializeTag(br);
+                case CoverTag.TypeNumber: return (PageBlock) CoverTag.DeserializeTag(br);
+                case EmbedTag.TypeNumber: return (PageBlock) EmbedTag.DeserializeTag(br);
+                case EmbedPostTag.TypeNumber: return (PageBlock) EmbedPostTag.DeserializeTag(br);
+                case CollageTag.TypeNumber: return (PageBlock) CollageTag.DeserializeTag(br);
+                case SlideshowTag.TypeNumber: return (PageBlock) SlideshowTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnsupportedTag.TypeNumber, TitleTag.TypeNumber, SubtitleTag.TypeNumber, AuthorDateTag.TypeNumber, HeaderTag.TypeNumber, SubheaderTag.TypeNumber, ParagraphTag.TypeNumber, PreformattedTag.TypeNumber, FooterTag.TypeNumber, DividerTag.TypeNumber, AnchorTag.TypeNumber, ListTag.TypeNumber, BlockquoteTag.TypeNumber, PullquoteTag.TypeNumber, PhotoTag.TypeNumber, VideoTag.TypeNumber, CoverTag.TypeNumber, EmbedTag.TypeNumber, EmbedPostTag.TypeNumber, CollageTag.TypeNumber, SlideshowTag.TypeNumber });
             }
         }
 

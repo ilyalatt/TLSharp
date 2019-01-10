@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x09d05049;
+            internal const uint TypeNumber = 0x09d05049;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class OnlineTag : Record<OnlineTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xedb93949;
+            internal const uint TypeNumber = 0xedb93949;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Expires { get; }
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class OfflineTag : Record<OfflineTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x008c703f;
+            internal const uint TypeNumber = 0x008c703f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int WasOnline { get; }
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RecentlyTag : Record<RecentlyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe26f42f1;
+            internal const uint TypeNumber = 0xe26f42f1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class LastWeekTag : Record<LastWeekTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x07bf09fc;
+            internal const uint TypeNumber = 0x07bf09fc;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class LastMonthTag : Record<LastMonthTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x77ebc742;
+            internal const uint TypeNumber = 0x77ebc742;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -174,13 +180,13 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x09d05049: return (UserStatus) EmptyTag.DeserializeTag(br);
-                case 0xedb93949: return (UserStatus) OnlineTag.DeserializeTag(br);
-                case 0x008c703f: return (UserStatus) OfflineTag.DeserializeTag(br);
-                case 0xe26f42f1: return (UserStatus) RecentlyTag.DeserializeTag(br);
-                case 0x07bf09fc: return (UserStatus) LastWeekTag.DeserializeTag(br);
-                case 0x77ebc742: return (UserStatus) LastMonthTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x09d05049, 0xedb93949, 0x008c703f, 0xe26f42f1, 0x07bf09fc, 0x77ebc742 });
+                case EmptyTag.TypeNumber: return (UserStatus) EmptyTag.DeserializeTag(br);
+                case OnlineTag.TypeNumber: return (UserStatus) OnlineTag.DeserializeTag(br);
+                case OfflineTag.TypeNumber: return (UserStatus) OfflineTag.DeserializeTag(br);
+                case RecentlyTag.TypeNumber: return (UserStatus) RecentlyTag.DeserializeTag(br);
+                case LastWeekTag.TypeNumber: return (UserStatus) LastWeekTag.DeserializeTag(br);
+                case LastMonthTag.TypeNumber: return (UserStatus) LastMonthTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, OnlineTag.TypeNumber, OfflineTag.TypeNumber, RecentlyTag.TypeNumber, LastWeekTag.TypeNumber, LastMonthTag.TypeNumber });
             }
         }
 

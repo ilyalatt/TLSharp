@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x83e5de54;
+            internal const uint TypeNumber = 0x83e5de54;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Id { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc09be45f;
+            internal const uint TypeNumber = 0xc09be45f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Out { get; }
             public bool Mentioned { get; }
@@ -141,7 +143,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ServiceTag : Record<ServiceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9e19a1f6;
+            internal const uint TypeNumber = 0x9e19a1f6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Out { get; }
             public bool Mentioned { get; }
@@ -228,10 +231,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x83e5de54: return (Message) EmptyTag.DeserializeTag(br);
-                case 0xc09be45f: return (Message) Tag.DeserializeTag(br);
-                case 0x9e19a1f6: return (Message) ServiceTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x83e5de54, 0xc09be45f, 0x9e19a1f6 });
+                case EmptyTag.TypeNumber: return (Message) EmptyTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (Message) Tag.DeserializeTag(br);
+                case ServiceTag.TypeNumber: return (Message) ServiceTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, Tag.TypeNumber, ServiceTag.TypeNumber });
             }
         }
 

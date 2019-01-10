@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class MediaAutoTag : Record<MediaAutoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x292fed13;
+            internal const uint TypeNumber = 0x292fed13;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Caption { get; }
             public Option<T.ReplyMarkup> ReplyMarkup { get; }
@@ -42,7 +43,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextTag : Record<TextTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3dcd7a87;
+            internal const uint TypeNumber = 0x3dcd7a87;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool NoWebpage { get; }
             public string Message { get; }
@@ -82,7 +84,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaGeoTag : Record<MediaGeoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf4a59de1;
+            internal const uint TypeNumber = 0xf4a59de1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.InputGeoPoint GeoPoint { get; }
             public Option<T.ReplyMarkup> ReplyMarkup { get; }
@@ -113,7 +116,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaVenueTag : Record<MediaVenueTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xaaafadc8;
+            internal const uint TypeNumber = 0xaaafadc8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.InputGeoPoint GeoPoint { get; }
             public string Title { get; }
@@ -164,7 +168,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaContactTag : Record<MediaContactTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2daf01a7;
+            internal const uint TypeNumber = 0x2daf01a7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string PhoneNumber { get; }
             public string FirstName { get; }
@@ -205,7 +210,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GameTag : Record<GameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4b425864;
+            internal const uint TypeNumber = 0x4b425864;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Option<T.ReplyMarkup> ReplyMarkup { get; }
             
@@ -250,13 +256,13 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x292fed13: return (InputBotInlineMessage) MediaAutoTag.DeserializeTag(br);
-                case 0x3dcd7a87: return (InputBotInlineMessage) TextTag.DeserializeTag(br);
-                case 0xf4a59de1: return (InputBotInlineMessage) MediaGeoTag.DeserializeTag(br);
-                case 0xaaafadc8: return (InputBotInlineMessage) MediaVenueTag.DeserializeTag(br);
-                case 0x2daf01a7: return (InputBotInlineMessage) MediaContactTag.DeserializeTag(br);
-                case 0x4b425864: return (InputBotInlineMessage) GameTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x292fed13, 0x3dcd7a87, 0xf4a59de1, 0xaaafadc8, 0x2daf01a7, 0x4b425864 });
+                case MediaAutoTag.TypeNumber: return (InputBotInlineMessage) MediaAutoTag.DeserializeTag(br);
+                case TextTag.TypeNumber: return (InputBotInlineMessage) TextTag.DeserializeTag(br);
+                case MediaGeoTag.TypeNumber: return (InputBotInlineMessage) MediaGeoTag.DeserializeTag(br);
+                case MediaVenueTag.TypeNumber: return (InputBotInlineMessage) MediaVenueTag.DeserializeTag(br);
+                case MediaContactTag.TypeNumber: return (InputBotInlineMessage) MediaContactTag.DeserializeTag(br);
+                case GameTag.TypeNumber: return (InputBotInlineMessage) GameTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { MediaAutoTag.TypeNumber, TextTag.TypeNumber, MediaGeoTag.TypeNumber, MediaVenueTag.TypeNumber, MediaContactTag.TypeNumber, GameTag.TypeNumber });
             }
         }
 

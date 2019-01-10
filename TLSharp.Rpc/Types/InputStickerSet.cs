@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xffb62b95;
+            internal const uint TypeNumber = 0xffb62b95;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class IdTag : Record<IdTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9de7a269;
+            internal const uint TypeNumber = 0x9de7a269;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -64,7 +66,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ShortNameTag : Record<ShortNameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x861cc8a0;
+            internal const uint TypeNumber = 0x861cc8a0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string ShortName { get; }
             
@@ -104,10 +107,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xffb62b95: return (InputStickerSet) EmptyTag.DeserializeTag(br);
-                case 0x9de7a269: return (InputStickerSet) IdTag.DeserializeTag(br);
-                case 0x861cc8a0: return (InputStickerSet) ShortNameTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xffb62b95, 0x9de7a269, 0x861cc8a0 });
+                case EmptyTag.TypeNumber: return (InputStickerSet) EmptyTag.DeserializeTag(br);
+                case IdTag.TypeNumber: return (InputStickerSet) IdTag.DeserializeTag(br);
+                case ShortNameTag.TypeNumber: return (InputStickerSet) ShortNameTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, IdTag.TypeNumber, ShortNameTag.TypeNumber });
             }
         }
 

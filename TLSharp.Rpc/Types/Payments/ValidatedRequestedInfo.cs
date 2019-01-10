@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Payments
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd1451883;
+            internal const uint TypeNumber = 0xd1451883;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Option<string> Id { get; }
             public Option<Arr<T.ShippingOption>> ShippingOptions { get; }
@@ -56,8 +57,8 @@ namespace TLSharp.Rpc.Types.Payments
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xd1451883: return (ValidatedRequestedInfo) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xd1451883 });
+                case Tag.TypeNumber: return (ValidatedRequestedInfo) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

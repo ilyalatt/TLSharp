@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Contacts
     {
         public sealed class NotModifiedTag : Record<NotModifiedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xde266ef5;
+            internal const uint TypeNumber = 0xde266ef5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types.Contacts
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x70b772a8;
+            internal const uint TypeNumber = 0x70b772a8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.TopPeerCategoryPeers> Categories { get; }
             public Arr<T.Chat> Chats { get; }
@@ -84,9 +86,9 @@ namespace TLSharp.Rpc.Types.Contacts
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xde266ef5: return (TopPeers) NotModifiedTag.DeserializeTag(br);
-                case 0x70b772a8: return (TopPeers) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xde266ef5, 0x70b772a8 });
+                case NotModifiedTag.TypeNumber: return (TopPeers) NotModifiedTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (TopPeers) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { NotModifiedTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

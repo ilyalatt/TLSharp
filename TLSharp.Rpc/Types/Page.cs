@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class PartTag : Record<PartTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8dee6c44;
+            internal const uint TypeNumber = 0x8dee6c44;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.PageBlock> Blocks { get; }
             public Arr<T.Photo> Photos { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class FullTag : Record<FullTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd7a19d69;
+            internal const uint TypeNumber = 0xd7a19d69;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.PageBlock> Blocks { get; }
             public Arr<T.Photo> Photos { get; }
@@ -94,9 +96,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x8dee6c44: return (Page) PartTag.DeserializeTag(br);
-                case 0xd7a19d69: return (Page) FullTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x8dee6c44, 0xd7a19d69 });
+                case PartTag.TypeNumber: return (Page) PartTag.DeserializeTag(br);
+                case FullTag.TypeNumber: return (Page) FullTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { PartTag.TypeNumber, FullTag.TypeNumber });
             }
         }
 

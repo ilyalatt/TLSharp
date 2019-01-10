@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2cbbe15a;
+            internal const uint TypeNumber = 0x2cbbe15a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Id { get; }
             public string Type { get; }
@@ -92,7 +93,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhotoTag : Record<PhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa8d864a7;
+            internal const uint TypeNumber = 0xa8d864a7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Id { get; }
             public string Type { get; }
@@ -131,7 +133,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DocumentTag : Record<DocumentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfff8fdc4;
+            internal const uint TypeNumber = 0xfff8fdc4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Id { get; }
             public string Type { get; }
@@ -182,7 +185,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GameTag : Record<GameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4fa417f2;
+            internal const uint TypeNumber = 0x4fa417f2;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Id { get; }
             public string ShortName { get; }
@@ -233,11 +237,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x2cbbe15a: return (InputBotInlineResult) Tag.DeserializeTag(br);
-                case 0xa8d864a7: return (InputBotInlineResult) PhotoTag.DeserializeTag(br);
-                case 0xfff8fdc4: return (InputBotInlineResult) DocumentTag.DeserializeTag(br);
-                case 0x4fa417f2: return (InputBotInlineResult) GameTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x2cbbe15a, 0xa8d864a7, 0xfff8fdc4, 0x4fa417f2 });
+                case Tag.TypeNumber: return (InputBotInlineResult) Tag.DeserializeTag(br);
+                case PhotoTag.TypeNumber: return (InputBotInlineResult) PhotoTag.DeserializeTag(br);
+                case DocumentTag.TypeNumber: return (InputBotInlineResult) DocumentTag.DeserializeTag(br);
+                case GameTag.TypeNumber: return (InputBotInlineResult) GameTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, PhotoTag.TypeNumber, DocumentTag.TypeNumber, GameTag.TypeNumber });
             }
         }
 

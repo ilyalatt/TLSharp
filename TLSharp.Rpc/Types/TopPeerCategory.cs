@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class BotsPmTag : Record<BotsPmTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xab661b5b;
+            internal const uint TypeNumber = 0xab661b5b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotsInlineTag : Record<BotsInlineTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x148677e2;
+            internal const uint TypeNumber = 0x148677e2;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CorrespondentsTag : Record<CorrespondentsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0637b7ed;
+            internal const uint TypeNumber = 0x0637b7ed;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GroupsTag : Record<GroupsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbd17a14a;
+            internal const uint TypeNumber = 0xbd17a14a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelsTag : Record<ChannelsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x161d9628;
+            internal const uint TypeNumber = 0x161d9628;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -149,12 +154,12 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xab661b5b: return (TopPeerCategory) BotsPmTag.DeserializeTag(br);
-                case 0x148677e2: return (TopPeerCategory) BotsInlineTag.DeserializeTag(br);
-                case 0x0637b7ed: return (TopPeerCategory) CorrespondentsTag.DeserializeTag(br);
-                case 0xbd17a14a: return (TopPeerCategory) GroupsTag.DeserializeTag(br);
-                case 0x161d9628: return (TopPeerCategory) ChannelsTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xab661b5b, 0x148677e2, 0x0637b7ed, 0xbd17a14a, 0x161d9628 });
+                case BotsPmTag.TypeNumber: return (TopPeerCategory) BotsPmTag.DeserializeTag(br);
+                case BotsInlineTag.TypeNumber: return (TopPeerCategory) BotsInlineTag.DeserializeTag(br);
+                case CorrespondentsTag.TypeNumber: return (TopPeerCategory) CorrespondentsTag.DeserializeTag(br);
+                case GroupsTag.TypeNumber: return (TopPeerCategory) GroupsTag.DeserializeTag(br);
+                case ChannelsTag.TypeNumber: return (TopPeerCategory) ChannelsTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { BotsPmTag.TypeNumber, BotsInlineTag.TypeNumber, CorrespondentsTag.TypeNumber, GroupsTag.TypeNumber, ChannelsTag.TypeNumber });
             }
         }
 

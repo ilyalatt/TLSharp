@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Storage
     {
         public sealed class UnknownTag : Record<UnknownTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xaa963b05;
+            internal const uint TypeNumber = 0xaa963b05;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class PartialTag : Record<PartialTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x40bc6f52;
+            internal const uint TypeNumber = 0x40bc6f52;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class JpegTag : Record<JpegTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x007efe0e;
+            internal const uint TypeNumber = 0x007efe0e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class GifTag : Record<GifTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xcae1aadf;
+            internal const uint TypeNumber = 0xcae1aadf;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class PngTag : Record<PngTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0a4f63c0;
+            internal const uint TypeNumber = 0x0a4f63c0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class PdfTag : Record<PdfTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xae1e508d;
+            internal const uint TypeNumber = 0xae1e508d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -155,7 +161,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class Mp3Tag : Record<Mp3Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x528a0677;
+            internal const uint TypeNumber = 0x528a0677;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -179,7 +186,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class MovTag : Record<MovTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4b09ebbc;
+            internal const uint TypeNumber = 0x4b09ebbc;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -203,7 +211,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class Mp4Tag : Record<Mp4Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb3cea0e4;
+            internal const uint TypeNumber = 0xb3cea0e4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -227,7 +236,8 @@ namespace TLSharp.Rpc.Types.Storage
 
         public sealed class WebpTag : Record<WebpTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1081464c;
+            internal const uint TypeNumber = 0x1081464c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -274,17 +284,17 @@ namespace TLSharp.Rpc.Types.Storage
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xaa963b05: return (FileType) UnknownTag.DeserializeTag(br);
-                case 0x40bc6f52: return (FileType) PartialTag.DeserializeTag(br);
-                case 0x007efe0e: return (FileType) JpegTag.DeserializeTag(br);
-                case 0xcae1aadf: return (FileType) GifTag.DeserializeTag(br);
-                case 0x0a4f63c0: return (FileType) PngTag.DeserializeTag(br);
-                case 0xae1e508d: return (FileType) PdfTag.DeserializeTag(br);
-                case 0x528a0677: return (FileType) Mp3Tag.DeserializeTag(br);
-                case 0x4b09ebbc: return (FileType) MovTag.DeserializeTag(br);
-                case 0xb3cea0e4: return (FileType) Mp4Tag.DeserializeTag(br);
-                case 0x1081464c: return (FileType) WebpTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xaa963b05, 0x40bc6f52, 0x007efe0e, 0xcae1aadf, 0x0a4f63c0, 0xae1e508d, 0x528a0677, 0x4b09ebbc, 0xb3cea0e4, 0x1081464c });
+                case UnknownTag.TypeNumber: return (FileType) UnknownTag.DeserializeTag(br);
+                case PartialTag.TypeNumber: return (FileType) PartialTag.DeserializeTag(br);
+                case JpegTag.TypeNumber: return (FileType) JpegTag.DeserializeTag(br);
+                case GifTag.TypeNumber: return (FileType) GifTag.DeserializeTag(br);
+                case PngTag.TypeNumber: return (FileType) PngTag.DeserializeTag(br);
+                case PdfTag.TypeNumber: return (FileType) PdfTag.DeserializeTag(br);
+                case Mp3Tag.TypeNumber: return (FileType) Mp3Tag.DeserializeTag(br);
+                case MovTag.TypeNumber: return (FileType) MovTag.DeserializeTag(br);
+                case Mp4Tag.TypeNumber: return (FileType) Mp4Tag.DeserializeTag(br);
+                case WebpTag.TypeNumber: return (FileType) WebpTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnknownTag.TypeNumber, PartialTag.TypeNumber, JpegTag.TypeNumber, GifTag.TypeNumber, PngTag.TypeNumber, PdfTag.TypeNumber, Mp3Tag.TypeNumber, MovTag.TypeNumber, Mp4Tag.TypeNumber, WebpTag.TypeNumber });
             }
         }
 

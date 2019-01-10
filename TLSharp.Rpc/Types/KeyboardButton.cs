@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa2fa4880;
+            internal const uint TypeNumber = 0xa2fa4880;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UrlTag : Record<UrlTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x258aff05;
+            internal const uint TypeNumber = 0x258aff05;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             public string Url { get; }
@@ -64,7 +66,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CallbackTag : Record<CallbackTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x683a5e46;
+            internal const uint TypeNumber = 0x683a5e46;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             public Arr<byte> Data { get; }
@@ -93,7 +96,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RequestPhoneTag : Record<RequestPhoneTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb16a6c29;
+            internal const uint TypeNumber = 0xb16a6c29;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -117,7 +121,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RequestGeoLocationTag : Record<RequestGeoLocationTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfc796b3f;
+            internal const uint TypeNumber = 0xfc796b3f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -141,7 +146,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SwitchInlineTag : Record<SwitchInlineTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0568a748;
+            internal const uint TypeNumber = 0x0568a748;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool SamePeer { get; }
             public string Text { get; }
@@ -176,7 +182,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GameTag : Record<GameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x50f41ccf;
+            internal const uint TypeNumber = 0x50f41ccf;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -200,7 +207,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BuyTag : Record<BuyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xafd93fbb;
+            internal const uint TypeNumber = 0xafd93fbb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -245,15 +253,15 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xa2fa4880: return (KeyboardButton) Tag.DeserializeTag(br);
-                case 0x258aff05: return (KeyboardButton) UrlTag.DeserializeTag(br);
-                case 0x683a5e46: return (KeyboardButton) CallbackTag.DeserializeTag(br);
-                case 0xb16a6c29: return (KeyboardButton) RequestPhoneTag.DeserializeTag(br);
-                case 0xfc796b3f: return (KeyboardButton) RequestGeoLocationTag.DeserializeTag(br);
-                case 0x0568a748: return (KeyboardButton) SwitchInlineTag.DeserializeTag(br);
-                case 0x50f41ccf: return (KeyboardButton) GameTag.DeserializeTag(br);
-                case 0xafd93fbb: return (KeyboardButton) BuyTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xa2fa4880, 0x258aff05, 0x683a5e46, 0xb16a6c29, 0xfc796b3f, 0x0568a748, 0x50f41ccf, 0xafd93fbb });
+                case Tag.TypeNumber: return (KeyboardButton) Tag.DeserializeTag(br);
+                case UrlTag.TypeNumber: return (KeyboardButton) UrlTag.DeserializeTag(br);
+                case CallbackTag.TypeNumber: return (KeyboardButton) CallbackTag.DeserializeTag(br);
+                case RequestPhoneTag.TypeNumber: return (KeyboardButton) RequestPhoneTag.DeserializeTag(br);
+                case RequestGeoLocationTag.TypeNumber: return (KeyboardButton) RequestGeoLocationTag.DeserializeTag(br);
+                case SwitchInlineTag.TypeNumber: return (KeyboardButton) SwitchInlineTag.DeserializeTag(br);
+                case GameTag.TypeNumber: return (KeyboardButton) GameTag.DeserializeTag(br);
+                case BuyTag.TypeNumber: return (KeyboardButton) BuyTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, UrlTag.TypeNumber, CallbackTag.TypeNumber, RequestPhoneTag.TypeNumber, RequestGeoLocationTag.TypeNumber, SwitchInlineTag.TypeNumber, GameTag.TypeNumber, BuyTag.TypeNumber });
             }
         }
 

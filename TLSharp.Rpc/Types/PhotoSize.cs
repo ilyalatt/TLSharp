@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0e17e23c;
+            internal const uint TypeNumber = 0x0e17e23c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Type { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x77bfb61b;
+            internal const uint TypeNumber = 0x77bfb61b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Type { get; }
             public T.FileLocation Location { get; }
@@ -79,7 +81,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CachedTag : Record<CachedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe9a734fa;
+            internal const uint TypeNumber = 0xe9a734fa;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Type { get; }
             public T.FileLocation Location { get; }
@@ -139,10 +142,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x0e17e23c: return (PhotoSize) EmptyTag.DeserializeTag(br);
-                case 0x77bfb61b: return (PhotoSize) Tag.DeserializeTag(br);
-                case 0xe9a734fa: return (PhotoSize) CachedTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x0e17e23c, 0x77bfb61b, 0xe9a734fa });
+                case EmptyTag.TypeNumber: return (PhotoSize) EmptyTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (PhotoSize) Tag.DeserializeTag(br);
+                case CachedTag.TypeNumber: return (PhotoSize) CachedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, Tag.TypeNumber, CachedTag.TypeNumber });
             }
         }
 

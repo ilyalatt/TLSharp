@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc8d7493e;
+            internal const uint TypeNumber = 0xc8d7493e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int InviterId { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CreatorTag : Record<CreatorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xda13538a;
+            internal const uint TypeNumber = 0xda13538a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             
@@ -69,7 +71,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AdminTag : Record<AdminTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xe2d6e436;
+            internal const uint TypeNumber = 0xe2d6e436;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public int InviterId { get; }
@@ -119,10 +122,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xc8d7493e: return (ChatParticipant) Tag.DeserializeTag(br);
-                case 0xda13538a: return (ChatParticipant) CreatorTag.DeserializeTag(br);
-                case 0xe2d6e436: return (ChatParticipant) AdminTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xc8d7493e, 0xda13538a, 0xe2d6e436 });
+                case Tag.TypeNumber: return (ChatParticipant) Tag.DeserializeTag(br);
+                case CreatorTag.TypeNumber: return (ChatParticipant) CreatorTag.DeserializeTag(br);
+                case AdminTag.TypeNumber: return (ChatParticipant) AdminTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, CreatorTag.TypeNumber, AdminTag.TypeNumber });
             }
         }
 

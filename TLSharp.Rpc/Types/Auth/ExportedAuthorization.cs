@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Auth
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xdf969c2d;
+            internal const uint TypeNumber = 0xdf969c2d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Id { get; }
             public Arr<byte> Bytes { get; }
@@ -54,8 +55,8 @@ namespace TLSharp.Rpc.Types.Auth
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xdf969c2d: return (ExportedAuthorization) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xdf969c2d });
+                case Tag.TypeNumber: return (ExportedAuthorization) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

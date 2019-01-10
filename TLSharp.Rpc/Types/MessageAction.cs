@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb6aef7b0;
+            internal const uint TypeNumber = 0xb6aef7b0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatCreateTag : Record<ChatCreateTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa6638b9a;
+            internal const uint TypeNumber = 0xa6638b9a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Title { get; }
             public Arr<int> Users { get; }
@@ -64,7 +66,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatEditTitleTag : Record<ChatEditTitleTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb5a1ce5a;
+            internal const uint TypeNumber = 0xb5a1ce5a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Title { get; }
             
@@ -88,7 +91,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatEditPhotoTag : Record<ChatEditPhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7fcb13a8;
+            internal const uint TypeNumber = 0x7fcb13a8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Photo Photo { get; }
             
@@ -112,7 +116,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatDeletePhotoTag : Record<ChatDeletePhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x95e3fbef;
+            internal const uint TypeNumber = 0x95e3fbef;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -136,7 +141,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatAddUserTag : Record<ChatAddUserTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x488a7337;
+            internal const uint TypeNumber = 0x488a7337;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<int> Users { get; }
             
@@ -160,7 +166,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatDeleteUserTag : Record<ChatDeleteUserTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb2ae9b0c;
+            internal const uint TypeNumber = 0xb2ae9b0c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             
@@ -184,7 +191,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatJoinedByLinkTag : Record<ChatJoinedByLinkTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf89cf5e8;
+            internal const uint TypeNumber = 0xf89cf5e8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int InviterId { get; }
             
@@ -208,7 +216,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelCreateTag : Record<ChannelCreateTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x95d2ac92;
+            internal const uint TypeNumber = 0x95d2ac92;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Title { get; }
             
@@ -232,7 +241,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatMigrateToTag : Record<ChatMigrateToTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x51bdb021;
+            internal const uint TypeNumber = 0x51bdb021;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             
@@ -256,7 +266,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelMigrateFromTag : Record<ChannelMigrateFromTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb055eaee;
+            internal const uint TypeNumber = 0xb055eaee;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Title { get; }
             public int ChatId { get; }
@@ -285,7 +296,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PinMessageTag : Record<PinMessageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x94bd38ed;
+            internal const uint TypeNumber = 0x94bd38ed;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -309,7 +321,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class HistoryClearTag : Record<HistoryClearTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9fbab604;
+            internal const uint TypeNumber = 0x9fbab604;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -333,7 +346,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GameScoreTag : Record<GameScoreTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x92a72876;
+            internal const uint TypeNumber = 0x92a72876;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long GameId { get; }
             public int Score { get; }
@@ -362,7 +376,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PaymentSentMeTag : Record<PaymentSentMeTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8f31b327;
+            internal const uint TypeNumber = 0x8f31b327;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Currency { get; }
             public long TotalAmount { get; }
@@ -413,7 +428,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PaymentSentTag : Record<PaymentSentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x40699cd0;
+            internal const uint TypeNumber = 0x40699cd0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Currency { get; }
             public long TotalAmount { get; }
@@ -442,7 +458,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhoneCallTag : Record<PhoneCallTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x80e11a7f;
+            internal const uint TypeNumber = 0x80e11a7f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long CallId { get; }
             public Option<T.PhoneCallDiscardReason> Reason { get; }
@@ -508,24 +525,24 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xb6aef7b0: return (MessageAction) EmptyTag.DeserializeTag(br);
-                case 0xa6638b9a: return (MessageAction) ChatCreateTag.DeserializeTag(br);
-                case 0xb5a1ce5a: return (MessageAction) ChatEditTitleTag.DeserializeTag(br);
-                case 0x7fcb13a8: return (MessageAction) ChatEditPhotoTag.DeserializeTag(br);
-                case 0x95e3fbef: return (MessageAction) ChatDeletePhotoTag.DeserializeTag(br);
-                case 0x488a7337: return (MessageAction) ChatAddUserTag.DeserializeTag(br);
-                case 0xb2ae9b0c: return (MessageAction) ChatDeleteUserTag.DeserializeTag(br);
-                case 0xf89cf5e8: return (MessageAction) ChatJoinedByLinkTag.DeserializeTag(br);
-                case 0x95d2ac92: return (MessageAction) ChannelCreateTag.DeserializeTag(br);
-                case 0x51bdb021: return (MessageAction) ChatMigrateToTag.DeserializeTag(br);
-                case 0xb055eaee: return (MessageAction) ChannelMigrateFromTag.DeserializeTag(br);
-                case 0x94bd38ed: return (MessageAction) PinMessageTag.DeserializeTag(br);
-                case 0x9fbab604: return (MessageAction) HistoryClearTag.DeserializeTag(br);
-                case 0x92a72876: return (MessageAction) GameScoreTag.DeserializeTag(br);
-                case 0x8f31b327: return (MessageAction) PaymentSentMeTag.DeserializeTag(br);
-                case 0x40699cd0: return (MessageAction) PaymentSentTag.DeserializeTag(br);
-                case 0x80e11a7f: return (MessageAction) PhoneCallTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xb6aef7b0, 0xa6638b9a, 0xb5a1ce5a, 0x7fcb13a8, 0x95e3fbef, 0x488a7337, 0xb2ae9b0c, 0xf89cf5e8, 0x95d2ac92, 0x51bdb021, 0xb055eaee, 0x94bd38ed, 0x9fbab604, 0x92a72876, 0x8f31b327, 0x40699cd0, 0x80e11a7f });
+                case EmptyTag.TypeNumber: return (MessageAction) EmptyTag.DeserializeTag(br);
+                case ChatCreateTag.TypeNumber: return (MessageAction) ChatCreateTag.DeserializeTag(br);
+                case ChatEditTitleTag.TypeNumber: return (MessageAction) ChatEditTitleTag.DeserializeTag(br);
+                case ChatEditPhotoTag.TypeNumber: return (MessageAction) ChatEditPhotoTag.DeserializeTag(br);
+                case ChatDeletePhotoTag.TypeNumber: return (MessageAction) ChatDeletePhotoTag.DeserializeTag(br);
+                case ChatAddUserTag.TypeNumber: return (MessageAction) ChatAddUserTag.DeserializeTag(br);
+                case ChatDeleteUserTag.TypeNumber: return (MessageAction) ChatDeleteUserTag.DeserializeTag(br);
+                case ChatJoinedByLinkTag.TypeNumber: return (MessageAction) ChatJoinedByLinkTag.DeserializeTag(br);
+                case ChannelCreateTag.TypeNumber: return (MessageAction) ChannelCreateTag.DeserializeTag(br);
+                case ChatMigrateToTag.TypeNumber: return (MessageAction) ChatMigrateToTag.DeserializeTag(br);
+                case ChannelMigrateFromTag.TypeNumber: return (MessageAction) ChannelMigrateFromTag.DeserializeTag(br);
+                case PinMessageTag.TypeNumber: return (MessageAction) PinMessageTag.DeserializeTag(br);
+                case HistoryClearTag.TypeNumber: return (MessageAction) HistoryClearTag.DeserializeTag(br);
+                case GameScoreTag.TypeNumber: return (MessageAction) GameScoreTag.DeserializeTag(br);
+                case PaymentSentMeTag.TypeNumber: return (MessageAction) PaymentSentMeTag.DeserializeTag(br);
+                case PaymentSentTag.TypeNumber: return (MessageAction) PaymentSentTag.DeserializeTag(br);
+                case PhoneCallTag.TypeNumber: return (MessageAction) PhoneCallTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, ChatCreateTag.TypeNumber, ChatEditTitleTag.TypeNumber, ChatEditPhotoTag.TypeNumber, ChatDeletePhotoTag.TypeNumber, ChatAddUserTag.TypeNumber, ChatDeleteUserTag.TypeNumber, ChatJoinedByLinkTag.TypeNumber, ChannelCreateTag.TypeNumber, ChatMigrateToTag.TypeNumber, ChannelMigrateFromTag.TypeNumber, PinMessageTag.TypeNumber, HistoryClearTag.TypeNumber, GameScoreTag.TypeNumber, PaymentSentMeTag.TypeNumber, PaymentSentTag.TypeNumber, PhoneCallTag.TypeNumber });
             }
         }
 

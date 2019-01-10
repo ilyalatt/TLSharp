@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class OkTag : Record<OkTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf660e1d4;
+            internal const uint TypeNumber = 0xf660e1d4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NoneTag : Record<NoneTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0a9f2259;
+            internal const uint TypeNumber = 0x0a9f2259;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class FailTag : Record<FailTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xea109b13;
+            internal const uint TypeNumber = 0xea109b13;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xf660e1d4: return (DestroyAuthKeyRes) OkTag.DeserializeTag(br);
-                case 0x0a9f2259: return (DestroyAuthKeyRes) NoneTag.DeserializeTag(br);
-                case 0xea109b13: return (DestroyAuthKeyRes) FailTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xf660e1d4, 0x0a9f2259, 0xea109b13 });
+                case OkTag.TypeNumber: return (DestroyAuthKeyRes) OkTag.DeserializeTag(br);
+                case NoneTag.TypeNumber: return (DestroyAuthKeyRes) NoneTag.DeserializeTag(br);
+                case FailTag.TypeNumber: return (DestroyAuthKeyRes) FailTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { OkTag.TypeNumber, NoneTag.TypeNumber, FailTag.TypeNumber });
             }
         }
 

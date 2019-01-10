@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class UnknownTag : Record<UnknownTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbb92ba95;
+            internal const uint TypeNumber = 0xbb92ba95;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -40,7 +41,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MentionTag : Record<MentionTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfa04579d;
+            internal const uint TypeNumber = 0xfa04579d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -69,7 +71,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class HashtagTag : Record<HashtagTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6f635b0d;
+            internal const uint TypeNumber = 0x6f635b0d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -98,7 +101,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BotCommandTag : Record<BotCommandTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6cef8ac7;
+            internal const uint TypeNumber = 0x6cef8ac7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -127,7 +131,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UrlTag : Record<UrlTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6ed02538;
+            internal const uint TypeNumber = 0x6ed02538;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -156,7 +161,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class EmailTag : Record<EmailTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x64e475c2;
+            internal const uint TypeNumber = 0x64e475c2;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -185,7 +191,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BoldTag : Record<BoldTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbd610bc9;
+            internal const uint TypeNumber = 0xbd610bc9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -214,7 +221,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ItalicTag : Record<ItalicTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x826f8b60;
+            internal const uint TypeNumber = 0x826f8b60;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -243,7 +251,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class CodeTag : Record<CodeTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x28a20571;
+            internal const uint TypeNumber = 0x28a20571;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -272,7 +281,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PreTag : Record<PreTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x73924be0;
+            internal const uint TypeNumber = 0x73924be0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -306,7 +316,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextUrlTag : Record<TextUrlTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x76a6d327;
+            internal const uint TypeNumber = 0x76a6d327;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -340,7 +351,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MentionNameTag : Record<MentionNameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x352dca58;
+            internal const uint TypeNumber = 0x352dca58;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -374,7 +386,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputMentionNameTag : Record<InputMentionNameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x208e68c9;
+            internal const uint TypeNumber = 0x208e68c9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Offset { get; }
             public int Length { get; }
@@ -434,20 +447,20 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xbb92ba95: return (MessageEntity) UnknownTag.DeserializeTag(br);
-                case 0xfa04579d: return (MessageEntity) MentionTag.DeserializeTag(br);
-                case 0x6f635b0d: return (MessageEntity) HashtagTag.DeserializeTag(br);
-                case 0x6cef8ac7: return (MessageEntity) BotCommandTag.DeserializeTag(br);
-                case 0x6ed02538: return (MessageEntity) UrlTag.DeserializeTag(br);
-                case 0x64e475c2: return (MessageEntity) EmailTag.DeserializeTag(br);
-                case 0xbd610bc9: return (MessageEntity) BoldTag.DeserializeTag(br);
-                case 0x826f8b60: return (MessageEntity) ItalicTag.DeserializeTag(br);
-                case 0x28a20571: return (MessageEntity) CodeTag.DeserializeTag(br);
-                case 0x73924be0: return (MessageEntity) PreTag.DeserializeTag(br);
-                case 0x76a6d327: return (MessageEntity) TextUrlTag.DeserializeTag(br);
-                case 0x352dca58: return (MessageEntity) MentionNameTag.DeserializeTag(br);
-                case 0x208e68c9: return (MessageEntity) InputMentionNameTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xbb92ba95, 0xfa04579d, 0x6f635b0d, 0x6cef8ac7, 0x6ed02538, 0x64e475c2, 0xbd610bc9, 0x826f8b60, 0x28a20571, 0x73924be0, 0x76a6d327, 0x352dca58, 0x208e68c9 });
+                case UnknownTag.TypeNumber: return (MessageEntity) UnknownTag.DeserializeTag(br);
+                case MentionTag.TypeNumber: return (MessageEntity) MentionTag.DeserializeTag(br);
+                case HashtagTag.TypeNumber: return (MessageEntity) HashtagTag.DeserializeTag(br);
+                case BotCommandTag.TypeNumber: return (MessageEntity) BotCommandTag.DeserializeTag(br);
+                case UrlTag.TypeNumber: return (MessageEntity) UrlTag.DeserializeTag(br);
+                case EmailTag.TypeNumber: return (MessageEntity) EmailTag.DeserializeTag(br);
+                case BoldTag.TypeNumber: return (MessageEntity) BoldTag.DeserializeTag(br);
+                case ItalicTag.TypeNumber: return (MessageEntity) ItalicTag.DeserializeTag(br);
+                case CodeTag.TypeNumber: return (MessageEntity) CodeTag.DeserializeTag(br);
+                case PreTag.TypeNumber: return (MessageEntity) PreTag.DeserializeTag(br);
+                case TextUrlTag.TypeNumber: return (MessageEntity) TextUrlTag.DeserializeTag(br);
+                case MentionNameTag.TypeNumber: return (MessageEntity) MentionNameTag.DeserializeTag(br);
+                case InputMentionNameTag.TypeNumber: return (MessageEntity) InputMentionNameTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnknownTag.TypeNumber, MentionTag.TypeNumber, HashtagTag.TypeNumber, BotCommandTag.TypeNumber, UrlTag.TypeNumber, EmailTag.TypeNumber, BoldTag.TypeNumber, ItalicTag.TypeNumber, CodeTag.TypeNumber, PreTag.TypeNumber, TextUrlTag.TypeNumber, MentionNameTag.TypeNumber, InputMentionNameTag.TypeNumber });
             }
         }
 

@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6410a5d2;
+            internal const uint TypeNumber = 0x6410a5d2;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.StickerSet Set { get; }
             public T.Document Cover { get; }
@@ -40,7 +41,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MultiTag : Record<MultiTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3407e51b;
+            internal const uint TypeNumber = 0x3407e51b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.StickerSet Set { get; }
             public Arr<T.Document> Covers { get; }
@@ -84,9 +86,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x6410a5d2: return (StickerSetCovered) Tag.DeserializeTag(br);
-                case 0x3407e51b: return (StickerSetCovered) MultiTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x6410a5d2, 0x3407e51b });
+                case Tag.TypeNumber: return (StickerSetCovered) Tag.DeserializeTag(br);
+                case MultiTag.TypeNumber: return (StickerSetCovered) MultiTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, MultiTag.TypeNumber });
             }
         }
 

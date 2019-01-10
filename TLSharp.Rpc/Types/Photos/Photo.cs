@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Photos
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x20212ca8;
+            internal const uint TypeNumber = 0x20212ca8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Photo Photo { get; }
             public Arr<T.User> Users { get; }
@@ -54,8 +55,8 @@ namespace TLSharp.Rpc.Types.Photos
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x20212ca8: return (Photo) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x20212ca8 });
+                case Tag.TypeNumber: return (Photo) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

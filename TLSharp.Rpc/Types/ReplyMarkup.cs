@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class KeyboardHideTag : Record<KeyboardHideTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa03e5b85;
+            internal const uint TypeNumber = 0xa03e5b85;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Selective { get; }
             
@@ -36,7 +37,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class KeyboardForceReplyTag : Record<KeyboardForceReplyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf4108aa0;
+            internal const uint TypeNumber = 0xf4108aa0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool SingleUse { get; }
             public bool Selective { get; }
@@ -65,7 +67,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class KeyboardTag : Record<KeyboardTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3502758c;
+            internal const uint TypeNumber = 0x3502758c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Resize { get; }
             public bool SingleUse { get; }
@@ -103,7 +106,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InlineTag : Record<InlineTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x48a30254;
+            internal const uint TypeNumber = 0x48a30254;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.KeyboardButtonRow> Rows { get; }
             
@@ -144,11 +148,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xa03e5b85: return (ReplyMarkup) KeyboardHideTag.DeserializeTag(br);
-                case 0xf4108aa0: return (ReplyMarkup) KeyboardForceReplyTag.DeserializeTag(br);
-                case 0x3502758c: return (ReplyMarkup) KeyboardTag.DeserializeTag(br);
-                case 0x48a30254: return (ReplyMarkup) InlineTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xa03e5b85, 0xf4108aa0, 0x3502758c, 0x48a30254 });
+                case KeyboardHideTag.TypeNumber: return (ReplyMarkup) KeyboardHideTag.DeserializeTag(br);
+                case KeyboardForceReplyTag.TypeNumber: return (ReplyMarkup) KeyboardForceReplyTag.DeserializeTag(br);
+                case KeyboardTag.TypeNumber: return (ReplyMarkup) KeyboardTag.DeserializeTag(br);
+                case InlineTag.TypeNumber: return (ReplyMarkup) InlineTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { KeyboardHideTag.TypeNumber, KeyboardForceReplyTag.TypeNumber, KeyboardTag.TypeNumber, InlineTag.TypeNumber });
             }
         }
 

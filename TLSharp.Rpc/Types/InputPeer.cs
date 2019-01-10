@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7f3b18ea;
+            internal const uint TypeNumber = 0x7f3b18ea;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class SelfTag : Record<SelfTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7da07ec9;
+            internal const uint TypeNumber = 0x7da07ec9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatTag : Record<ChatTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x179be863;
+            internal const uint TypeNumber = 0x179be863;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UserTag : Record<UserTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7b8e7de6;
+            internal const uint TypeNumber = 0x7b8e7de6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             public long AccessHash { get; }
@@ -112,7 +116,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTag : Record<ChannelTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x20adaef8;
+            internal const uint TypeNumber = 0x20adaef8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             public long AccessHash { get; }
@@ -159,12 +164,12 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x7f3b18ea: return (InputPeer) EmptyTag.DeserializeTag(br);
-                case 0x7da07ec9: return (InputPeer) SelfTag.DeserializeTag(br);
-                case 0x179be863: return (InputPeer) ChatTag.DeserializeTag(br);
-                case 0x7b8e7de6: return (InputPeer) UserTag.DeserializeTag(br);
-                case 0x20adaef8: return (InputPeer) ChannelTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x7f3b18ea, 0x7da07ec9, 0x179be863, 0x7b8e7de6, 0x20adaef8 });
+                case EmptyTag.TypeNumber: return (InputPeer) EmptyTag.DeserializeTag(br);
+                case SelfTag.TypeNumber: return (InputPeer) SelfTag.DeserializeTag(br);
+                case ChatTag.TypeNumber: return (InputPeer) ChatTag.DeserializeTag(br);
+                case UserTag.TypeNumber: return (InputPeer) UserTag.DeserializeTag(br);
+                case ChannelTag.TypeNumber: return (InputPeer) ChannelTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, SelfTag.TypeNumber, ChatTag.TypeNumber, UserTag.TypeNumber, ChannelTag.TypeNumber });
             }
         }
 

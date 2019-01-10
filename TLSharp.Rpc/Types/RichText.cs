@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class TextEmptyTag : Record<TextEmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xdc3d824f;
+            internal const uint TypeNumber = 0xdc3d824f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextPlainTag : Record<TextPlainTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x744694e0;
+            internal const uint TypeNumber = 0x744694e0;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Text { get; }
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextBoldTag : Record<TextBoldTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6724abc4;
+            internal const uint TypeNumber = 0x6724abc4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextItalicTag : Record<TextItalicTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd912a59c;
+            internal const uint TypeNumber = 0xd912a59c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextUnderlineTag : Record<TextUnderlineTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc12622c4;
+            internal const uint TypeNumber = 0xc12622c4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextStrikeTag : Record<TextStrikeTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9bf8bb95;
+            internal const uint TypeNumber = 0x9bf8bb95;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -155,7 +161,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextFixedTag : Record<TextFixedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6c3f19b9;
+            internal const uint TypeNumber = 0x6c3f19b9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             
@@ -179,7 +186,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextUrlTag : Record<TextUrlTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3c2884c1;
+            internal const uint TypeNumber = 0x3c2884c1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             public string Url { get; }
@@ -213,7 +221,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextEmailTag : Record<TextEmailTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xde5a0dd6;
+            internal const uint TypeNumber = 0xde5a0dd6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.RichText Text { get; }
             public string Email { get; }
@@ -242,7 +251,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextConcatTag : Record<TextConcatTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7e6260d7;
+            internal const uint TypeNumber = 0x7e6260d7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.RichText> Texts { get; }
             
@@ -289,17 +299,17 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xdc3d824f: return (RichText) TextEmptyTag.DeserializeTag(br);
-                case 0x744694e0: return (RichText) TextPlainTag.DeserializeTag(br);
-                case 0x6724abc4: return (RichText) TextBoldTag.DeserializeTag(br);
-                case 0xd912a59c: return (RichText) TextItalicTag.DeserializeTag(br);
-                case 0xc12622c4: return (RichText) TextUnderlineTag.DeserializeTag(br);
-                case 0x9bf8bb95: return (RichText) TextStrikeTag.DeserializeTag(br);
-                case 0x6c3f19b9: return (RichText) TextFixedTag.DeserializeTag(br);
-                case 0x3c2884c1: return (RichText) TextUrlTag.DeserializeTag(br);
-                case 0xde5a0dd6: return (RichText) TextEmailTag.DeserializeTag(br);
-                case 0x7e6260d7: return (RichText) TextConcatTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xdc3d824f, 0x744694e0, 0x6724abc4, 0xd912a59c, 0xc12622c4, 0x9bf8bb95, 0x6c3f19b9, 0x3c2884c1, 0xde5a0dd6, 0x7e6260d7 });
+                case TextEmptyTag.TypeNumber: return (RichText) TextEmptyTag.DeserializeTag(br);
+                case TextPlainTag.TypeNumber: return (RichText) TextPlainTag.DeserializeTag(br);
+                case TextBoldTag.TypeNumber: return (RichText) TextBoldTag.DeserializeTag(br);
+                case TextItalicTag.TypeNumber: return (RichText) TextItalicTag.DeserializeTag(br);
+                case TextUnderlineTag.TypeNumber: return (RichText) TextUnderlineTag.DeserializeTag(br);
+                case TextStrikeTag.TypeNumber: return (RichText) TextStrikeTag.DeserializeTag(br);
+                case TextFixedTag.TypeNumber: return (RichText) TextFixedTag.DeserializeTag(br);
+                case TextUrlTag.TypeNumber: return (RichText) TextUrlTag.DeserializeTag(br);
+                case TextEmailTag.TypeNumber: return (RichText) TextEmailTag.DeserializeTag(br);
+                case TextConcatTag.TypeNumber: return (RichText) TextConcatTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { TextEmptyTag.TypeNumber, TextPlainTag.TypeNumber, TextBoldTag.TypeNumber, TextItalicTag.TypeNumber, TextUnderlineTag.TypeNumber, TextStrikeTag.TypeNumber, TextFixedTag.TypeNumber, TextUrlTag.TypeNumber, TextEmailTag.TypeNumber, TextConcatTag.TypeNumber });
             }
         }
 

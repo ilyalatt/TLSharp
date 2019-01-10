@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3ded6320;
+            internal const uint TypeNumber = 0x3ded6320;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhotoTag : Record<PhotoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3d8ce53d;
+            internal const uint TypeNumber = 0x3d8ce53d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Photo Photo { get; }
             public string Caption { get; }
@@ -64,7 +66,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GeoTag : Record<GeoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x56e0d474;
+            internal const uint TypeNumber = 0x56e0d474;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.GeoPoint Geo { get; }
             
@@ -88,7 +91,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ContactTag : Record<ContactTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5e7d2f39;
+            internal const uint TypeNumber = 0x5e7d2f39;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string PhoneNumber { get; }
             public string FirstName { get; }
@@ -127,7 +131,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UnsupportedTag : Record<UnsupportedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9f84f49e;
+            internal const uint TypeNumber = 0x9f84f49e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -151,7 +156,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DocumentTag : Record<DocumentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf3e02ea8;
+            internal const uint TypeNumber = 0xf3e02ea8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Document Document { get; }
             public string Caption { get; }
@@ -180,7 +186,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class WebPageTag : Record<WebPageTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa32dd600;
+            internal const uint TypeNumber = 0xa32dd600;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.WebPage Webpage { get; }
             
@@ -204,7 +211,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class VenueTag : Record<VenueTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7912b71f;
+            internal const uint TypeNumber = 0x7912b71f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.GeoPoint Geo { get; }
             public string Title { get; }
@@ -248,7 +256,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class GameTag : Record<GameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xfdb19008;
+            internal const uint TypeNumber = 0xfdb19008;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Game Game { get; }
             
@@ -272,7 +281,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InvoiceTag : Record<InvoiceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x84551347;
+            internal const uint TypeNumber = 0x84551347;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool ShippingAddressRequested { get; }
             public bool Test { get; }
@@ -359,17 +369,17 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x3ded6320: return (MessageMedia) EmptyTag.DeserializeTag(br);
-                case 0x3d8ce53d: return (MessageMedia) PhotoTag.DeserializeTag(br);
-                case 0x56e0d474: return (MessageMedia) GeoTag.DeserializeTag(br);
-                case 0x5e7d2f39: return (MessageMedia) ContactTag.DeserializeTag(br);
-                case 0x9f84f49e: return (MessageMedia) UnsupportedTag.DeserializeTag(br);
-                case 0xf3e02ea8: return (MessageMedia) DocumentTag.DeserializeTag(br);
-                case 0xa32dd600: return (MessageMedia) WebPageTag.DeserializeTag(br);
-                case 0x7912b71f: return (MessageMedia) VenueTag.DeserializeTag(br);
-                case 0xfdb19008: return (MessageMedia) GameTag.DeserializeTag(br);
-                case 0x84551347: return (MessageMedia) InvoiceTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x3ded6320, 0x3d8ce53d, 0x56e0d474, 0x5e7d2f39, 0x9f84f49e, 0xf3e02ea8, 0xa32dd600, 0x7912b71f, 0xfdb19008, 0x84551347 });
+                case EmptyTag.TypeNumber: return (MessageMedia) EmptyTag.DeserializeTag(br);
+                case PhotoTag.TypeNumber: return (MessageMedia) PhotoTag.DeserializeTag(br);
+                case GeoTag.TypeNumber: return (MessageMedia) GeoTag.DeserializeTag(br);
+                case ContactTag.TypeNumber: return (MessageMedia) ContactTag.DeserializeTag(br);
+                case UnsupportedTag.TypeNumber: return (MessageMedia) UnsupportedTag.DeserializeTag(br);
+                case DocumentTag.TypeNumber: return (MessageMedia) DocumentTag.DeserializeTag(br);
+                case WebPageTag.TypeNumber: return (MessageMedia) WebPageTag.DeserializeTag(br);
+                case VenueTag.TypeNumber: return (MessageMedia) VenueTag.DeserializeTag(br);
+                case GameTag.TypeNumber: return (MessageMedia) GameTag.DeserializeTag(br);
+                case InvoiceTag.TypeNumber: return (MessageMedia) InvoiceTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, PhotoTag.TypeNumber, GeoTag.TypeNumber, ContactTag.TypeNumber, UnsupportedTag.TypeNumber, DocumentTag.TypeNumber, WebPageTag.TypeNumber, VenueTag.TypeNumber, GameTag.TypeNumber, InvoiceTag.TypeNumber });
             }
         }
 

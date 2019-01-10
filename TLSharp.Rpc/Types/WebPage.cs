@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xeb1477e8;
+            internal const uint TypeNumber = 0xeb1477e8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PendingTag : Record<PendingTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xc586da1c;
+            internal const uint TypeNumber = 0xc586da1c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public int Date { get; }
@@ -64,7 +66,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5f07b4bc;
+            internal const uint TypeNumber = 0x5f07b4bc;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public string Url { get; }
@@ -170,7 +173,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class NotModifiedTag : Record<NotModifiedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x85849473;
+            internal const uint TypeNumber = 0x85849473;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -211,11 +215,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xeb1477e8: return (WebPage) EmptyTag.DeserializeTag(br);
-                case 0xc586da1c: return (WebPage) PendingTag.DeserializeTag(br);
-                case 0x5f07b4bc: return (WebPage) Tag.DeserializeTag(br);
-                case 0x85849473: return (WebPage) NotModifiedTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xeb1477e8, 0xc586da1c, 0x5f07b4bc, 0x85849473 });
+                case EmptyTag.TypeNumber: return (WebPage) EmptyTag.DeserializeTag(br);
+                case PendingTag.TypeNumber: return (WebPage) PendingTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (WebPage) Tag.DeserializeTag(br);
+                case NotModifiedTag.TypeNumber: return (WebPage) NotModifiedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, PendingTag.TypeNumber, Tag.TypeNumber, NotModifiedTag.TypeNumber });
             }
         }
 

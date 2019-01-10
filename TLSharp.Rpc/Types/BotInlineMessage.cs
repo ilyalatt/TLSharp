@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class MediaAutoTag : Record<MediaAutoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0a74b15b;
+            internal const uint TypeNumber = 0x0a74b15b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Caption { get; }
             public Option<T.ReplyMarkup> ReplyMarkup { get; }
@@ -42,7 +43,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class TextTag : Record<TextTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8c7f65e2;
+            internal const uint TypeNumber = 0x8c7f65e2;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool NoWebpage { get; }
             public string Message { get; }
@@ -82,7 +84,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaGeoTag : Record<MediaGeoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3a8fd8b8;
+            internal const uint TypeNumber = 0x3a8fd8b8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.GeoPoint Geo { get; }
             public Option<T.ReplyMarkup> ReplyMarkup { get; }
@@ -113,7 +116,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaVenueTag : Record<MediaVenueTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x4366232e;
+            internal const uint TypeNumber = 0x4366232e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.GeoPoint Geo { get; }
             public string Title { get; }
@@ -164,7 +168,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaContactTag : Record<MediaContactTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x35edb4d4;
+            internal const uint TypeNumber = 0x35edb4d4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string PhoneNumber { get; }
             public string FirstName { get; }
@@ -223,12 +228,12 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x0a74b15b: return (BotInlineMessage) MediaAutoTag.DeserializeTag(br);
-                case 0x8c7f65e2: return (BotInlineMessage) TextTag.DeserializeTag(br);
-                case 0x3a8fd8b8: return (BotInlineMessage) MediaGeoTag.DeserializeTag(br);
-                case 0x4366232e: return (BotInlineMessage) MediaVenueTag.DeserializeTag(br);
-                case 0x35edb4d4: return (BotInlineMessage) MediaContactTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x0a74b15b, 0x8c7f65e2, 0x3a8fd8b8, 0x4366232e, 0x35edb4d4 });
+                case MediaAutoTag.TypeNumber: return (BotInlineMessage) MediaAutoTag.DeserializeTag(br);
+                case TextTag.TypeNumber: return (BotInlineMessage) TextTag.DeserializeTag(br);
+                case MediaGeoTag.TypeNumber: return (BotInlineMessage) MediaGeoTag.DeserializeTag(br);
+                case MediaVenueTag.TypeNumber: return (BotInlineMessage) MediaVenueTag.DeserializeTag(br);
+                case MediaContactTag.TypeNumber: return (BotInlineMessage) MediaContactTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { MediaAutoTag.TypeNumber, TextTag.TypeNumber, MediaGeoTag.TypeNumber, MediaVenueTag.TypeNumber, MediaContactTag.TypeNumber });
             }
         }
 

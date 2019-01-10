@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,11 +21,27 @@ namespace TLSharp.Rpc
 {
     class TlTransport
     {
-        private readonly MtProtoCipherTransport _transport;
-        private readonly Session _session;
-        readonly Task _receiveLoopTask;
+        readonly MtProtoCipherTransport _transport;
+        readonly Session _session;
+        readonly ConcurrentStack<long> _unconfirmedMsgIds = new ConcurrentStack<long>(); // such a bad design
 
-        readonly List<long> _needConfirmation = new List<long>();
+        readonly Task _receiveLoopTask;
+        readonly Dictionary<long, TaskCompletionSource<RpcResult>> _rpcFlow =
+            new Dictionary<long, TaskCompletionSource<RpcResult>>();
+        async Task ReceiveLoop()
+        {
+            while (true)
+            {
+                var msgBody = await _transport.Receive();
+                var msg = TlSystemMessageHandler.ReadMsg(msgBody);
+                _unconfirmedMsgIds.Push(msg.Id);
+
+                Option<TaskCompletionSource<RpcResult>> FindFlow(long id) =>
+                    _rpcFlow.TryGetValue(id, out var flow) ? Some(flow) : None;
+                var callResults = msg.Apply(TlSystemMessageHandler.Handle(_session));
+                callResults.Iter(res => FindFlow(res.Id).Iter(flow => flow.SetResult(res)));
+            }
+        }
 
         public TlTransport(MtProtoCipherTransport transport, Session session)
         {
@@ -36,21 +53,27 @@ namespace TLSharp.Rpc
 
         async Task SendConfirmations()
         {
-            if (_needConfirmation.Count == 0) return;
+            var cnt = _unconfirmedMsgIds.Count;
+            if (cnt == 0) return;
 
-            var ack = (MsgsAck) new MsgsAck.Tag(_needConfirmation.ToArr());
-            var msgId = _session.GetNewMessageId();
-            await _transport.Send(messageId: msgId, incSeqNum: false, dto: ack);
+            const int magic = 3;
+            var ids = new List<long>(cnt + magic);
+            while (_unconfirmedMsgIds.TryPop(out var id)) ids.Add(id);
 
-            _needConfirmation.Clear();
+            try
+            {
+                var ack = (MsgsAck) new MsgsAck.Tag(ids.ToArr());
+                var msgId = _session.GetNewMessageId();
+                await _transport.Send(messageId: msgId, incSeqNum: false, dto: ack);
+            }
+            finally
+            {
+                _unconfirmedMsgIds.PushRange(ids.ToArray());
+            }
         }
-
-        readonly Dictionary<long, TaskCompletionSource<RpcResult>> _rpcFlow =
-            new Dictionary<long, TaskCompletionSource<RpcResult>>();
 
 
         readonly SemaphoreSlim _rpcQueue = new SemaphoreSlim(1, 1);
-
         async Task<T> WithRpcQueue<T>(Func<Task<T>> func)
         {
             await _rpcQueue.WaitAsync();
@@ -99,25 +122,6 @@ namespace TLSharp.Rpc
                 if (exc is TlBadSalt) continue;
                 throw exc;
             }
-        }
-
-        async Task ReceiveLoop()
-        {
-            while (true)
-            {
-                var msgBody = await _transport.Receive();
-                var msg = TlSystemMessageHandler.ReadMsg(msgBody);
-                _needConfirmation.Add(msg.Id);
-
-                var callResults = msg.Apply(TlSystemMessageHandler.Handle(_session));
-                callResults.Iter(res => _rpcFlow[res.Id].SetResult(res));
-            }
-        }
-
-        async Task<Pong> SendPingAsync()
-        {
-            var ping = new Ping(Helpers.GenerateRandomLong());
-            return await Call(ping);
         }
     }
 }

@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class AnswerUnknownTag : Record<AnswerUnknownTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5e2ad36e;
+            internal const uint TypeNumber = 0x5e2ad36e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AnswerDroppedRunningTag : Record<AnswerDroppedRunningTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xcd78e586;
+            internal const uint TypeNumber = 0xcd78e586;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AnswerDroppedTag : Record<AnswerDroppedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa43ad8b7;
+            internal const uint TypeNumber = 0xa43ad8b7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long MsgId { get; }
             public int SeqNo { get; }
@@ -109,10 +112,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x5e2ad36e: return (RpcDropAnswer) AnswerUnknownTag.DeserializeTag(br);
-                case 0xcd78e586: return (RpcDropAnswer) AnswerDroppedRunningTag.DeserializeTag(br);
-                case 0xa43ad8b7: return (RpcDropAnswer) AnswerDroppedTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x5e2ad36e, 0xcd78e586, 0xa43ad8b7 });
+                case AnswerUnknownTag.TypeNumber: return (RpcDropAnswer) AnswerUnknownTag.DeserializeTag(br);
+                case AnswerDroppedRunningTag.TypeNumber: return (RpcDropAnswer) AnswerDroppedRunningTag.DeserializeTag(br);
+                case AnswerDroppedTag.TypeNumber: return (RpcDropAnswer) AnswerDroppedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { AnswerUnknownTag.TypeNumber, AnswerDroppedRunningTag.TypeNumber, AnswerDroppedTag.TypeNumber });
             }
         }
 

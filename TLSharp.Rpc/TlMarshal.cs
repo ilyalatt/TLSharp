@@ -60,7 +60,7 @@ namespace TLSharp.Rpc
             return padding;
         }
 
-        public static Arr<byte> ReadBytes(BinaryReader br)
+        public static byte[] ReadRawBytes(BinaryReader br)
         {
             var firstByte = br.ReadByte();
 
@@ -73,10 +73,10 @@ namespace TLSharp.Rpc
             return data;
         }
 
-        public static void WriteBytes(BinaryWriter bw, Arr<byte> btsWrapper)
-        {
-            var bts = btsWrapper.ToArray();
+        public static Arr<byte> ReadBytes(BinaryReader br) => ReadRawBytes(br).ToArr();
 
+        public static void WriteRawBytes(BinaryWriter bw, byte[] bts)
+        {
             if (bts.Length < BytesMagic)
             {
                 bw.Write((byte) bts.Length);
@@ -88,11 +88,13 @@ namespace TLSharp.Rpc
                 bw.Write((byte) (bts.Length >> 8));
                 bw.Write((byte) (bts.Length >> 16));
             }
-            bw.Write(bts.ToArray()); // the netstandard limitation
+            bw.Write(bts);
 
             var padding = CalculateBtsPadding(bts.Length);
             for (var i = 0; i < padding; i++) bw.Write((byte) 0);
         }
+
+        public static void WriteBytes(BinaryWriter bw, Arr<byte> bts) => WriteRawBytes(bw, bts.ToArray());
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -112,7 +114,7 @@ namespace TLSharp.Rpc
             {
                 case TrueNum: return true;
                 case FalseNum: return false;
-                default: throw TlTransportException.UnexpectedBoolTypeNumber(n);
+                default: throw TlRpcDeserializeException.UnexpectedBoolTypeNumber(n);
             }
         }
 
@@ -146,7 +148,7 @@ namespace TLSharp.Rpc
         ) => br =>
         {
             var typeNumber = ReadUint(br);
-            if (typeNumber != VectorNum) throw TlTransportException.UnexpectedVectorTypeNumber(typeNumber);
+            if (typeNumber != VectorNum) throw TlRpcDeserializeException.UnexpectedVectorTypeNumber(typeNumber);
 
             var count = ReadInt(br);
             var arr = new T[count];

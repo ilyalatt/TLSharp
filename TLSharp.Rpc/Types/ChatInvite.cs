@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class AlreadyTag : Record<AlreadyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5a686d7c;
+            internal const uint TypeNumber = 0x5a686d7c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Chat Chat { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xdb74f558;
+            internal const uint TypeNumber = 0xdb74f558;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Channel { get; }
             public bool Broadcast { get; }
@@ -107,9 +109,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x5a686d7c: return (ChatInvite) AlreadyTag.DeserializeTag(br);
-                case 0xdb74f558: return (ChatInvite) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x5a686d7c, 0xdb74f558 });
+                case AlreadyTag.TypeNumber: return (ChatInvite) AlreadyTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (ChatInvite) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { AlreadyTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

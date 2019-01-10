@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1837c364;
+            internal const uint TypeNumber = 0x1837c364;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadedTag : Record<UploadedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x64bd0306;
+            internal const uint TypeNumber = 0x64bd0306;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public int Parts { get; }
@@ -74,7 +76,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5a17b5e5;
+            internal const uint TypeNumber = 0x5a17b5e5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -103,7 +106,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class BigUploadedTag : Record<BigUploadedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x2dc173c8;
+            internal const uint TypeNumber = 0x2dc173c8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public int Parts { get; }
@@ -154,11 +158,11 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x1837c364: return (InputEncryptedFile) EmptyTag.DeserializeTag(br);
-                case 0x64bd0306: return (InputEncryptedFile) UploadedTag.DeserializeTag(br);
-                case 0x5a17b5e5: return (InputEncryptedFile) Tag.DeserializeTag(br);
-                case 0x2dc173c8: return (InputEncryptedFile) BigUploadedTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x1837c364, 0x64bd0306, 0x5a17b5e5, 0x2dc173c8 });
+                case EmptyTag.TypeNumber: return (InputEncryptedFile) EmptyTag.DeserializeTag(br);
+                case UploadedTag.TypeNumber: return (InputEncryptedFile) UploadedTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (InputEncryptedFile) Tag.DeserializeTag(br);
+                case BigUploadedTag.TypeNumber: return (InputEncryptedFile) BigUploadedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, UploadedTag.TypeNumber, Tag.TypeNumber, BigUploadedTag.TypeNumber });
             }
         }
 

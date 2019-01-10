@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class ValueAllowContactsTag : Record<ValueAllowContactsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0d09e07b;
+            internal const uint TypeNumber = 0x0d09e07b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueAllowAllTag : Record<ValueAllowAllTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x184b35ce;
+            internal const uint TypeNumber = 0x184b35ce;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueAllowUsersTag : Record<ValueAllowUsersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x131cc67f;
+            internal const uint TypeNumber = 0x131cc67f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.InputUser> Users { get; }
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueDisallowContactsTag : Record<ValueDisallowContactsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0ba52007;
+            internal const uint TypeNumber = 0x0ba52007;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueDisallowAllTag : Record<ValueDisallowAllTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd66b66c9;
+            internal const uint TypeNumber = 0xd66b66c9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ValueDisallowUsersTag : Record<ValueDisallowUsersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x90110467;
+            internal const uint TypeNumber = 0x90110467;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Arr<T.InputUser> Users { get; }
             
@@ -174,13 +180,13 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x0d09e07b: return (InputPrivacyRule) ValueAllowContactsTag.DeserializeTag(br);
-                case 0x184b35ce: return (InputPrivacyRule) ValueAllowAllTag.DeserializeTag(br);
-                case 0x131cc67f: return (InputPrivacyRule) ValueAllowUsersTag.DeserializeTag(br);
-                case 0x0ba52007: return (InputPrivacyRule) ValueDisallowContactsTag.DeserializeTag(br);
-                case 0xd66b66c9: return (InputPrivacyRule) ValueDisallowAllTag.DeserializeTag(br);
-                case 0x90110467: return (InputPrivacyRule) ValueDisallowUsersTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x0d09e07b, 0x184b35ce, 0x131cc67f, 0x0ba52007, 0xd66b66c9, 0x90110467 });
+                case ValueAllowContactsTag.TypeNumber: return (InputPrivacyRule) ValueAllowContactsTag.DeserializeTag(br);
+                case ValueAllowAllTag.TypeNumber: return (InputPrivacyRule) ValueAllowAllTag.DeserializeTag(br);
+                case ValueAllowUsersTag.TypeNumber: return (InputPrivacyRule) ValueAllowUsersTag.DeserializeTag(br);
+                case ValueDisallowContactsTag.TypeNumber: return (InputPrivacyRule) ValueDisallowContactsTag.DeserializeTag(br);
+                case ValueDisallowAllTag.TypeNumber: return (InputPrivacyRule) ValueDisallowAllTag.DeserializeTag(br);
+                case ValueDisallowUsersTag.TypeNumber: return (InputPrivacyRule) ValueDisallowUsersTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { ValueAllowContactsTag.TypeNumber, ValueAllowAllTag.TypeNumber, ValueAllowUsersTag.TypeNumber, ValueDisallowContactsTag.TypeNumber, ValueDisallowAllTag.TypeNumber, ValueDisallowUsersTag.TypeNumber });
             }
         }
 

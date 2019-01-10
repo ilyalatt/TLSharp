@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x5366c915;
+            internal const uint TypeNumber = 0x5366c915;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class WaitingTag : Record<WaitingTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1b8f4ad1;
+            internal const uint TypeNumber = 0x1b8f4ad1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -91,7 +93,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RequestedTag : Record<RequestedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x83761ce4;
+            internal const uint TypeNumber = 0x83761ce4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -145,7 +148,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AcceptedTag : Record<AcceptedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6d003d3f;
+            internal const uint TypeNumber = 0x6d003d3f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -199,7 +203,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xffe6ab67;
+            internal const uint TypeNumber = 0xffe6ab67;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public long Id { get; }
             public long AccessHash { get; }
@@ -273,7 +278,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DiscardedTag : Record<DiscardedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x50ca4de1;
+            internal const uint TypeNumber = 0x50ca4de1;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool NeedRating { get; }
             public bool NeedDebug { get; }
@@ -336,13 +342,13 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x5366c915: return (PhoneCall) EmptyTag.DeserializeTag(br);
-                case 0x1b8f4ad1: return (PhoneCall) WaitingTag.DeserializeTag(br);
-                case 0x83761ce4: return (PhoneCall) RequestedTag.DeserializeTag(br);
-                case 0x6d003d3f: return (PhoneCall) AcceptedTag.DeserializeTag(br);
-                case 0xffe6ab67: return (PhoneCall) Tag.DeserializeTag(br);
-                case 0x50ca4de1: return (PhoneCall) DiscardedTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x5366c915, 0x1b8f4ad1, 0x83761ce4, 0x6d003d3f, 0xffe6ab67, 0x50ca4de1 });
+                case EmptyTag.TypeNumber: return (PhoneCall) EmptyTag.DeserializeTag(br);
+                case WaitingTag.TypeNumber: return (PhoneCall) WaitingTag.DeserializeTag(br);
+                case RequestedTag.TypeNumber: return (PhoneCall) RequestedTag.DeserializeTag(br);
+                case AcceptedTag.TypeNumber: return (PhoneCall) AcceptedTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (PhoneCall) Tag.DeserializeTag(br);
+                case DiscardedTag.TypeNumber: return (PhoneCall) DiscardedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, WaitingTag.TypeNumber, RequestedTag.TypeNumber, AcceptedTag.TypeNumber, Tag.TypeNumber, DiscardedTag.TypeNumber });
             }
         }
 

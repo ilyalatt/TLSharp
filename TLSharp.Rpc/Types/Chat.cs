@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9ba2d800;
+            internal const uint TypeNumber = 0x9ba2d800;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Id { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd91cdd54;
+            internal const uint TypeNumber = 0xd91cdd54;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Creator { get; }
             public bool Kicked { get; }
@@ -115,7 +117,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ForbiddenTag : Record<ForbiddenTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x07328bdb;
+            internal const uint TypeNumber = 0x07328bdb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Id { get; }
             public string Title { get; }
@@ -144,7 +147,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTag : Record<ChannelTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa14dca52;
+            internal const uint TypeNumber = 0xa14dca52;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Creator { get; }
             public bool Kicked { get; }
@@ -253,7 +257,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelForbiddenTag : Record<ChannelForbiddenTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8537784f;
+            internal const uint TypeNumber = 0x8537784f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Broadcast { get; }
             public bool Megagroup { get; }
@@ -315,12 +320,12 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x9ba2d800: return (Chat) EmptyTag.DeserializeTag(br);
-                case 0xd91cdd54: return (Chat) Tag.DeserializeTag(br);
-                case 0x07328bdb: return (Chat) ForbiddenTag.DeserializeTag(br);
-                case 0xa14dca52: return (Chat) ChannelTag.DeserializeTag(br);
-                case 0x8537784f: return (Chat) ChannelForbiddenTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x9ba2d800, 0xd91cdd54, 0x07328bdb, 0xa14dca52, 0x8537784f });
+                case EmptyTag.TypeNumber: return (Chat) EmptyTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (Chat) Tag.DeserializeTag(br);
+                case ForbiddenTag.TypeNumber: return (Chat) ForbiddenTag.DeserializeTag(br);
+                case ChannelTag.TypeNumber: return (Chat) ChannelTag.DeserializeTag(br);
+                case ChannelForbiddenTag.TypeNumber: return (Chat) ChannelForbiddenTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, Tag.TypeNumber, ForbiddenTag.TypeNumber, ChannelTag.TypeNumber, ChannelForbiddenTag.TypeNumber });
             }
         }
 

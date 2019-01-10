@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1ca48f57;
+            internal const uint TypeNumber = 0x1ca48f57;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadedTag : Record<UploadedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x927c55b4;
+            internal const uint TypeNumber = 0x927c55b4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.InputFile File { get; }
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x8953ad37;
+            internal const uint TypeNumber = 0x8953ad37;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.InputPhoto Id { get; }
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x1ca48f57: return (InputChatPhoto) EmptyTag.DeserializeTag(br);
-                case 0x927c55b4: return (InputChatPhoto) UploadedTag.DeserializeTag(br);
-                case 0x8953ad37: return (InputChatPhoto) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x1ca48f57, 0x927c55b4, 0x8953ad37 });
+                case EmptyTag.TypeNumber: return (InputChatPhoto) EmptyTag.DeserializeTag(br);
+                case UploadedTag.TypeNumber: return (InputChatPhoto) UploadedTag.DeserializeTag(br);
+                case Tag.TypeNumber: return (InputChatPhoto) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, UploadedTag.TypeNumber, Tag.TypeNumber });
             }
         }
 

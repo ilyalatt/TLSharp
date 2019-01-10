@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Messages
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x560f8935;
+            internal const uint TypeNumber = 0x560f8935;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Date { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types.Messages
 
         public sealed class FileTag : Record<FileTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9493ff32;
+            internal const uint TypeNumber = 0x9493ff32;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Date { get; }
             public T.EncryptedFile File { get; }
@@ -79,9 +81,9 @@ namespace TLSharp.Rpc.Types.Messages
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x560f8935: return (SentEncryptedMessage) Tag.DeserializeTag(br);
-                case 0x9493ff32: return (SentEncryptedMessage) FileTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x560f8935, 0x9493ff32 });
+                case Tag.TypeNumber: return (SentEncryptedMessage) Tag.DeserializeTag(br);
+                case FileTag.TypeNumber: return (SentEncryptedMessage) FileTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, FileTag.TypeNumber });
             }
         }
 

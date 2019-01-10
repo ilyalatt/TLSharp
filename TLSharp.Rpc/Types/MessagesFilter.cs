@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class InputEmptyTag : Record<InputEmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x57e2f66c;
+            internal const uint TypeNumber = 0x57e2f66c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputPhotosTag : Record<InputPhotosTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9609a51c;
+            internal const uint TypeNumber = 0x9609a51c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputVideoTag : Record<InputVideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9fc00e65;
+            internal const uint TypeNumber = 0x9fc00e65;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -83,7 +86,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputPhotoVideoTag : Record<InputPhotoVideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x56e9f0e4;
+            internal const uint TypeNumber = 0x56e9f0e4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -107,7 +111,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputPhotoVideoDocumentsTag : Record<InputPhotoVideoDocumentsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd95e73bb;
+            internal const uint TypeNumber = 0xd95e73bb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -131,7 +136,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputDocumentTag : Record<InputDocumentTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9eddf188;
+            internal const uint TypeNumber = 0x9eddf188;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -155,7 +161,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputUrlTag : Record<InputUrlTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7ef0dd87;
+            internal const uint TypeNumber = 0x7ef0dd87;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -179,7 +186,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputGifTag : Record<InputGifTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xffc86587;
+            internal const uint TypeNumber = 0xffc86587;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -203,7 +211,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputVoiceTag : Record<InputVoiceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x50f5c392;
+            internal const uint TypeNumber = 0x50f5c392;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -227,7 +236,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputMusicTag : Record<InputMusicTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3751b49e;
+            internal const uint TypeNumber = 0x3751b49e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -251,7 +261,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputChatPhotosTag : Record<InputChatPhotosTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3a20ecb8;
+            internal const uint TypeNumber = 0x3a20ecb8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -275,7 +286,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputPhoneCallsTag : Record<InputPhoneCallsTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x80c99768;
+            internal const uint TypeNumber = 0x80c99768;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Missed { get; }
             
@@ -300,7 +312,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputRoundVoiceTag : Record<InputRoundVoiceTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x7a7c17a4;
+            internal const uint TypeNumber = 0x7a7c17a4;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -324,7 +337,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class InputRoundVideoTag : Record<InputRoundVideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb549da53;
+            internal const uint TypeNumber = 0xb549da53;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -375,21 +389,21 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x57e2f66c: return (MessagesFilter) InputEmptyTag.DeserializeTag(br);
-                case 0x9609a51c: return (MessagesFilter) InputPhotosTag.DeserializeTag(br);
-                case 0x9fc00e65: return (MessagesFilter) InputVideoTag.DeserializeTag(br);
-                case 0x56e9f0e4: return (MessagesFilter) InputPhotoVideoTag.DeserializeTag(br);
-                case 0xd95e73bb: return (MessagesFilter) InputPhotoVideoDocumentsTag.DeserializeTag(br);
-                case 0x9eddf188: return (MessagesFilter) InputDocumentTag.DeserializeTag(br);
-                case 0x7ef0dd87: return (MessagesFilter) InputUrlTag.DeserializeTag(br);
-                case 0xffc86587: return (MessagesFilter) InputGifTag.DeserializeTag(br);
-                case 0x50f5c392: return (MessagesFilter) InputVoiceTag.DeserializeTag(br);
-                case 0x3751b49e: return (MessagesFilter) InputMusicTag.DeserializeTag(br);
-                case 0x3a20ecb8: return (MessagesFilter) InputChatPhotosTag.DeserializeTag(br);
-                case 0x80c99768: return (MessagesFilter) InputPhoneCallsTag.DeserializeTag(br);
-                case 0x7a7c17a4: return (MessagesFilter) InputRoundVoiceTag.DeserializeTag(br);
-                case 0xb549da53: return (MessagesFilter) InputRoundVideoTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x57e2f66c, 0x9609a51c, 0x9fc00e65, 0x56e9f0e4, 0xd95e73bb, 0x9eddf188, 0x7ef0dd87, 0xffc86587, 0x50f5c392, 0x3751b49e, 0x3a20ecb8, 0x80c99768, 0x7a7c17a4, 0xb549da53 });
+                case InputEmptyTag.TypeNumber: return (MessagesFilter) InputEmptyTag.DeserializeTag(br);
+                case InputPhotosTag.TypeNumber: return (MessagesFilter) InputPhotosTag.DeserializeTag(br);
+                case InputVideoTag.TypeNumber: return (MessagesFilter) InputVideoTag.DeserializeTag(br);
+                case InputPhotoVideoTag.TypeNumber: return (MessagesFilter) InputPhotoVideoTag.DeserializeTag(br);
+                case InputPhotoVideoDocumentsTag.TypeNumber: return (MessagesFilter) InputPhotoVideoDocumentsTag.DeserializeTag(br);
+                case InputDocumentTag.TypeNumber: return (MessagesFilter) InputDocumentTag.DeserializeTag(br);
+                case InputUrlTag.TypeNumber: return (MessagesFilter) InputUrlTag.DeserializeTag(br);
+                case InputGifTag.TypeNumber: return (MessagesFilter) InputGifTag.DeserializeTag(br);
+                case InputVoiceTag.TypeNumber: return (MessagesFilter) InputVoiceTag.DeserializeTag(br);
+                case InputMusicTag.TypeNumber: return (MessagesFilter) InputMusicTag.DeserializeTag(br);
+                case InputChatPhotosTag.TypeNumber: return (MessagesFilter) InputChatPhotosTag.DeserializeTag(br);
+                case InputPhoneCallsTag.TypeNumber: return (MessagesFilter) InputPhoneCallsTag.DeserializeTag(br);
+                case InputRoundVoiceTag.TypeNumber: return (MessagesFilter) InputRoundVoiceTag.DeserializeTag(br);
+                case InputRoundVideoTag.TypeNumber: return (MessagesFilter) InputRoundVideoTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { InputEmptyTag.TypeNumber, InputPhotosTag.TypeNumber, InputVideoTag.TypeNumber, InputPhotoVideoTag.TypeNumber, InputPhotoVideoDocumentsTag.TypeNumber, InputDocumentTag.TypeNumber, InputUrlTag.TypeNumber, InputGifTag.TypeNumber, InputVoiceTag.TypeNumber, InputMusicTag.TypeNumber, InputChatPhotosTag.TypeNumber, InputPhoneCallsTag.TypeNumber, InputRoundVoiceTag.TypeNumber, InputRoundVideoTag.TypeNumber });
             }
         }
 

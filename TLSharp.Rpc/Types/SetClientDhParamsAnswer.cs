@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class DhGenOkTag : Record<DhGenOkTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3bcbf734;
+            internal const uint TypeNumber = 0x3bcbf734;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Int128 Nonce { get; }
             public Int128 ServerNonce { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DhGenRetryTag : Record<DhGenRetryTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x46dc1fb9;
+            internal const uint TypeNumber = 0x46dc1fb9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Int128 Nonce { get; }
             public Int128 ServerNonce { get; }
@@ -79,7 +81,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DhGenFailTag : Record<DhGenFailTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xa69dae02;
+            internal const uint TypeNumber = 0xa69dae02;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Int128 Nonce { get; }
             public Int128 ServerNonce { get; }
@@ -129,10 +132,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x3bcbf734: return (SetClientDhParamsAnswer) DhGenOkTag.DeserializeTag(br);
-                case 0x46dc1fb9: return (SetClientDhParamsAnswer) DhGenRetryTag.DeserializeTag(br);
-                case 0xa69dae02: return (SetClientDhParamsAnswer) DhGenFailTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x3bcbf734, 0x46dc1fb9, 0xa69dae02 });
+                case DhGenOkTag.TypeNumber: return (SetClientDhParamsAnswer) DhGenOkTag.DeserializeTag(br);
+                case DhGenRetryTag.TypeNumber: return (SetClientDhParamsAnswer) DhGenRetryTag.DeserializeTag(br);
+                case DhGenFailTag.TypeNumber: return (SetClientDhParamsAnswer) DhGenFailTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { DhGenOkTag.TypeNumber, DhGenRetryTag.TypeNumber, DhGenFailTag.TypeNumber });
             }
         }
 

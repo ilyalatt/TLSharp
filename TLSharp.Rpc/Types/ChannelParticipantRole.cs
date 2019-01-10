@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class RoleEmptyTag : Record<RoleEmptyTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xb285a0c6;
+            internal const uint TypeNumber = 0xb285a0c6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RoleModeratorTag : Record<RoleModeratorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9618d975;
+            internal const uint TypeNumber = 0x9618d975;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class RoleEditorTag : Record<RoleEditorTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x820bfe8c;
+            internal const uint TypeNumber = 0x820bfe8c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xb285a0c6: return (ChannelParticipantRole) RoleEmptyTag.DeserializeTag(br);
-                case 0x9618d975: return (ChannelParticipantRole) RoleModeratorTag.DeserializeTag(br);
-                case 0x820bfe8c: return (ChannelParticipantRole) RoleEditorTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xb285a0c6, 0x9618d975, 0x820bfe8c });
+                case RoleEmptyTag.TypeNumber: return (ChannelParticipantRole) RoleEmptyTag.DeserializeTag(br);
+                case RoleModeratorTag.TypeNumber: return (ChannelParticipantRole) RoleModeratorTag.DeserializeTag(br);
+                case RoleEditorTag.TypeNumber: return (ChannelParticipantRole) RoleEditorTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { RoleEmptyTag.TypeNumber, RoleModeratorTag.TypeNumber, RoleEditorTag.TypeNumber });
             }
         }
 

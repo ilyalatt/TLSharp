@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class UserTag : Record<UserTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9db1bc6d;
+            internal const uint TypeNumber = 0x9db1bc6d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int UserId { get; }
             
@@ -35,7 +36,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChatTag : Record<ChatTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbad0e5bb;
+            internal const uint TypeNumber = 0xbad0e5bb;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChatId { get; }
             
@@ -59,7 +61,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTag : Record<ChannelTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xbddde532;
+            internal const uint TypeNumber = 0xbddde532;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int ChannelId { get; }
             
@@ -99,10 +102,10 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x9db1bc6d: return (Peer) UserTag.DeserializeTag(br);
-                case 0xbad0e5bb: return (Peer) ChatTag.DeserializeTag(br);
-                case 0xbddde532: return (Peer) ChannelTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x9db1bc6d, 0xbad0e5bb, 0xbddde532 });
+                case UserTag.TypeNumber: return (Peer) UserTag.DeserializeTag(br);
+                case ChatTag.TypeNumber: return (Peer) ChatTag.DeserializeTag(br);
+                case ChannelTag.TypeNumber: return (Peer) ChannelTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UserTag.TypeNumber, ChatTag.TypeNumber, ChannelTag.TypeNumber });
             }
         }
 

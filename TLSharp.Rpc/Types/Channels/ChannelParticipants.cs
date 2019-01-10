@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Channels
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xf56ee2a8;
+            internal const uint TypeNumber = 0xf56ee2a8;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int Count { get; }
             public Arr<T.ChannelParticipant> Participants { get; }
@@ -59,8 +60,8 @@ namespace TLSharp.Rpc.Types.Channels
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0xf56ee2a8: return (ChannelParticipants) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0xf56ee2a8 });
+                case Tag.TypeNumber: return (ChannelParticipants) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

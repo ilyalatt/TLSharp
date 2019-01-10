@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Contacts
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x3ace484c;
+            internal const uint TypeNumber = 0x3ace484c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.ContactLink MyLink { get; }
             public T.ContactLink ForeignLink { get; }
@@ -59,8 +60,8 @@ namespace TLSharp.Rpc.Types.Contacts
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x3ace484c: return (Link) Tag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x3ace484c });
+                case Tag.TypeNumber: return (Link) Tag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 

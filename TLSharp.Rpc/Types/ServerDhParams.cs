@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class FailTag : Record<FailTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x79cb045d;
+            internal const uint TypeNumber = 0x79cb045d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Int128 Nonce { get; }
             public Int128 ServerNonce { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class OkTag : Record<OkTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0xd0e8075c;
+            internal const uint TypeNumber = 0xd0e8075c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public Int128 Nonce { get; }
             public Int128 ServerNonce { get; }
@@ -94,9 +96,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x79cb045d: return (ServerDhParams) FailTag.DeserializeTag(br);
-                case 0xd0e8075c: return (ServerDhParams) OkTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x79cb045d, 0xd0e8075c });
+                case FailTag.TypeNumber: return (ServerDhParams) FailTag.DeserializeTag(br);
+                case OkTag.TypeNumber: return (ServerDhParams) OkTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { FailTag.TypeNumber, OkTag.TypeNumber });
             }
         }
 

@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class ImageSizeTag : Record<ImageSizeTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6c37c15c;
+            internal const uint TypeNumber = 0x6c37c15c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int W { get; }
             public int H { get; }
@@ -40,7 +41,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AnimatedTag : Record<AnimatedTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x11b58939;
+            internal const uint TypeNumber = 0x11b58939;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -64,7 +66,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class StickerTag : Record<StickerTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x6319d612;
+            internal const uint TypeNumber = 0x6319d612;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Mask { get; }
             public string Alt { get; }
@@ -104,7 +107,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class VideoTag : Record<VideoTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x0ef02ce6;
+            internal const uint TypeNumber = 0x0ef02ce6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool RoundMessage { get; }
             public int Duration { get; }
@@ -144,7 +148,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class AudioTag : Record<AudioTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9852f9c6;
+            internal const uint TypeNumber = 0x9852f9c6;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public bool Voice { get; }
             public int Duration { get; }
@@ -189,7 +194,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class FilenameTag : Record<FilenameTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x15590068;
+            internal const uint TypeNumber = 0x15590068;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string FileName { get; }
             
@@ -213,7 +219,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class HasStickersTag : Record<HasStickersTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9801d2f7;
+            internal const uint TypeNumber = 0x9801d2f7;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
 
             
@@ -257,14 +264,14 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x6c37c15c: return (DocumentAttribute) ImageSizeTag.DeserializeTag(br);
-                case 0x11b58939: return (DocumentAttribute) AnimatedTag.DeserializeTag(br);
-                case 0x6319d612: return (DocumentAttribute) StickerTag.DeserializeTag(br);
-                case 0x0ef02ce6: return (DocumentAttribute) VideoTag.DeserializeTag(br);
-                case 0x9852f9c6: return (DocumentAttribute) AudioTag.DeserializeTag(br);
-                case 0x15590068: return (DocumentAttribute) FilenameTag.DeserializeTag(br);
-                case 0x9801d2f7: return (DocumentAttribute) HasStickersTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x6c37c15c, 0x11b58939, 0x6319d612, 0x0ef02ce6, 0x9852f9c6, 0x15590068, 0x9801d2f7 });
+                case ImageSizeTag.TypeNumber: return (DocumentAttribute) ImageSizeTag.DeserializeTag(br);
+                case AnimatedTag.TypeNumber: return (DocumentAttribute) AnimatedTag.DeserializeTag(br);
+                case StickerTag.TypeNumber: return (DocumentAttribute) StickerTag.DeserializeTag(br);
+                case VideoTag.TypeNumber: return (DocumentAttribute) VideoTag.DeserializeTag(br);
+                case AudioTag.TypeNumber: return (DocumentAttribute) AudioTag.DeserializeTag(br);
+                case FilenameTag.TypeNumber: return (DocumentAttribute) FilenameTag.DeserializeTag(br);
+                case HasStickersTag.TypeNumber: return (DocumentAttribute) HasStickersTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { ImageSizeTag.TypeNumber, AnimatedTag.TypeNumber, StickerTag.TypeNumber, VideoTag.TypeNumber, AudioTag.TypeNumber, FilenameTag.TypeNumber, HasStickersTag.TypeNumber });
             }
         }
 

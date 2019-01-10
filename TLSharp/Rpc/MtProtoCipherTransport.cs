@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
@@ -24,9 +25,8 @@ namespace TLSharp.Rpc
         int GetSeqNum(bool inc) => inc ? _session.Sequence++ * 2 + 1 : _session.Sequence * 2;
 
 
-        async Task<long> SendMsgBody(byte[] msg, bool incSeqNum)
+        async Task SendMsgBody(long messageId, bool incSeqNum, byte[] msg)
         {
-            var messageId = _session.GetNewMessageId();
             var msgSeqNum = GetSeqNum(incSeqNum);
             _session.Save();
 
@@ -53,25 +53,29 @@ namespace TLSharp.Rpc
                 bw.Write(msgKey);
                 bw.Write(cipherText);
             }).Apply(_transport.Send);
-
-            return messageId;
         }
 
-        public async Task<long> Send(ITlSerializable dto, bool incSeqNum)
+        public async Task Send(long messageId, bool incSeqNum, ITlSerializable dto)
         {
             var bts = BtHelpers.UsingMemBinWriter(dto.Serialize);
-            return await SendMsgBody(bts, incSeqNum);
+            await SendMsgBody(messageId, incSeqNum, bts);
         }
 
 
         async Task<byte[]> ReceivePlainText()
         {
             var (tcpSeqNum, body) = await _transport.Receive();
+
+            const uint sessionClosed = 0xfffffe6c; // i dunno why
+            if (body.Length == 4 && BitConverter.ToUInt32(body, 0) == sessionClosed)
+            {
+                throw new InvalidOperationException("The session is closed.");
+            }
+            // TODO: include the message in an exception
+            // if (body.Length < 8) throw new InvalidOperationException("Can't decode packet");
+
             return body.Apply(BtHelpers.Deserialize(br =>
             {
-                if (br.BaseStream.Length < 8)
-                    throw new InvalidOperationException($"Can't decode packet");
-
                 var authKeyId = br.ReadUInt64(); // TODO: check auth key id
                 var msgKey = br.ReadBytes(16); // TODO: check msg_key correctness
                 var keyData = Helpers.CalcKey(_session.AuthKey.Key.ToArray(), msgKey, false);
@@ -84,7 +88,7 @@ namespace TLSharp.Rpc
             }));
         }
 
-        public async Task<(long, int, byte[])> Receive()
+        public async Task<BinaryReader> Receive()
         {
             var plainText = await ReceivePlainText();
             return plainText.Apply(BtHelpers.Deserialize(br =>
@@ -92,13 +96,7 @@ namespace TLSharp.Rpc
                 var remoteSalt = br.ReadUInt64();
                 var remoteSessionId = br.ReadUInt64();
 
-                var msgId = br.ReadInt64();
-                var msgSeqNo = br.ReadInt32();
-
-                var msgLen = br.ReadInt32();
-                var msg = br.ReadBytes(msgLen);
-
-                return (remoteMessageId: msgId, remoteSequence: msgSeqNo, msg);
+                return br;
             }));
         }
     }

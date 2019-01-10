@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types.Upload
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x096a18d5;
+            internal const uint TypeNumber = 0x096a18d5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public T.Storage.FileType Type { get; }
             public int Mtime { get; }
@@ -45,7 +46,8 @@ namespace TLSharp.Rpc.Types.Upload
 
         public sealed class CdnRedirectTag : Record<CdnRedirectTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x1508485a;
+            internal const uint TypeNumber = 0x1508485a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public int DcId { get; }
             public Arr<byte> FileToken { get; }
@@ -99,9 +101,9 @@ namespace TLSharp.Rpc.Types.Upload
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x096a18d5: return (File) Tag.DeserializeTag(br);
-                case 0x1508485a: return (File) CdnRedirectTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x096a18d5, 0x1508485a });
+                case Tag.TypeNumber: return (File) Tag.DeserializeTag(br);
+                case CdnRedirectTag.TypeNumber: return (File) CdnRedirectTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, CdnRedirectTag.TypeNumber });
             }
         }
 

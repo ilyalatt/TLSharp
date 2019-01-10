@@ -11,7 +11,8 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : Record<Tag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x9bebaeb9;
+            internal const uint TypeNumber = 0x9bebaeb9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Id { get; }
             public string Type { get; }
@@ -92,7 +93,8 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaTag : Record<MediaTag>, ITlTypeTag
         {
-            uint ITlTypeTag.TypeNumber => 0x17db940b;
+            internal const uint TypeNumber = 0x17db940b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public string Id { get; }
             public string Type { get; }
@@ -163,9 +165,9 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case 0x9bebaeb9: return (BotInlineResult) Tag.DeserializeTag(br);
-                case 0x17db940b: return (BotInlineResult) MediaTag.DeserializeTag(br);
-                default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { 0x9bebaeb9, 0x17db940b });
+                case Tag.TypeNumber: return (BotInlineResult) Tag.DeserializeTag(br);
+                case MediaTag.TypeNumber: return (BotInlineResult) MediaTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, MediaTag.TypeNumber });
             }
         }
 
