@@ -64,7 +64,7 @@ namespace TLSharp
         public string ServerAddress { get; set; }
         public int Port { get; set; }
         public AuthKey AuthKey { get; set; }
-        public ulong Id { get; set; }
+        public long Id { get; set; }
         public int Sequence { get; set; }
         public long Salt { get; set; }
         public int TimeOffset { get; set; }
@@ -115,7 +115,7 @@ namespace TLSharp
             using (var stream = new MemoryStream(buffer))
             using (var reader = new BinaryReader(stream))
             {
-                var id = reader.ReadUInt64();
+                var id = reader.ReadInt64();
                 var sequence = reader.ReadInt32();
                 var salt = reader.ReadInt64();
                 var lastMessageId = reader.ReadInt64();
@@ -170,17 +170,17 @@ namespace TLSharp
         {
             return new Session(store)
             {
-                Id = GenerateRandomUlong(),
+                Id = GenerateRandomLong(),
                 SessionUserId = sessionUserId,
                 ServerAddress = serverAddress,
                 Port = serverPort
             };
         }
 
-        private static ulong GenerateRandomUlong()
+        private static long GenerateRandomLong()
         {
             var random = new Random();
-            var rand = ((ulong)random.Next() << 32) | (ulong)random.Next();
+            var rand = ((long)random.Next() << 32) | (long)random.Next();
             return rand;
         }
 

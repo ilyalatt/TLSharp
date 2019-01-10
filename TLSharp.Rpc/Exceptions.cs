@@ -1,11 +1,20 @@
 using System;
 using LanguageExt;
+using static LanguageExt.Prelude;
 
 namespace TLSharp.Rpc
 {
-    public class TlTransportException : Exception
+    public abstract class TlRpcException : Exception
     {
-        public TlTransportException(Some<string> message) : base(message) { }
+        public TlRpcException(Some<string> message, Option<Exception> innerException) : base(
+            message,
+            innerException.IfNoneUnsafe(() => null)
+        ) { }
+    }
+
+    public class TlTransportException : TlRpcException
+    {
+        public TlTransportException(Some<string> message) : base(message, None) { }
 
         static string TypeNumber(uint n) => "0x" + n.ToString("x8");
 

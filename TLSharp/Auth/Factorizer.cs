@@ -3,55 +3,40 @@ using BigMath;
 
 namespace TLSharp.Auth
 {
-    class FactorizedPair
+    static class Factorizer
     {
-        private readonly BigInteger p;
-        private readonly BigInteger q;
+        static readonly Random Random = new Random();
 
-        public FactorizedPair(BigInteger p, BigInteger q)
+        static long Gcd(long a, long b)
         {
-            this.p = p;
-            this.q = q;
-        }
-
-        public FactorizedPair(long p, long q)
-        {
-            this.p = BigInteger.ValueOf(p);
-            this.q = BigInteger.ValueOf(q);
-        }
-
-        public BigInteger Min
-        {
-            get
+            while (a != 0 && b != 0)
             {
-                return p.Min(q);
+                while ((b & 1) == 0)
+                {
+                    b >>= 1;
+                }
+                while ((a & 1) == 0)
+                {
+                    a >>= 1;
+                }
+                if (a > b)
+                {
+                    a -= b;
+                }
+                else {
+                    b -= a;
+                }
             }
+            return b == 0 ? a : b;
         }
 
-        public BigInteger Max
-        {
-            get
-            {
-                return p.Max(q);
-            }
-        }
-
-        public override string ToString()
-        {
-            return $"P: {p}, Q: {q}";
-        }
-    }
-
-    class Factorizator
-    {
-        public static Random random = new Random();
-        public static long findSmallMultiplierLopatin(long what)
+        static long FindSmallMultiplierLopatin(long what)
         {
             long g = 0;
             for (int i = 0; i < 3; i++)
             {
-                int q = (random.Next(128) & 15) + 17;
-                long x = random.Next(1000000000) + 1, y = x;
+                int q = (Random.Next(128) & 15) + 17;
+                long x = Random.Next(1000000000) + 1, y = x;
                 int lim = 1 << (i + 18);
                 for (int j = 1; j < lim; j++)
                 {
@@ -75,7 +60,7 @@ namespace TLSharp.Auth
                     }
                     x = c;
                     long z = x < y ? y - x : x - y;
-                    g = GCD(z, what);
+                    g = Gcd(z, what);
                     if (g != 1)
                     {
                         break;
@@ -95,43 +80,14 @@ namespace TLSharp.Auth
             return Math.Min(p, g);
         }
 
-        public static long GCD(long a, long b)
+        public static (long, long) Factorize(long pq)
         {
-            while (a != 0 && b != 0)
-            {
-                while ((b & 1) == 0)
-                {
-                    b >>= 1;
-                }
-                while ((a & 1) == 0)
-                {
-                    a >>= 1;
-                }
-                if (a > b)
-                {
-                    a -= b;
-                }
-                else {
-                    b -= a;
-                }
-            }
-            return b == 0 ? a : b;
-        }
+            var divisor = FindSmallMultiplierLopatin(pq);
 
-        public static FactorizedPair Factorize(BigInteger pq)
-        {
-            if (pq.BitLength < 64)
-            {
-                long pqlong = pq.LongValue;
-                long divisor = findSmallMultiplierLopatin(pqlong);
-                return new FactorizedPair(BigInteger.ValueOf(divisor), BigInteger.ValueOf(pqlong / divisor));
-            }
-            else {
-                // TODO: port pollard factorization
-                throw new InvalidOperationException("pq too long; TODO: port the pollard algo");
-                // logger.error("pq too long; TODO: port the pollard algo");
-                // return null;
-            }
+            var p = divisor;
+            var q = pq / divisor;
+
+            return p < q ? (p, q) : (q, p);
         }
     }
 }

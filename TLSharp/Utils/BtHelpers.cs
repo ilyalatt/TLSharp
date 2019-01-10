@@ -4,7 +4,7 @@ using BigMath;
 using BigMath.Utils;
 using TLSharp.Rpc;
 
-namespace TLSharp.Auth
+namespace TLSharp.Utils
 {
     static class BtHelpers
     {

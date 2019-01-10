@@ -1,19 +1,17 @@
 ﻿using System.Threading.Tasks;
-using TLSharp.Network;
+using TLSharp.Rpc;
+using TLSharp.Utils;
 
 namespace TLSharp.Auth
 {
     static class Authenticator
     {
-        public static async Task<Step3Response> DoAuthentication(TcpTransport transport)
+        public static async Task<Step3Res> DoAuthentication(MtProtoPlainTransport transport)
         {
-            var sender = new MtProtoPlainSender(transport);
-
-            var step1Response = await Step1.Do(BtHelpers.GenNonce16(), sender);
-            var step2Response = await Step2.Do(step1Response, BtHelpers.GenNonce32(), sender);
-            var step3Response = await Step3.Do(step2Response.ServerDhParams, step2Response.NewNonce, sender);
-
-            return step3Response;
+            var step1Res = await Step1.Do(BtHelpers.GenNonce16(), transport);
+            var step2Res = await Step2.Do(step1Res, BtHelpers.GenNonce32(), transport);
+            var step3Res = await Step3.Do(step2Res.ServerDhParams, step2Res.NewNonce, transport);
+            return step3Res;
         }
     }
 }

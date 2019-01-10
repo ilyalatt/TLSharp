@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using LanguageExt;
 using Newtonsoft.Json;
 using TLSharp;
+using TLSharp.Rpc;
+using TLSharp.Rpc.Functions;
 
 namespace TLSharp.Example
 {
@@ -22,26 +24,30 @@ namespace TLSharp.Example
             var cfg = await File.ReadAllTextAsync("config.json").Map(JsonConvert.DeserializeObject<Config>);
             var tg = new TelegramClient(cfg.ApiId, cfg.ApiHash);
 
-            await tg.ConnectAsync();
+            await tg.Connect();
             Console.WriteLine("Connected");
             while (!tg.IsUserAuthorized())
             {
-                var codeHash = await tg.SendCodeRequestAsync(cfg.Phone);
+                var codeHash = await tg.SendCodeRequest(cfg.Phone);
                 Console.WriteLine("Enter the telegram code");
                 var code = Console.ReadLine();
                 try
                 {
-                    await tg.MakeAuthAsync(cfg.Phone, codeHash, code);
+                    await tg.MakeAuth(cfg.Phone, codeHash, code);
                 }
-                catch (CloudPasswordNeededException)
+                catch (TlPasswordNeededException)
                 {
                     var pwd = await tg.GetPasswordSetting();
-                    await tg.MakeAuthWithPasswordAsync(pwd, cfg.Password);
+                    await tg.MakeAuthWithPassword(pwd, cfg.Password);
                 }
             }
 
             Console.WriteLine("Login completed");
-            await Task.Delay(-1);
+
+            await Task.Delay(1500);
+            await tg.Call(new Ping(2344254363452));
+
+            tg.Dispose();
         }
     }
 }

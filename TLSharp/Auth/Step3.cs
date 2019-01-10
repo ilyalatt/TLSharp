@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 using BigMath;
 using BigMath.Utils;
 using LanguageExt;
-using TLSharp.Crypto;
-using TLSharp.Network;
+using TLSharp.Rpc;
 using TLSharp.Rpc.Functions;
 using TLSharp.Rpc.Types;
 using TLSharp.Utils;
 using static LanguageExt.Prelude;
-using static TLSharp.Auth.BtHelpers;
+using static TLSharp.Utils.BtHelpers;
+using Aes = TLSharp.Rpc.Aes;
 
 namespace TLSharp.Auth
 {
-    struct Step3Response
+    struct Step3Res
     {
         public AuthKey AuthKey { get; }
         public int TimeOffset { get; }
 
-        public Step3Response(Some<AuthKey> authKey, int timeOffset)
+        public Step3Res(Some<AuthKey> authKey, int timeOffset)
         {
             AuthKey = authKey;
             TimeOffset = timeOffset;
@@ -48,19 +48,19 @@ namespace TLSharp.Auth
             bw.Write(bts);
         });
 
-        public static async Task<Step3Response> Do(
+        public static async Task<Step3Res> Do(
             Some<ServerDhParams.OkTag> someServerDhParams,
             Int256 newNonce,
-            Some<MtProtoPlainSender> transport
+            Some<MtProtoPlainTransport> transport
         )
         {
             var dhParams = someServerDhParams.Value;
-            var key = AES.GenerateKeyDataFromNonces(dhParams.ServerNonce.ToBytes(true), newNonce.ToBytes(true));
-            var plaintextAnswer = AES.DecryptAES(key, dhParams.EncryptedAnswer.ToArray());
+            var key = Aes.GenerateKeyDataFromNonces(dhParams.ServerNonce.ToBytes(true), newNonce.ToBytes(true));
+            var plaintextAnswer = Aes.DecryptAES(key, dhParams.EncryptedAnswer.ToArray());
             var dh = plaintextAnswer.Apply(Deserialize(SkipHashSum(ServerDhInnerData.Deserialize))).Match(identity);
 
-            if (dh.Nonce != dhParams.Nonce) throw new InvalidOperationException("invalid nonce in encrypted answer");
-            if (dh.ServerNonce != dhParams.ServerNonce) throw new InvalidOperationException("invalid server nonce in encrypted answer");
+            Helpers.Assert(dh.Nonce == dhParams.Nonce, "auth step3: invalid nonce in encrypted answer");
+            Helpers.Assert(dh.ServerNonce == dhParams.ServerNonce, "auth step3: invalid server nonce in encrypted answer");
 
             var currentEpochTime = Helpers.GetCurrentEpochTime();
             var timeOffset = dh.ServerTime - currentEpochTime;
@@ -82,7 +82,7 @@ namespace TLSharp.Auth
             var dhInnerDataBts = Serialize((ClientDhInnerData) dhInnerData);
 
             var dhInnerDataHashedBts = WithHash(dhInnerDataBts);
-            var dhInnerDataHashedEncryptedBytes = AES.EncryptAES(key, dhInnerDataHashedBts);
+            var dhInnerDataHashedEncryptedBytes = Aes.EncryptAES(key, dhInnerDataHashedBts);
 
             var resp = await transport.Value.Call(new SetClientDhParams(
                 nonce: dh.Nonce,
@@ -90,18 +90,18 @@ namespace TLSharp.Auth
                 encryptedData: dhInnerDataHashedEncryptedBytes.ToArr()
             ));
             var res = resp.Match(
-                dhGenFailTag: _ => throw new NotImplementedException("dh_gen_fail"),
-                dhGenRetryTag: _ => throw new NotImplementedException("dh_gen_retry"),
+                dhGenFailTag: _ => Helpers.FailedAssertion<SetClientDhParamsAnswer.DhGenOkTag>("auth step3: dh_gen_fail"),
+                dhGenRetryTag: _ => Helpers.FailedAssertion<SetClientDhParamsAnswer.DhGenOkTag>("auth step3: dh_gen_retry"),
                 dhGenOkTag: identity
             );
 
             var authKey = AuthKey.FromGab(gab);
             var newNonceHash = authKey.CalcNewNonceHash(newNonce.ToBytes(true), 1).ToInt128();
-            if (res.Nonce != dh.Nonce) throw new InvalidOperationException("invalid nonce");
-            if (res.ServerNonce != dh.ServerNonce) throw new InvalidOperationException("invalid server nonce");
-            if (res.NewNonceHash1 != newNonceHash) throw new InvalidOperationException("invalid new nonce hash");
+            Helpers.Assert(res.Nonce == dh.Nonce, "auth step3: invalid nonce");
+            Helpers.Assert(res.ServerNonce == dh.ServerNonce, "auth step3: invalid server nonce");
+            Helpers.Assert(res.NewNonceHash1 == newNonceHash, "auth step3: invalid new nonce hash");
 
-            return new Step3Response(authKey, timeOffset);
+            return new Step3Res(authKey, timeOffset);
         }
     }
 }

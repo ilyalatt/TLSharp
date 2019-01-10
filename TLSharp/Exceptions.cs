@@ -1,83 +1,71 @@
 using System;
+using LanguageExt;
+using TLSharp.Rpc;
+using static LanguageExt.Prelude;
 
 namespace TLSharp
 {
-    public class FloodException : Exception
+    public sealed class TlFloodException : TlException
     {
-        public TimeSpan TimeToWait { get; private set; }
+        public TimeSpan Delay { get; }
 
-        internal FloodException(TimeSpan timeToWait)
-            : base($"Flood prevention. Telegram now requires your program to do requests again only after {timeToWait.TotalSeconds} seconds have passed ({nameof(TimeToWait)} property)." +
-                    " If you think the culprit of this problem may lie in TLSharp's implementation, open a Github issue please.")
+        internal TlFloodException(TimeSpan delay) : base(
+            $"Flood prevention. Wait {delay.TotalMinutes} minutes.",
+            None
+        ) => Delay = delay;
+    }
+
+    enum DcMigrationReason
+    {
+        Phone,
+        File,
+        User,
+        Network
+    }
+
+    class TlInternalException : TlException
+    {
+        internal TlInternalException(
+            Some<string> additionalMessage,
+            Option<Exception> innerException
+        ) : base(
+            "Internal exception. Should be handled by the library." + Environment.NewLine + additionalMessage,
+            innerException
+        ) { }
+    }
+
+    class TlFailedAssertionException : TlInternalException
+    {
+        public TlFailedAssertionException(Some<string> msg) : base($"Assert failed. {msg}", None) { }
+    }
+
+    sealed class TlDataCenterMigrationException : TlInternalException
+    {
+        public DcMigrationReason Reason { get; }
+        public int Dc { get; }
+
+        internal TlDataCenterMigrationException(DcMigrationReason reason, int dc) : base("Data center migration.", None)
         {
-            TimeToWait = timeToWait;
+            Reason = reason;
+            Dc = dc;
         }
     }
 
-    internal abstract class DataCenterMigrationException : Exception
+    sealed class TlBadSalt : TlInternalException
     {
-        internal int DC { get; private set; }
-
-        private const string REPORT_MESSAGE =
-            " See: https://github.com/sochix/TLSharp#i-get-a-xxxmigrationexception-or-a-migrate_x-error";
-
-        protected DataCenterMigrationException(string msg, int dc) : base (msg + REPORT_MESSAGE)
-        {
-            DC = dc;
-        }
+        public TlBadSalt() : base("bad_server_salt is received.", None) { }
     }
 
-    internal class PhoneMigrationException : DataCenterMigrationException
+    public sealed class TlInvalidPhoneCodeException : TlException
     {
-        internal PhoneMigrationException(int dc)
-            : base ($"Phone number registered to a different DC: {dc}.", dc)
-        {
-        }
+        internal TlInvalidPhoneCodeException() : base(
+            "The numeric code used to authenticate does not match the numeric code sent by SMS/Telegram.",
+            None
+        ) { }
     }
 
-    internal class FileMigrationException : DataCenterMigrationException
+    public sealed class TlPasswordNeededException : TlException
     {
-        internal FileMigrationException(int dc)
-            : base ($"File located on a different DC: {dc}.", dc)
-        {
-        }
-    }
-
-    internal class UserMigrationException : DataCenterMigrationException
-    {
-        internal UserMigrationException(int dc)
-            : base($"User located on a different DC: {dc}.", dc)
-        {
-        }
-    }
-
-    internal class NetworkMigrationException : DataCenterMigrationException
-    {
-        internal NetworkMigrationException(int dc)
-            : base($"Network located on a different DC: {dc}.", dc)
-        {
-        }
-    }
-
-    public class MissingApiConfigurationException : Exception
-    {
-        public const string InfoUrl = "https://github.com/sochix/TLSharp#quick-configuration";
-
-        internal MissingApiConfigurationException(string invalidParamName) :
-            base($"Your {invalidParamName} setting is missing. Adjust the configuration first, see {InfoUrl}")
-        {
-        }
-    }
-
-    public class InvalidPhoneCodeException : Exception
-    {
-        internal InvalidPhoneCodeException(string msg) : base(msg) { }
-    }
-
-    public class CloudPasswordNeededException : Exception
-    {
-        internal CloudPasswordNeededException(string msg) : base(msg)
-        {
-        }
+        internal TlPasswordNeededException() : base("This account has a password.", None) { }
     }
 }

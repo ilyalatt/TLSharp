@@ -87,7 +87,7 @@ namespace TLSharp.Utils
 
                 if (isBigFileUpload)
                 {
-                    await client.SendRequestAsync(new SaveBigFilePart(
+                    await client.Call(new SaveBigFilePart(
                         fileId: fileId,
                         filePart: partNumber,
                         bytes: part.ToArr(),
@@ -96,7 +96,7 @@ namespace TLSharp.Utils
                 }
                 else
                 {
-                    await client.SendRequestAsync(new SaveFilePart(
+                    await client.Call(new SaveFilePart(
                         fileId: fileId,
                         filePart: partNumber,
                         bytes: part.ToArr()

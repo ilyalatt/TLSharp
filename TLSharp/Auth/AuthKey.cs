@@ -21,26 +21,23 @@ namespace TLSharp.Auth
             AuxHash = auxHash;
         }
 
-        public static AuthKey Deserialize(Arr<byte> key)
-        {
-            var (auxHash, keyId) = key.ToArray().Apply(Helpers.Sha1).Apply(BtHelpers.Deserialize(br =>
+        public static AuthKey Deserialize(Arr<byte> key) =>
+            key.ToArray().Apply(Helpers.Sha1).Apply(BtHelpers.Deserialize(br =>
             {
-                var a = br.ReadUInt64();
+                var auxHash = br.ReadUInt64();
                 br.ReadBytes(4);
-                var b = br.ReadUInt64();
-                return (a, b);
+                var keyId = br.ReadUInt64();
+                return new AuthKey(key, keyId, auxHash);
             }));
-            return new AuthKey(key, keyId, auxHash);
-        }
 
         internal static AuthKey FromGab(BigInteger gab) =>
             Deserialize(gab.ToByteArrayUnsigned());
 
-        internal byte[] CalcNewNonceHash(byte[] newNonce, int number) => BtHelpers
+        internal byte[] CalcNewNonceHash(byte[] newNonce, byte number) => BtHelpers
             .UsingMemBinWriter(bw =>
             {
                 bw.Write(newNonce);
-                bw.Write((byte) number);
+                bw.Write(number);
                 bw.Write(AuxHash);
             })
             .Apply(Helpers.Sha1)

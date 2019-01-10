@@ -200,7 +200,8 @@ namespace TLSharp.Rpc.Generator.Generation
                 Line("{"),
                 IndentedScope(1,
                     Scope(
-                        Line($"uint ITlTypeTag.TypeNumber => {TypeNumber(tag.TypeNumber)};"),
+                        Line($"internal const uint TypeNumber = {TypeNumber(tag.TypeNumber)};"),
+                        Line("uint ITlTypeTag.TypeNumber => TypeNumber;"),
                         Line("")
                     ),
                     tagArgs.Map(arg => Line($"public {arg.type} {arg.name} {{ get; }}")).Scope(),
@@ -310,10 +311,10 @@ namespace TLSharp.Rpc.Generator.Generation
                     Line("switch (typeNumber)"),
                     Line("{"),
                     IndentedScope(1,
-                        typeTags.Map(x => Line($"case {TypeNumber(x.TypeNumber)}: return ({typeName}) {x.Name}.DeserializeTag(br);")).Scope(),
+                        typeTags.Map(x => Line($"case {x.Name}.TypeNumber: return ({typeName}) {x.Name}.DeserializeTag(br);")).Scope(),
                         Line(Concat(
-                            String("default: throw TlTransportException.UnexpectedTypeNumber(actual: typeNumber, expected: new uint[] { "),
-                            typeTags.Map(x => $"{TypeNumber(x.TypeNumber)}").Map(String).Apply(xs => Concat(", ", xs)),
+                            String("default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { "),
+                            typeTags.Map(x => $"{x.Name}.TypeNumber").Map(String).Apply(xs => Concat(", ", xs)),
                             String(" });")
                         ))
                     ),

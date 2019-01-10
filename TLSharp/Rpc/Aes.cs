@@ -2,31 +2,21 @@
 using System.IO;
 using System.Security.Cryptography;
 
-namespace TLSharp.Crypto
+namespace TLSharp.Rpc
 {
-    class AESKeyData
+    struct AesKeyData
     {
-        private readonly byte[] key;
-        private readonly byte[] iv;
+        public readonly byte[] Key;
+        public readonly byte[] Iv;
 
-        public AESKeyData(byte[] key, byte[] iv)
+        public AesKeyData(byte[] key, byte[] iv)
         {
-            this.key = key;
-            this.iv = iv;
-        }
-
-        public byte[] Key
-        {
-            get { return key; }
-        }
-
-        public byte[] Iv
-        {
-            get { return iv; }
+            Key = key;
+            Iv = iv;
         }
     }
 
-    class AES
+    static class Aes
     {
         public static byte[] DecryptWithNonces(byte[] data, byte[] serverNonce, byte[] newNonce)
         {
@@ -62,7 +52,7 @@ namespace TLSharp.Crypto
             }
         }
 
-        public static AESKeyData GenerateKeyDataFromNonces(byte[] serverNonce, byte[] newNonce)
+        public static AesKeyData GenerateKeyDataFromNonces(byte[] serverNonce, byte[] newNonce)
         {
             using (SHA1 hash = new SHA1Managed())
             {
@@ -91,17 +81,17 @@ namespace TLSharp.Crypto
                     ivBuffer.Write(hash3, 0, hash3.Length);
                     ivBuffer.Write(newNonce, 0, 4);
 
-                    return new AESKeyData(keyBuffer.ToArray(), ivBuffer.ToArray());
+                    return new AesKeyData(keyBuffer.ToArray(), ivBuffer.ToArray());
                 }
             }
         }
 
-        public static byte[] DecryptAES(AESKeyData key, byte[] ciphertext)
+        public static byte[] DecryptAES(AesKeyData key, byte[] ciphertext)
         {
             return DecryptIGE(ciphertext, key.Key, key.Iv);
         }
 
-        public static byte[] EncryptAES(AESKeyData key, byte[] plaintext)
+        public static byte[] EncryptAES(AesKeyData key, byte[] plaintext)
         {
             return EncryptIGE(plaintext, key.Key, key.Iv);
         }

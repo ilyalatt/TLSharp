@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
-using TLSharp.Crypto;
+using LanguageExt;
+using TLSharp.Rpc;
 
 namespace TLSharp.Utils
 {
@@ -27,7 +28,7 @@ namespace TLSharp.Utils
             return data;
         }
 
-        public static AESKeyData CalcKey(byte[] sharedKey, byte[] msgKey, bool client)
+        public static AesKeyData CalcKey(byte[] sharedKey, byte[] msgKey, bool client)
         {
             var x = client ? 0 : 8;
             var buffer = new byte[48];
@@ -60,7 +61,7 @@ namespace TLSharp.Utils
             Array.Copy(sha1c, 16, iv, 20, 4);
             Array.Copy(sha1d, 0, iv, 24, 8);
 
-            return new AESKeyData(key, iv);
+            return new AesKeyData(key, iv);
         }
 
         public static byte[] CalcMsgKey(byte[] data)
@@ -115,5 +116,15 @@ namespace TLSharp.Utils
 
             return lastMessageId >= newMessageId ? lastMessageId + 4 : newMessageId;
         }
+
+        public static T FailedAssertion<T>(string message) => throw new TlFailedAssertionException(message);
+
+        public static void Assert(bool condition, Func<string> message)
+        {
+            if (!condition) FailedAssertion<Unit>(message());
+        }
+
+        public static void Assert(bool condition, string message) =>
+            Assert(condition, () => message);
     }
 }
