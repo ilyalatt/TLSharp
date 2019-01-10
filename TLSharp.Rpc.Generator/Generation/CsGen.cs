@@ -74,6 +74,95 @@ namespace TLSharp.Rpc.Generator.Generation
         static string ConvertArgTypeWithSome(Arg arg) => ConvertArgType(arg)
             .Apply(x => IsRefArgType(arg) ? $"Some<{x}>" : x);
 
+
+        static NestedText GenEqRelations(string typeName, Text cmpBy)
+        {
+            var equality = Concat(
+                "public bool Equals(",
+                typeName,
+                " other) => !ReferenceEquals(other, null) && ",
+                cmpBy, " == other.", cmpBy, ";"
+            ).Apply(Line);
+            var equalityLegacy = Concat(
+                "public override bool Equals(object other) => other is ",
+                typeName,
+                " x && Equals(x);"
+            ).Apply(Line);
+            var equalityOps = Scope(
+                Line($"public static bool operator ==({typeName} x, {typeName} y) => x?.Equals(y) ?? ReferenceEquals(y, null);"),
+                Line($"public static bool operator !=({typeName} x, {typeName} y) => !(x == y);")
+            );
+            return Scope(equality, equalityLegacy, equalityOps);
+        }
+
+        static NestedText GenCmpRelations(string typeName, Text cmpBy)
+        {
+            var cmp = Concat(
+                "public int CompareTo(",
+                typeName,
+                " other) => !ReferenceEquals(other, null) ? ", cmpBy, ".CompareTo(other.", cmpBy, ")",
+                " : throw new ArgumentNullException(nameof(other));"
+            ).Apply(Line);
+            var cmpLegacy = Concat(
+                "int IComparable.CompareTo(object other) => other is ",
+                typeName,
+                " x ? CompareTo(x) : throw new ArgumentException(\"bad type\", nameof(other));"
+            ).Apply(Line);
+            var cmpOps = Scope(new[] { "<=", "<", ">", ">=" }
+                .Map(op => Concat(
+                    "public static bool operator ", op, "(", typeName, " x, ", typeName, " y) => ",
+                    "x.CompareTo(y) ", op, " 0;"
+                ))
+                .Map(Line)
+            );
+
+            return Scope(cmp, cmpLegacy, cmpOps);
+        }
+
+        static NestedText GenGetHashCode(Text by) =>
+            Concat("public override int GetHashCode() => ", by, ".GetHashCode();").Apply(Line);
+
+        static NestedText GenToString(Text by) =>
+            Concat("public override string ToString() => ", by, ";").Apply(Line);
+
+        static NestedText GenRelations(string typeName, Arr<Arg> args)
+        {
+            var cmpTupleName = String("CmpTuple");
+
+
+            Text EmPt(Text text) => Concat("(", text, ")");
+            Func<Arr<Text>, Text> Tuple(bool type) => xs =>
+                xs.Count == 0 ? (type ? "Unit" : "Unit.Default") :
+                xs.Count == 1 ? xs[0]
+                : Join(", ", xs).Apply(EmPt);
+
+            Text ArgsTuple(bool type, Func<Arg, Text> argStr) => args
+                .Map(argStr)
+                .Apply(Tuple(type));
+
+            var argsTuple = ArgsTuple(false, x => x.Name);
+            var argsTupleType = ArgsTuple(true, x => ConvertArgType(x));
+
+            var cmpTuple = Scope(
+                Line(Concat(argsTupleType, " ", cmpTupleName, " =>")),
+                Indent(1, Line(Concat(argsTuple, ";")))
+            );
+
+
+            var argsInterpolationStr = args
+                .Map(x => Concat(x.Name, ": ", "{", x.Name, "}"))
+                .Apply(xs => Join(", ", xs))
+                .Apply(x => Concat("$\"(", x, ")\""));
+
+            return Scope(Environment.NewLine + Environment.NewLine,
+                cmpTuple,
+                GenEqRelations(typeName, cmpTupleName),
+                GenCmpRelations(typeName, cmpTupleName),
+                GenGetHashCode(cmpTupleName),
+                GenToString(argsInterpolationStr)
+            );
+        }
+
         static NestedText GenSerializerDef(Arr<Arg> args, Option<int> typeNumber)
         {
             Text GenSerializer(TlType type) => type.Match(
@@ -196,7 +285,7 @@ namespace TLSharp.Rpc.Generator.Generation
                 )).ToArray();
 
             return Scope(
-                Line($"public sealed class {tagName} : Record<{tagName}>, ITlTypeTag"),
+                Line($"public sealed class {tagName} : ITlTypeTag, IEquatable<{tagName}>, IComparable<{tagName}>, IComparable"),
                 Line("{"),
                 IndentedScope(1,
                     Scope(
@@ -205,8 +294,8 @@ namespace TLSharp.Rpc.Generator.Generation
                         Line("")
                     ),
                     tagArgs.Map(arg => Line($"public {arg.type} {arg.name} {{ get; }}")).Scope(),
+                    Line(""),
                     Scope(
-                        Line(""),
                         Line($"public {tagName}("),
                         IndentedScope(1, $",{Environment.NewLine}",
                             tagArgs.Map(arg => Line($"{arg.someType} {LowerFirst(arg.name)}"))
@@ -215,12 +304,15 @@ namespace TLSharp.Rpc.Generator.Generation
                         IndentedScope(1,
                             tagArgs.Map(arg => Line($"{arg.name} = {LowerFirst(arg.name)};"))
                         ),
-                        Line("}"),
-                        Line(""),
-                        GenSerializerDef(tag.Args, typeNumber: None),
-                        Line(""),
-                        GenDeserializeDef(tag.Name, tag.Args)
-                    )
+                        Line("}")
+                    ),
+                    Line(""),
+                    GenRelations(tagName, tagArgsWithoutFlags),
+                    Line(""),
+                    Line(""),
+                    GenSerializerDef(tag.Args, typeNumber: None),
+                    Line(""),
+                    GenDeserializeDef(tag.Name, tag.Args)
                 ),
                 Line("}")
             );
@@ -243,7 +335,7 @@ namespace TLSharp.Rpc.Generator.Generation
             var classTemplates = isWrapper ? "<TFunc, TFuncRes>" : "";
             var classAnnotations = isWrapper
                 ? $": ITlFunc<{resType}> where TFunc : ITlFunc<{resType}>"
-                : $": Record<{funcName}>, ITlFunc<{resType}>";
+                : $": ITlFunc<{resType}>, IEquatable<{funcName}>, IComparable<{funcName}>, IComparable";
 
             var resDes = isWrapper
                 ? "Query.DeserializeResult(br);" // it is 'Query' all the time, i am too lazy
@@ -260,16 +352,23 @@ namespace TLSharp.Rpc.Generator.Generation
                     funcArgs.Map(arg => Line($"public {arg.type} {arg.name} {{ get; }}")).Scope(),
                     Scope(
                         Line(""),
-                        Line($"public {funcName}("),
-                        IndentedScope(1, $",{Environment.NewLine}",
-                            funcArgs.Map(arg => Line($"{arg.someType} {LowerFirst(arg.name)}"))
+                        Scope(
+                            Line($"public {funcName}("),
+                            IndentedScope(1, $",{Environment.NewLine}",
+                                funcArgs.Map(arg => Line($"{arg.someType} {LowerFirst(arg.name)}"))
+                            ),
+                            Line(") {"),
+                            IndentedScope(1,
+                                funcArgs.Map(arg => Line($"{arg.name} = {LowerFirst(arg.name)};"))
+                            ),
+                            Line("}")
                         ),
-                        Line(") {"),
-                        IndentedScope(1,
-                            funcArgs.Map(arg => Line($"{arg.name} = {LowerFirst(arg.name)};"))
-                        ),
-                        Line("}"),
                         Line(""),
+                        Line(""),
+                        isWrapper ? Scope(new NestedText[0]) : Scope(
+                            GenRelations(funcName, funcArgsWithoutFlags),
+                            Line("")
+                        ),
                         GenSerializerDef(func.Args, typeNumber: func.TypeNumber),
                         Line(""),
                         resultDeserializer
@@ -369,13 +468,7 @@ namespace TLSharp.Rpc.Generator.Generation
                 Line(");")
             );
 
-            var eqDef = Scope(
-                Line($"public bool Equals({typeName} other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);"),
-                Line($"public override bool Equals(object obj) => obj is {typeName} x && Equals(x);"),
-                Line($"public static bool operator ==({typeName} a, {typeName} b) => a?.Equals(b) ?? ReferenceEquals(b, null);"),
-                Line($"public static bool operator !=({typeName} a, {typeName} b) => !(a == b);")
-            );
-
+            var cmpPairName = String("CmpPair");
             var helpersDef = Scope(
                 Line("int GetTagOrder()"),
                 Line("{"),
@@ -389,19 +482,8 @@ namespace TLSharp.Rpc.Generator.Generation
                     Line("}")
                 ),
                 Line("}"),
-                Line("(int, object) CmpPair => (GetTagOrder(), _tag);")
+                Line(Concat("(int, object) ", cmpPairName, " => (GetTagOrder(), _tag);"))
             );
-
-            var cmpDef = Scope(
-                Line($"public int CompareTo({typeName} other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));"),
-                Line($"int IComparable.CompareTo(object other) => other is {typeName} x ? CompareTo(x) : throw new ArgumentException(\"bad type\", nameof(other));"),
-                Scope(new[] { "<=", "<", ">", ">=" }
-                    .Map(op => $"public static bool operator {op}({typeName} a, {typeName} b) => a.CompareTo(b) {op} 0;")
-                    .Map(Line)
-                )
-            );
-
-            var hashCodeDef = Line("public override int GetHashCode() => CmpPair.GetHashCode();");
 
             var bodyDef = Scope(Environment.NewLine + Environment.NewLine,
                 tagsDefs,
@@ -411,10 +493,11 @@ namespace TLSharp.Rpc.Generator.Generation
                 staticDeserializerDef,
                 matchOptDef,
                 matchDef,
-                eqDef,
                 helpersDef,
-                cmpDef,
-                hashCodeDef
+                GenEqRelations(typeName, cmpPairName),
+                GenCmpRelations(typeName, cmpPairName),
+                GenGetHashCode(cmpPairName),
+                GenToString($"$\"{typeName}.{{_tag.GetType().Name}}{{_tag}}\"")
             );
 
             var def = Scope(
