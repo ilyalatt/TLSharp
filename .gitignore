@@ -12,6 +12,9 @@ obj
 # macOS
 .DS_Store
 
+# TLSharp.Rpc.Generator
+*.tl
+
 # TLSharp.Example
 config.json
 session.dat

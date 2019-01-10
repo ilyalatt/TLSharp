@@ -12,10 +12,12 @@ namespace TLSharp.Rpc.Generator
 {
     static class Program
     {
+        // layer 66: https://raw.githubusercontent.com/telegramdesktop/tdesktop/8d28d0691f668a67587b056aeb53302929f77385/Telegram/Resources/scheme.tl
+
         const string SchemeUrl = "https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/scheme.tl";
         static string DownloadLatestTlScheme()
         {
-            return File.ReadAllText("scheme.tl");
+            return File.ReadAllText("scheme_66.tl");
             // return new WebClient().DownloadString(SchemeUrl);
         }
 

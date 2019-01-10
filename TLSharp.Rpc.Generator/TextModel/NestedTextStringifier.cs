@@ -21,7 +21,7 @@ namespace TLSharp.Rpc.Generator.TextModel
                     x.Values.HeadOrNone().Iter(TextRec);
                     x.Values.Skip(1).Iter(t =>
                     {
-                        sb.Append(x.Separator);
+                        TextRec(x.Separator);
                         TextRec(t);
                     });
                     return unit;
@@ -41,7 +41,7 @@ namespace TLSharp.Rpc.Generator.TextModel
                     x.Values.HeadOrNone().Iter(head => Rec(head, indentation));
                     x.Values.Skip(1).Iter(t =>
                     {
-                        sb.Append(x.Separator);
+                        TextRec(x.Separator);
                         Rec(t, indentation);
                     });
                     return unit;

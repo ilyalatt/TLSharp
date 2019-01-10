@@ -77,12 +77,12 @@ namespace TLSharp.Rpc.Generator.Generation
         static NestedText GenSerializerDef(Arr<Arg> args, Option<int> typeNumber)
         {
             Text GenSerializer(TlType type) => type.Match(
-                primitive: x => String($"Write{x.Type}"),
-                typeRef: x => String("WriteSerializable"),
+                primitive: x => $"Write{x.Type}",
+                typeRef: x => "WriteSerializable",
                 vector: x => Concat(
-                    String($"WriteVector<{ConvertType(x.Type)}>("),
+                    $"WriteVector<{ConvertType(x.Type)}>(",
                     GenSerializer(x.Type),
-                    String(")")
+                    ")"
                 )
             );
 
@@ -91,22 +91,22 @@ namespace TLSharp.Rpc.Generator.Generation
                     _: () => throw new Exception("WTF"),
                     required: _ => GenSerializer(arg.Type).Apply(Some),
                     optional: x => arg.Type == TlType.OfPrimitive(PrimitiveType.True) ? None : Concat(
-                        String($"WriteOption<{ConvertType(arg.Type)}>("),
+                        $"WriteOption<{ConvertType(arg.Type)}>(",
                         GenSerializer(arg.Type),
-                        String(")")
+                        ")"
                     ).Apply(Some)
                 ).Map(s =>
-                    Concat(String($"Write({arg.Name}, bw, "), s, String(");"))
+                    Concat($"Write({arg.Name}, bw, ", s, ");")
                 );
 
             Text GenMaskSerializer(IEnumerable<(string, int)> maskArgs) =>
                 maskArgs.ToArr()
                 .Apply(Optional).Filter(xs => xs.Count > 0)
                 .Map(xs => xs
-                    .Map(x => String($"MaskBit({x.Item2}, {x.Item1})")).Reduce((x, y) => Concat(x, String(" | "), y))
+                    .Map(x => $"MaskBit({x.Item2}, {x.Item1})").Map(String).Reduce((x, y) => Concat(x, " | ", y))
                 )
-                .IfNone(String("0"))
-                .Apply(mask => Concat(String("Write("), mask, String(", bw, WriteInt);")));
+                .IfNone("0")
+                .Apply(mask => Concat("Write(", mask, ", bw, WriteInt);"));
 
             Option<Text> GenArgSerializer(Arg arg) => arg.Kind.Match(
                 _: () => GenNonFlagArgSerializer(arg),
@@ -132,12 +132,12 @@ namespace TLSharp.Rpc.Generator.Generation
 
         static Text GenTypeDeserializer(TlType type) =>
             type.Match(
-                primitive: x => String($"Read{x.Type}"),
-                typeRef: x => String($"T.{x.Name}.Deserialize"),
+                primitive: x => Concat("Read", x.Type.ToString()),
+                typeRef: x => Concat("T.", x.Name, ".Deserialize"),
                 vector: x => Concat(
-                    String("ReadVector("),
+                    "ReadVector(",
                     GenTypeDeserializer(x.Type),
-                    String(")")
+                    ")"
                 )
             );
 
@@ -148,28 +148,28 @@ namespace TLSharp.Rpc.Generator.Generation
                     required: _ => GenTypeDeserializer(arg.Type),
                     flags: _ => GenTypeDeserializer(arg.Type),
                     optional: x => Concat(
-                        String("ReadOption("),
-                        Concat(", ",
-                            new[]
+                        "ReadOption(",
+                        Join(", ",
+                            new Text[]
                             {
-                                String(LowerFirst(x.Flag.ArgName)),
-                                String(x.Flag.Bit.ToString())
+                                LowerFirst(x.Flag.ArgName),
+                                x.Flag.Bit.ToString()
                             },
                             arg.Type == TlType.OfPrimitive(PrimitiveType.True) ? None : Some(GenTypeDeserializer(arg.Type))
                         ),
-                        String(")")
+                        ")"
                     )
                 ).Apply(s =>
-                    Concat(String($"var {LowerFirst(arg.Name)} = Read(br, "), s, String(");"))
+                    Concat($"var {LowerFirst(arg.Name)} = Read(br, ", s, ");")
                 );
 
             var argsWithoutFlags = args.Filter(x => x.Kind.Match(_: () => true, flags: _ => false));
             var body = Scope(
                 args.Map(GenArgDeserializer).Map(Line).Scope(),
                 Line(Concat(
-                    String($"return new {tagName}("),
-                    argsWithoutFlags.Map(x => x.Name).Map(LowerFirst).Map(String).Apply(xs => Concat(", ", xs)),
-                    String(");")
+                    $"return new {tagName}(",
+                    argsWithoutFlags.Map(x => x.Name).Map(LowerFirst).Map(String).Apply(xs => Join(", ", xs)),
+                    ");"
                 ))
             );
             var def = Scope(
@@ -246,8 +246,8 @@ namespace TLSharp.Rpc.Generator.Generation
                 : $": Record<{funcName}>, ITlFunc<{resType}>";
 
             var resDes = isWrapper
-                ? String("Query.DeserializeResult(br);") // it is 'Query' all the time, i am too lazy
-                : Concat(String("Read(br, "), GenTypeDeserializer(func.ResultType), String(");"));
+                ? "Query.DeserializeResult(br);" // it is 'Query' all the time, i am too lazy
+                : Concat("Read(br, ", GenTypeDeserializer(func.ResultType), ");");
             var resultDeserializer = Scope(
                 Line($"{resType} ITlFunc<{resType}>.DeserializeResult(BinaryReader br) =>"),
                 Indent(1, Line(resDes))
@@ -313,9 +313,9 @@ namespace TLSharp.Rpc.Generator.Generation
                     IndentedScope(1,
                         typeTags.Map(x => Line($"case {x.Name}.TypeNumber: return ({typeName}) {x.Name}.DeserializeTag(br);")).Scope(),
                         Line(Concat(
-                            String("default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { "),
-                            typeTags.Map(x => $"{x.Name}.TypeNumber").Map(String).Apply(xs => Concat(", ", xs)),
-                            String(" });")
+                            "default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { ",
+                            typeTags.Map(x => $"{x.Name}.TypeNumber").Map(String).Apply(xs => Join(", ", xs)),
+                            " });"
                         ))
                     ),
                     Line("}")
@@ -325,14 +325,14 @@ namespace TLSharp.Rpc.Generator.Generation
 
             var matchArgFns =
                 typeTags.Map(tag => tag.Name).Map(tagName =>
-                    String($"Func<{tagName}, T> {LowerFirst(tagName)}")
+                    $"Func<{tagName}, T> {LowerFirst(tagName)}"
                 );
 
             var matchOptDef = Scope(
                 Line($"{(typeTags.Count <= 1 ? "" : "public ")}T Match<T>("),
                 IndentedScope(1, $",{Environment.NewLine}",
                     Line("Func<T> _").Singleton(),
-                    matchArgFns.Map(x => Concat(x, String(" = null"))).Map(Line)
+                    matchArgFns.Map(x => Concat(x, " = null")).Map(Line)
                 ),
                 Line(") {"),
                 IndentedScope(1,

@@ -27,9 +27,9 @@ namespace TLSharp.Rpc.Generator.TextModel
         public class Scope
         {
             public Arr<NestedText> Values { get; }
-            public string Separator { get; }
+            public Text Separator { get; }
 
-            public Scope(Some<Arr<NestedText>> values, Some<string> separator)
+            public Scope(Some<Arr<NestedText>> values, Some<Text> separator)
             {
                 Values = values;
                 Separator = separator;
@@ -41,7 +41,7 @@ namespace TLSharp.Rpc.Generator.TextModel
 
         public static NestedText CreateIndent(int offset, Some<NestedText> text) => new NestedText(new Indent(offset, text));
         public static NestedText CreateLine(Some<Text> value) => new NestedText(new Line(value));
-        public static NestedText CreateScope(Some<Arr<NestedText>> values, Some<string> separator) => new NestedText(new Scope(values, separator));
+        public static NestedText CreateScope(Some<Arr<NestedText>> values, Some<Text> separator) => new NestedText(new Scope(values, separator));
 
 
         public T Match<T>(

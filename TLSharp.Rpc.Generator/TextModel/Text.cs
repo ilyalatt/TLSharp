@@ -15,9 +15,9 @@ namespace TLSharp.Rpc.Generator.TextModel
         public class Scope
         {
             public Arr<Text> Values { get; }
-            public string Separator { get; }
+            public Text Separator { get; }
 
-            public Scope(Some<Arr<Text>> values, Some<string> separator)
+            public Scope(Some<Arr<Text>> values, Some<Text> separator)
             {
                 Values = values;
                 Separator = separator;
@@ -28,7 +28,10 @@ namespace TLSharp.Rpc.Generator.TextModel
         Text(object tag) => _tag = tag;
 
         public static Text CreateString(Some<string> value) => new Text(new String(value));
-        public static Text CreateScope(Some<Arr<Text>> values, Some<string> separator) => new Text(new Scope(values, separator));
+        public static Text CreateScope(Some<Arr<Text>> values, Some<Text> separator) => new Text(new Scope(values, separator));
+
+
+        public static implicit operator Text(string value) => CreateString(value);
 
 
         public T Match<T>(
