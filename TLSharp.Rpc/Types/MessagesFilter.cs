@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputEmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputEmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputEmptyTag x && Equals(x);
             public static bool operator ==(InputEmptyTag x, InputEmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputEmptyTag x, InputEmptyTag y) => !(x == y);
 
-            public int CompareTo(InputEmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputEmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputEmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputEmptyTag x, InputEmptyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputEmptyTag x, InputEmptyTag y) => x.CompareTo(y) < 0;
@@ -70,12 +70,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputPhotosTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputPhotosTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputPhotosTag x && Equals(x);
             public static bool operator ==(InputPhotosTag x, InputPhotosTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputPhotosTag x, InputPhotosTag y) => !(x == y);
 
-            public int CompareTo(InputPhotosTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputPhotosTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputPhotosTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputPhotosTag x, InputPhotosTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputPhotosTag x, InputPhotosTag y) => x.CompareTo(y) < 0;
@@ -115,12 +115,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputVideoTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputVideoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputVideoTag x && Equals(x);
             public static bool operator ==(InputVideoTag x, InputVideoTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputVideoTag x, InputVideoTag y) => !(x == y);
 
-            public int CompareTo(InputVideoTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputVideoTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputVideoTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputVideoTag x, InputVideoTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputVideoTag x, InputVideoTag y) => x.CompareTo(y) < 0;
@@ -160,12 +160,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputPhotoVideoTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputPhotoVideoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputPhotoVideoTag x && Equals(x);
             public static bool operator ==(InputPhotoVideoTag x, InputPhotoVideoTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputPhotoVideoTag x, InputPhotoVideoTag y) => !(x == y);
 
-            public int CompareTo(InputPhotoVideoTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputPhotoVideoTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputPhotoVideoTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputPhotoVideoTag x, InputPhotoVideoTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputPhotoVideoTag x, InputPhotoVideoTag y) => x.CompareTo(y) < 0;
@@ -205,12 +205,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputPhotoVideoDocumentsTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputPhotoVideoDocumentsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputPhotoVideoDocumentsTag x && Equals(x);
             public static bool operator ==(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => !(x == y);
 
-            public int CompareTo(InputPhotoVideoDocumentsTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputPhotoVideoDocumentsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputPhotoVideoDocumentsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x.CompareTo(y) < 0;
@@ -250,12 +250,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputDocumentTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputDocumentTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputDocumentTag x && Equals(x);
             public static bool operator ==(InputDocumentTag x, InputDocumentTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputDocumentTag x, InputDocumentTag y) => !(x == y);
 
-            public int CompareTo(InputDocumentTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputDocumentTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputDocumentTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputDocumentTag x, InputDocumentTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputDocumentTag x, InputDocumentTag y) => x.CompareTo(y) < 0;
@@ -295,12 +295,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputUrlTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputUrlTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputUrlTag x && Equals(x);
             public static bool operator ==(InputUrlTag x, InputUrlTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputUrlTag x, InputUrlTag y) => !(x == y);
 
-            public int CompareTo(InputUrlTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputUrlTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputUrlTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputUrlTag x, InputUrlTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputUrlTag x, InputUrlTag y) => x.CompareTo(y) < 0;
@@ -340,12 +340,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputGifTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputGifTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputGifTag x && Equals(x);
             public static bool operator ==(InputGifTag x, InputGifTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputGifTag x, InputGifTag y) => !(x == y);
 
-            public int CompareTo(InputGifTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputGifTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputGifTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputGifTag x, InputGifTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputGifTag x, InputGifTag y) => x.CompareTo(y) < 0;
@@ -385,12 +385,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputVoiceTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputVoiceTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputVoiceTag x && Equals(x);
             public static bool operator ==(InputVoiceTag x, InputVoiceTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputVoiceTag x, InputVoiceTag y) => !(x == y);
 
-            public int CompareTo(InputVoiceTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputVoiceTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputVoiceTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputVoiceTag x, InputVoiceTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputVoiceTag x, InputVoiceTag y) => x.CompareTo(y) < 0;
@@ -430,12 +430,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputMusicTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputMusicTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputMusicTag x && Equals(x);
             public static bool operator ==(InputMusicTag x, InputMusicTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputMusicTag x, InputMusicTag y) => !(x == y);
 
-            public int CompareTo(InputMusicTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputMusicTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputMusicTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputMusicTag x, InputMusicTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputMusicTag x, InputMusicTag y) => x.CompareTo(y) < 0;
@@ -475,12 +475,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputChatPhotosTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputChatPhotosTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputChatPhotosTag x && Equals(x);
             public static bool operator ==(InputChatPhotosTag x, InputChatPhotosTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputChatPhotosTag x, InputChatPhotosTag y) => !(x == y);
 
-            public int CompareTo(InputChatPhotosTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputChatPhotosTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputChatPhotosTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputChatPhotosTag x, InputChatPhotosTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputChatPhotosTag x, InputChatPhotosTag y) => x.CompareTo(y) < 0;
@@ -509,7 +509,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x80c99768;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool Missed { get; }
+            public readonly bool Missed;
             
             public InputPhoneCallsTag(
                 bool missed
@@ -520,12 +520,12 @@ namespace TLSharp.Rpc.Types
             bool CmpTuple =>
                 Missed;
 
-            public bool Equals(InputPhoneCallsTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputPhoneCallsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputPhoneCallsTag x && Equals(x);
             public static bool operator ==(InputPhoneCallsTag x, InputPhoneCallsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputPhoneCallsTag x, InputPhoneCallsTag y) => !(x == y);
 
-            public int CompareTo(InputPhoneCallsTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputPhoneCallsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputPhoneCallsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputPhoneCallsTag x, InputPhoneCallsTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputPhoneCallsTag x, InputPhoneCallsTag y) => x.CompareTo(y) < 0;
@@ -566,12 +566,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputRoundVoiceTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputRoundVoiceTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputRoundVoiceTag x && Equals(x);
             public static bool operator ==(InputRoundVoiceTag x, InputRoundVoiceTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputRoundVoiceTag x, InputRoundVoiceTag y) => !(x == y);
 
-            public int CompareTo(InputRoundVoiceTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputRoundVoiceTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputRoundVoiceTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputRoundVoiceTag x, InputRoundVoiceTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputRoundVoiceTag x, InputRoundVoiceTag y) => x.CompareTo(y) < 0;
@@ -611,12 +611,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(InputRoundVideoTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(InputRoundVideoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is InputRoundVideoTag x && Equals(x);
             public static bool operator ==(InputRoundVideoTag x, InputRoundVideoTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(InputRoundVideoTag x, InputRoundVideoTag y) => !(x == y);
 
-            public int CompareTo(InputRoundVideoTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(InputRoundVideoTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is InputRoundVideoTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(InputRoundVideoTag x, InputRoundVideoTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(InputRoundVideoTag x, InputRoundVideoTag y) => x.CompareTo(y) < 0;
@@ -781,12 +781,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(MessagesFilter other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(MessagesFilter other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is MessagesFilter x && Equals(x);
         public static bool operator ==(MessagesFilter x, MessagesFilter y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(MessagesFilter x, MessagesFilter y) => !(x == y);
 
-        public int CompareTo(MessagesFilter other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(MessagesFilter other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is MessagesFilter x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(MessagesFilter x, MessagesFilter y) => x.CompareTo(y) <= 0;
         public static bool operator <(MessagesFilter x, MessagesFilter y) => x.CompareTo(y) < 0;

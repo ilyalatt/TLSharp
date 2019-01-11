@@ -14,16 +14,16 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x0f220f3f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool Blocked { get; }
-            public bool PhoneCallsAvailable { get; }
-            public bool PhoneCallsPrivate { get; }
-            public T.User User { get; }
-            public Option<string> About { get; }
-            public T.Contacts.Link Link { get; }
-            public Option<T.Photo> ProfilePhoto { get; }
-            public T.PeerNotifySettings NotifySettings { get; }
-            public Option<T.BotInfo> BotInfo { get; }
-            public int CommonChatsCount { get; }
+            public readonly bool Blocked;
+            public readonly bool PhoneCallsAvailable;
+            public readonly bool PhoneCallsPrivate;
+            public readonly T.User User;
+            public readonly Option<string> About;
+            public readonly T.Contacts.Link Link;
+            public readonly Option<T.Photo> ProfilePhoto;
+            public readonly T.PeerNotifySettings NotifySettings;
+            public readonly Option<T.BotInfo> BotInfo;
+            public readonly int CommonChatsCount;
             
             public Tag(
                 bool blocked,
@@ -52,12 +52,12 @@ namespace TLSharp.Rpc.Types
             (bool, bool, bool, T.User, Option<string>, T.Contacts.Link, Option<T.Photo>, T.PeerNotifySettings, Option<T.BotInfo>, int) CmpTuple =>
                 (Blocked, PhoneCallsAvailable, PhoneCallsPrivate, User, About, Link, ProfilePhoto, NotifySettings, BotInfo, CommonChatsCount);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -148,12 +148,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(UserFull other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(UserFull other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is UserFull x && Equals(x);
         public static bool operator ==(UserFull x, UserFull y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(UserFull x, UserFull y) => !(x == y);
 
-        public int CompareTo(UserFull other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(UserFull other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is UserFull x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(UserFull x, UserFull y) => x.CompareTo(y) <= 0;
         public static bool operator <(UserFull x, UserFull y) => x.CompareTo(y) < 0;

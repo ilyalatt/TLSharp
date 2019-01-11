@@ -14,7 +14,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x200250ba;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Id { get; }
+            public readonly int Id;
             
             public EmptyTag(
                 int id
@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 Id;
 
-            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is EmptyTag x && Equals(x);
             public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
 
-            public int CompareTo(EmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(EmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
@@ -59,29 +59,29 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x2e13f4c3;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool Self { get; }
-            public bool Contact { get; }
-            public bool MutualContact { get; }
-            public bool Deleted { get; }
-            public bool Bot { get; }
-            public bool BotChatHistory { get; }
-            public bool BotNochats { get; }
-            public bool Verified { get; }
-            public bool Restricted { get; }
-            public bool Min { get; }
-            public bool BotInlineGeo { get; }
-            public int Id { get; }
-            public Option<long> AccessHash { get; }
-            public Option<string> FirstName { get; }
-            public Option<string> LastName { get; }
-            public Option<string> Username { get; }
-            public Option<string> Phone { get; }
-            public Option<T.UserProfilePhoto> Photo { get; }
-            public Option<T.UserStatus> Status { get; }
-            public Option<int> BotInfoVersion { get; }
-            public Option<string> RestrictionReason { get; }
-            public Option<string> BotInlinePlaceholder { get; }
-            public Option<string> LangCode { get; }
+            public readonly bool Self;
+            public readonly bool Contact;
+            public readonly bool MutualContact;
+            public readonly bool Deleted;
+            public readonly bool Bot;
+            public readonly bool BotChatHistory;
+            public readonly bool BotNochats;
+            public readonly bool Verified;
+            public readonly bool Restricted;
+            public readonly bool Min;
+            public readonly bool BotInlineGeo;
+            public readonly int Id;
+            public readonly Option<long> AccessHash;
+            public readonly Option<string> FirstName;
+            public readonly Option<string> LastName;
+            public readonly Option<string> Username;
+            public readonly Option<string> Phone;
+            public readonly Option<T.UserProfilePhoto> Photo;
+            public readonly Option<T.UserStatus> Status;
+            public readonly Option<int> BotInfoVersion;
+            public readonly Option<string> RestrictionReason;
+            public readonly Option<string> BotInlinePlaceholder;
+            public readonly Option<string> LangCode;
             
             public Tag(
                 bool self,
@@ -136,12 +136,12 @@ namespace TLSharp.Rpc.Types
             (bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, int, Option<long>, Option<string>, Option<string>, Option<string>, Option<string>, Option<T.UserProfilePhoto>, Option<T.UserStatus>, Option<int>, Option<string>, Option<string>, Option<string>) CmpTuple =>
                 (Self, Contact, MutualContact, Deleted, Bot, BotChatHistory, BotNochats, Verified, Restricted, Min, BotInlineGeo, Id, AccessHash, FirstName, LastName, Username, Phone, Photo, Status, BotInfoVersion, RestrictionReason, BotInlinePlaceholder, LangCode);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -257,12 +257,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(User other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(User other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is User x && Equals(x);
         public static bool operator ==(User x, User y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(User x, User y) => !(x == y);
 
-        public int CompareTo(User other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(User other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is User x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(User x, User y) => x.CompareTo(y) <= 0;
         public static bool operator <(User x, User y) => x.CompareTo(y) < 0;

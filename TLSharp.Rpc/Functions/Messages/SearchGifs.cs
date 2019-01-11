@@ -24,12 +24,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (string, int) CmpTuple =>
             (Q, Offset);
 
-        public bool Equals(SearchGifs other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SearchGifs other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SearchGifs x && Equals(x);
         public static bool operator ==(SearchGifs x, SearchGifs y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SearchGifs x, SearchGifs y) => !(x == y);
 
-        public int CompareTo(SearchGifs other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SearchGifs other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SearchGifs x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SearchGifs x, SearchGifs y) => x.CompareTo(y) <= 0;
         public static bool operator <(SearchGifs x, SearchGifs y) => x.CompareTo(y) < 0;

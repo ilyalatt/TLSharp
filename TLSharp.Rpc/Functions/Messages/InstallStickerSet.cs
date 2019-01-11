@@ -24,12 +24,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (T.InputStickerSet, bool) CmpTuple =>
             (Stickerset, Archived);
 
-        public bool Equals(InstallStickerSet other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(InstallStickerSet other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is InstallStickerSet x && Equals(x);
         public static bool operator ==(InstallStickerSet x, InstallStickerSet y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(InstallStickerSet x, InstallStickerSet y) => !(x == y);
 
-        public int CompareTo(InstallStickerSet other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(InstallStickerSet other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is InstallStickerSet x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(InstallStickerSet x, InstallStickerSet y) => x.CompareTo(y) <= 0;
         public static bool operator <(InstallStickerSet x, InstallStickerSet y) => x.CompareTo(y) < 0;

@@ -14,7 +14,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x83e5de54;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Id { get; }
+            public readonly int Id;
             
             public EmptyTag(
                 int id
@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 Id;
 
-            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is EmptyTag x && Equals(x);
             public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
 
-            public int CompareTo(EmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(EmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
@@ -59,24 +59,24 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xc09be45f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool Out { get; }
-            public bool Mentioned { get; }
-            public bool MediaUnread { get; }
-            public bool Silent { get; }
-            public bool Post { get; }
-            public int Id { get; }
-            public Option<int> FromId { get; }
-            public T.Peer ToId { get; }
-            public Option<T.MessageFwdHeader> FwdFrom { get; }
-            public Option<int> ViaBotId { get; }
-            public Option<int> ReplyToMsgId { get; }
-            public int Date { get; }
-            public string Message { get; }
-            public Option<T.MessageMedia> Media { get; }
-            public Option<T.ReplyMarkup> ReplyMarkup { get; }
-            public Option<Arr<T.MessageEntity>> Entities { get; }
-            public Option<int> Views { get; }
-            public Option<int> EditDate { get; }
+            public readonly bool Out;
+            public readonly bool Mentioned;
+            public readonly bool MediaUnread;
+            public readonly bool Silent;
+            public readonly bool Post;
+            public readonly int Id;
+            public readonly Option<int> FromId;
+            public readonly T.Peer ToId;
+            public readonly Option<T.MessageFwdHeader> FwdFrom;
+            public readonly Option<int> ViaBotId;
+            public readonly Option<int> ReplyToMsgId;
+            public readonly int Date;
+            public readonly string Message;
+            public readonly Option<T.MessageMedia> Media;
+            public readonly Option<T.ReplyMarkup> ReplyMarkup;
+            public readonly Option<Arr<T.MessageEntity>> Entities;
+            public readonly Option<int> Views;
+            public readonly Option<int> EditDate;
             
             public Tag(
                 bool @out,
@@ -121,12 +121,12 @@ namespace TLSharp.Rpc.Types
             (bool, bool, bool, bool, bool, int, Option<int>, T.Peer, Option<T.MessageFwdHeader>, Option<int>, Option<int>, int, string, Option<T.MessageMedia>, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>, Option<int>, Option<int>) CmpTuple =>
                 (Out, Mentioned, MediaUnread, Silent, Post, Id, FromId, ToId, FwdFrom, ViaBotId, ReplyToMsgId, Date, Message, Media, ReplyMarkup, Entities, Views, EditDate);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -186,17 +186,17 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x9e19a1f6;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool Out { get; }
-            public bool Mentioned { get; }
-            public bool MediaUnread { get; }
-            public bool Silent { get; }
-            public bool Post { get; }
-            public int Id { get; }
-            public Option<int> FromId { get; }
-            public T.Peer ToId { get; }
-            public Option<int> ReplyToMsgId { get; }
-            public int Date { get; }
-            public T.MessageAction Action { get; }
+            public readonly bool Out;
+            public readonly bool Mentioned;
+            public readonly bool MediaUnread;
+            public readonly bool Silent;
+            public readonly bool Post;
+            public readonly int Id;
+            public readonly Option<int> FromId;
+            public readonly T.Peer ToId;
+            public readonly Option<int> ReplyToMsgId;
+            public readonly int Date;
+            public readonly T.MessageAction Action;
             
             public ServiceTag(
                 bool @out,
@@ -227,12 +227,12 @@ namespace TLSharp.Rpc.Types
             (bool, bool, bool, bool, bool, int, Option<int>, T.Peer, Option<int>, int, T.MessageAction) CmpTuple =>
                 (Out, Mentioned, MediaUnread, Silent, Post, Id, FromId, ToId, ReplyToMsgId, Date, Action);
 
-            public bool Equals(ServiceTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(ServiceTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ServiceTag x && Equals(x);
             public static bool operator ==(ServiceTag x, ServiceTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(ServiceTag x, ServiceTag y) => !(x == y);
 
-            public int CompareTo(ServiceTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(ServiceTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is ServiceTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(ServiceTag x, ServiceTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(ServiceTag x, ServiceTag y) => x.CompareTo(y) < 0;
@@ -337,12 +337,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(Message other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(Message other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is Message x && Equals(x);
         public static bool operator ==(Message x, Message y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Message x, Message y) => !(x == y);
 
-        public int CompareTo(Message other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Message other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is Message x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Message x, Message y) => x.CompareTo(y) <= 0;
         public static bool operator <(Message x, Message y) => x.CompareTo(y) < 0;

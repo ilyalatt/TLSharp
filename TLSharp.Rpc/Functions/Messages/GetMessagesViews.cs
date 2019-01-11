@@ -27,12 +27,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (T.InputPeer, Arr<int>, bool) CmpTuple =>
             (Peer, Id, Increment);
 
-        public bool Equals(GetMessagesViews other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetMessagesViews other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetMessagesViews x && Equals(x);
         public static bool operator ==(GetMessagesViews x, GetMessagesViews y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetMessagesViews x, GetMessagesViews y) => !(x == y);
 
-        public int CompareTo(GetMessagesViews other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetMessagesViews other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetMessagesViews x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetMessagesViews x, GetMessagesViews y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetMessagesViews x, GetMessagesViews y) => x.CompareTo(y) < 0;

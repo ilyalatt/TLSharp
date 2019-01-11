@@ -30,12 +30,12 @@ namespace TLSharp.Rpc.Functions.Payments
         (int, Option<string>, Option<string>, T.InputPaymentCredentials) CmpTuple =>
             (MsgId, RequestedInfoId, ShippingOptionId, Credentials);
 
-        public bool Equals(SendPaymentForm other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SendPaymentForm other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SendPaymentForm x && Equals(x);
         public static bool operator ==(SendPaymentForm x, SendPaymentForm y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SendPaymentForm x, SendPaymentForm y) => !(x == y);
 
-        public int CompareTo(SendPaymentForm other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SendPaymentForm other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SendPaymentForm x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SendPaymentForm x, SendPaymentForm y) => x.CompareTo(y) <= 0;
         public static bool operator <(SendPaymentForm x, SendPaymentForm y) => x.CompareTo(y) < 0;

@@ -21,12 +21,12 @@ namespace TLSharp.Rpc.Functions.Users
         T.InputUser CmpTuple =>
             Id;
 
-        public bool Equals(GetFullUser other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetFullUser other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetFullUser x && Equals(x);
         public static bool operator ==(GetFullUser x, GetFullUser y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetFullUser x, GetFullUser y) => !(x == y);
 
-        public int CompareTo(GetFullUser other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetFullUser other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetFullUser x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetFullUser x, GetFullUser y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetFullUser x, GetFullUser y) => x.CompareTo(y) < 0;

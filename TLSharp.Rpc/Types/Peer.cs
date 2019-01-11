@@ -14,7 +14,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x9db1bc6d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int UserId { get; }
+            public readonly int UserId;
             
             public UserTag(
                 int userId
@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 UserId;
 
-            public bool Equals(UserTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(UserTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is UserTag x && Equals(x);
             public static bool operator ==(UserTag x, UserTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(UserTag x, UserTag y) => !(x == y);
 
-            public int CompareTo(UserTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(UserTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is UserTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(UserTag x, UserTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(UserTag x, UserTag y) => x.CompareTo(y) < 0;
@@ -59,7 +59,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xbad0e5bb;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int ChatId { get; }
+            public readonly int ChatId;
             
             public ChatTag(
                 int chatId
@@ -70,12 +70,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 ChatId;
 
-            public bool Equals(ChatTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(ChatTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChatTag x && Equals(x);
             public static bool operator ==(ChatTag x, ChatTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(ChatTag x, ChatTag y) => !(x == y);
 
-            public int CompareTo(ChatTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(ChatTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is ChatTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(ChatTag x, ChatTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(ChatTag x, ChatTag y) => x.CompareTo(y) < 0;
@@ -104,7 +104,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xbddde532;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int ChannelId { get; }
+            public readonly int ChannelId;
             
             public ChannelTag(
                 int channelId
@@ -115,12 +115,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 ChannelId;
 
-            public bool Equals(ChannelTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(ChannelTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChannelTag x && Equals(x);
             public static bool operator ==(ChannelTag x, ChannelTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(ChannelTag x, ChannelTag y) => !(x == y);
 
-            public int CompareTo(ChannelTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(ChannelTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is ChannelTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(ChannelTag x, ChannelTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(ChannelTag x, ChannelTag y) => x.CompareTo(y) < 0;
@@ -208,12 +208,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(Peer other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(Peer other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is Peer x && Equals(x);
         public static bool operator ==(Peer x, Peer y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Peer x, Peer y) => !(x == y);
 
-        public int CompareTo(Peer other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Peer other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is Peer x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Peer x, Peer y) => x.CompareTo(y) <= 0;
         public static bool operator <(Peer x, Peer y) => x.CompareTo(y) < 0;

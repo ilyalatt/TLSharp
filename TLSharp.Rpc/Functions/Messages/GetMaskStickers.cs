@@ -21,12 +21,12 @@ namespace TLSharp.Rpc.Functions.Messages
         int CmpTuple =>
             Hash;
 
-        public bool Equals(GetMaskStickers other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetMaskStickers other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetMaskStickers x && Equals(x);
         public static bool operator ==(GetMaskStickers x, GetMaskStickers y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetMaskStickers x, GetMaskStickers y) => !(x == y);
 
-        public int CompareTo(GetMaskStickers other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetMaskStickers other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetMaskStickers x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetMaskStickers x, GetMaskStickers y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetMaskStickers x, GetMaskStickers y) => x.CompareTo(y) < 0;

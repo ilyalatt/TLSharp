@@ -24,12 +24,12 @@ namespace TLSharp.Rpc.Functions.Channels
         (T.InputChannel, bool) CmpTuple =>
             (Channel, Enabled);
 
-        public bool Equals(ToggleSignatures other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(ToggleSignatures other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ToggleSignatures x && Equals(x);
         public static bool operator ==(ToggleSignatures x, ToggleSignatures y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ToggleSignatures x, ToggleSignatures y) => !(x == y);
 
-        public int CompareTo(ToggleSignatures other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ToggleSignatures other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is ToggleSignatures x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ToggleSignatures x, ToggleSignatures y) => x.CompareTo(y) <= 0;
         public static bool operator <(ToggleSignatures x, ToggleSignatures y) => x.CompareTo(y) < 0;

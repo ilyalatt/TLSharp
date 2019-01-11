@@ -30,12 +30,12 @@ namespace TLSharp.Rpc.Functions.Auth
         (int, int, string, string) CmpTuple =>
             (Flags, ApiId, ApiHash, BotAuthToken);
 
-        public bool Equals(ImportBotAuthorization other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(ImportBotAuthorization other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ImportBotAuthorization x && Equals(x);
         public static bool operator ==(ImportBotAuthorization x, ImportBotAuthorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ImportBotAuthorization x, ImportBotAuthorization y) => !(x == y);
 
-        public int CompareTo(ImportBotAuthorization other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ImportBotAuthorization other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is ImportBotAuthorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ImportBotAuthorization x, ImportBotAuthorization y) => x.CompareTo(y) <= 0;
         public static bool operator <(ImportBotAuthorization x, ImportBotAuthorization y) => x.CompareTo(y) < 0;

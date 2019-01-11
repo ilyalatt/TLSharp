@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(ChatInviteEmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(ChatInviteEmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChatInviteEmptyTag x && Equals(x);
             public static bool operator ==(ChatInviteEmptyTag x, ChatInviteEmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(ChatInviteEmptyTag x, ChatInviteEmptyTag y) => !(x == y);
 
-            public int CompareTo(ChatInviteEmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(ChatInviteEmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is ChatInviteEmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(ChatInviteEmptyTag x, ChatInviteEmptyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(ChatInviteEmptyTag x, ChatInviteEmptyTag y) => x.CompareTo(y) < 0;
@@ -59,7 +59,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xfc2e05bc;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public string Link { get; }
+            public readonly string Link;
             
             public ChatInviteExportedTag(
                 Some<string> link
@@ -70,12 +70,12 @@ namespace TLSharp.Rpc.Types
             string CmpTuple =>
                 Link;
 
-            public bool Equals(ChatInviteExportedTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(ChatInviteExportedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChatInviteExportedTag x && Equals(x);
             public static bool operator ==(ChatInviteExportedTag x, ChatInviteExportedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(ChatInviteExportedTag x, ChatInviteExportedTag y) => !(x == y);
 
-            public int CompareTo(ChatInviteExportedTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(ChatInviteExportedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is ChatInviteExportedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(ChatInviteExportedTag x, ChatInviteExportedTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(ChatInviteExportedTag x, ChatInviteExportedTag y) => x.CompareTo(y) < 0;
@@ -156,12 +156,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(ExportedChatInvite other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(ExportedChatInvite other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is ExportedChatInvite x && Equals(x);
         public static bool operator ==(ExportedChatInvite x, ExportedChatInvite y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ExportedChatInvite x, ExportedChatInvite y) => !(x == y);
 
-        public int CompareTo(ExportedChatInvite other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ExportedChatInvite other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is ExportedChatInvite x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ExportedChatInvite x, ExportedChatInvite y) => x.CompareTo(y) <= 0;
         public static bool operator <(ExportedChatInvite x, ExportedChatInvite y) => x.CompareTo(y) < 0;

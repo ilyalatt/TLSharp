@@ -24,12 +24,12 @@ namespace TLSharp.Rpc.Functions.Channels
         (T.InputChannel, T.InputUser) CmpTuple =>
             (Channel, UserId);
 
-        public bool Equals(GetParticipant other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetParticipant other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetParticipant x && Equals(x);
         public static bool operator ==(GetParticipant x, GetParticipant y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetParticipant x, GetParticipant y) => !(x == y);
 
-        public int CompareTo(GetParticipant other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetParticipant other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetParticipant x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetParticipant x, GetParticipant y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetParticipant x, GetParticipant y) => x.CompareTo(y) < 0;

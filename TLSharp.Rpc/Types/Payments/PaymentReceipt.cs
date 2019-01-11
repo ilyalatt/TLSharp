@@ -14,16 +14,16 @@ namespace TLSharp.Rpc.Types.Payments
             internal const uint TypeNumber = 0x500911e1;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Date { get; }
-            public int BotId { get; }
-            public T.Invoice Invoice { get; }
-            public int ProviderId { get; }
-            public Option<T.PaymentRequestedInfo> Info { get; }
-            public Option<T.ShippingOption> Shipping { get; }
-            public string Currency { get; }
-            public long TotalAmount { get; }
-            public string CredentialsTitle { get; }
-            public Arr<T.User> Users { get; }
+            public readonly int Date;
+            public readonly int BotId;
+            public readonly T.Invoice Invoice;
+            public readonly int ProviderId;
+            public readonly Option<T.PaymentRequestedInfo> Info;
+            public readonly Option<T.ShippingOption> Shipping;
+            public readonly string Currency;
+            public readonly long TotalAmount;
+            public readonly string CredentialsTitle;
+            public readonly Arr<T.User> Users;
             
             public Tag(
                 int date,
@@ -52,12 +52,12 @@ namespace TLSharp.Rpc.Types.Payments
             (int, int, T.Invoice, int, Option<T.PaymentRequestedInfo>, Option<T.ShippingOption>, string, long, string, Arr<T.User>) CmpTuple =>
                 (Date, BotId, Invoice, ProviderId, Info, Shipping, Currency, TotalAmount, CredentialsTitle, Users);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -151,12 +151,12 @@ namespace TLSharp.Rpc.Types.Payments
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(PaymentReceipt other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(PaymentReceipt other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is PaymentReceipt x && Equals(x);
         public static bool operator ==(PaymentReceipt x, PaymentReceipt y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(PaymentReceipt x, PaymentReceipt y) => !(x == y);
 
-        public int CompareTo(PaymentReceipt other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(PaymentReceipt other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is PaymentReceipt x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(PaymentReceipt x, PaymentReceipt y) => x.CompareTo(y) <= 0;
         public static bool operator <(PaymentReceipt x, PaymentReceipt y) => x.CompareTo(y) < 0;

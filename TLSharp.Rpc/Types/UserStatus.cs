@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is EmptyTag x && Equals(x);
             public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
 
-            public int CompareTo(EmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(EmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
@@ -59,7 +59,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xedb93949;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Expires { get; }
+            public readonly int Expires;
             
             public OnlineTag(
                 int expires
@@ -70,12 +70,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 Expires;
 
-            public bool Equals(OnlineTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(OnlineTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is OnlineTag x && Equals(x);
             public static bool operator ==(OnlineTag x, OnlineTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(OnlineTag x, OnlineTag y) => !(x == y);
 
-            public int CompareTo(OnlineTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(OnlineTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is OnlineTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(OnlineTag x, OnlineTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(OnlineTag x, OnlineTag y) => x.CompareTo(y) < 0;
@@ -104,7 +104,7 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x008c703f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int WasOnline { get; }
+            public readonly int WasOnline;
             
             public OfflineTag(
                 int wasOnline
@@ -115,12 +115,12 @@ namespace TLSharp.Rpc.Types
             int CmpTuple =>
                 WasOnline;
 
-            public bool Equals(OfflineTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(OfflineTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is OfflineTag x && Equals(x);
             public static bool operator ==(OfflineTag x, OfflineTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(OfflineTag x, OfflineTag y) => !(x == y);
 
-            public int CompareTo(OfflineTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(OfflineTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is OfflineTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(OfflineTag x, OfflineTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(OfflineTag x, OfflineTag y) => x.CompareTo(y) < 0;
@@ -160,12 +160,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(RecentlyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(RecentlyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is RecentlyTag x && Equals(x);
             public static bool operator ==(RecentlyTag x, RecentlyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(RecentlyTag x, RecentlyTag y) => !(x == y);
 
-            public int CompareTo(RecentlyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(RecentlyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is RecentlyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(RecentlyTag x, RecentlyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(RecentlyTag x, RecentlyTag y) => x.CompareTo(y) < 0;
@@ -205,12 +205,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(LastWeekTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(LastWeekTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is LastWeekTag x && Equals(x);
             public static bool operator ==(LastWeekTag x, LastWeekTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(LastWeekTag x, LastWeekTag y) => !(x == y);
 
-            public int CompareTo(LastWeekTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(LastWeekTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is LastWeekTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(LastWeekTag x, LastWeekTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(LastWeekTag x, LastWeekTag y) => x.CompareTo(y) < 0;
@@ -250,12 +250,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(LastMonthTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(LastMonthTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is LastMonthTag x && Equals(x);
             public static bool operator ==(LastMonthTag x, LastMonthTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(LastMonthTag x, LastMonthTag y) => !(x == y);
 
-            public int CompareTo(LastMonthTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(LastMonthTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is LastMonthTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(LastMonthTag x, LastMonthTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(LastMonthTag x, LastMonthTag y) => x.CompareTo(y) < 0;
@@ -364,12 +364,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(UserStatus other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(UserStatus other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is UserStatus x && Equals(x);
         public static bool operator ==(UserStatus x, UserStatus y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(UserStatus x, UserStatus y) => !(x == y);
 
-        public int CompareTo(UserStatus other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(UserStatus other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is UserStatus x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(UserStatus x, UserStatus y) => x.CompareTo(y) <= 0;
         public static bool operator <(UserStatus x, UserStatus y) => x.CompareTo(y) < 0;

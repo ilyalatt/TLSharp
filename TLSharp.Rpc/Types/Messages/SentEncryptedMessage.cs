@@ -14,7 +14,7 @@ namespace TLSharp.Rpc.Types.Messages
             internal const uint TypeNumber = 0x560f8935;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Date { get; }
+            public readonly int Date;
             
             public Tag(
                 int date
@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types.Messages
             int CmpTuple =>
                 Date;
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -59,8 +59,8 @@ namespace TLSharp.Rpc.Types.Messages
             internal const uint TypeNumber = 0x9493ff32;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Date { get; }
-            public T.EncryptedFile File { get; }
+            public readonly int Date;
+            public readonly T.EncryptedFile File;
             
             public FileTag(
                 int date,
@@ -73,12 +73,12 @@ namespace TLSharp.Rpc.Types.Messages
             (int, T.EncryptedFile) CmpTuple =>
                 (Date, File);
 
-            public bool Equals(FileTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(FileTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is FileTag x && Equals(x);
             public static bool operator ==(FileTag x, FileTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(FileTag x, FileTag y) => !(x == y);
 
-            public int CompareTo(FileTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(FileTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is FileTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(FileTag x, FileTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(FileTag x, FileTag y) => x.CompareTo(y) < 0;
@@ -161,12 +161,12 @@ namespace TLSharp.Rpc.Types.Messages
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(SentEncryptedMessage other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(SentEncryptedMessage other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is SentEncryptedMessage x && Equals(x);
         public static bool operator ==(SentEncryptedMessage x, SentEncryptedMessage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SentEncryptedMessage x, SentEncryptedMessage y) => !(x == y);
 
-        public int CompareTo(SentEncryptedMessage other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SentEncryptedMessage other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is SentEncryptedMessage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SentEncryptedMessage x, SentEncryptedMessage y) => x.CompareTo(y) <= 0;
         public static bool operator <(SentEncryptedMessage x, SentEncryptedMessage y) => x.CompareTo(y) < 0;

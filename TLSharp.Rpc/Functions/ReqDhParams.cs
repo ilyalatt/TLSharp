@@ -36,12 +36,12 @@ namespace TLSharp.Rpc.Functions
         (Int128, Int128, Arr<byte>, Arr<byte>, long, Arr<byte>) CmpTuple =>
             (Nonce, ServerNonce, P, Q, PublicKeyFingerprint, EncryptedData);
 
-        public bool Equals(ReqDhParams other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(ReqDhParams other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ReqDhParams x && Equals(x);
         public static bool operator ==(ReqDhParams x, ReqDhParams y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ReqDhParams x, ReqDhParams y) => !(x == y);
 
-        public int CompareTo(ReqDhParams other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ReqDhParams other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is ReqDhParams x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ReqDhParams x, ReqDhParams y) => x.CompareTo(y) <= 0;
         public static bool operator <(ReqDhParams x, ReqDhParams y) => x.CompareTo(y) < 0;

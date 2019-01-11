@@ -21,12 +21,12 @@ namespace TLSharp.Rpc.Functions.Messages
         int CmpTuple =>
             Hash;
 
-        public bool Equals(GetSavedGifs other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetSavedGifs other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetSavedGifs x && Equals(x);
         public static bool operator ==(GetSavedGifs x, GetSavedGifs y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetSavedGifs x, GetSavedGifs y) => !(x == y);
 
-        public int CompareTo(GetSavedGifs other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetSavedGifs other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetSavedGifs x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetSavedGifs x, GetSavedGifs y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetSavedGifs x, GetSavedGifs y) => x.CompareTo(y) < 0;

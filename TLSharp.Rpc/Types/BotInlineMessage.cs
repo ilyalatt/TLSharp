@@ -14,8 +14,8 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x0a74b15b;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public string Caption { get; }
-            public Option<T.ReplyMarkup> ReplyMarkup { get; }
+            public readonly string Caption;
+            public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaAutoTag(
                 Some<string> caption,
@@ -28,12 +28,12 @@ namespace TLSharp.Rpc.Types
             (string, Option<T.ReplyMarkup>) CmpTuple =>
                 (Caption, ReplyMarkup);
 
-            public bool Equals(MediaAutoTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(MediaAutoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaAutoTag x && Equals(x);
             public static bool operator ==(MediaAutoTag x, MediaAutoTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(MediaAutoTag x, MediaAutoTag y) => !(x == y);
 
-            public int CompareTo(MediaAutoTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(MediaAutoTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is MediaAutoTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(MediaAutoTag x, MediaAutoTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(MediaAutoTag x, MediaAutoTag y) => x.CompareTo(y) < 0;
@@ -66,10 +66,10 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x8c7f65e2;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool NoWebpage { get; }
-            public string Message { get; }
-            public Option<Arr<T.MessageEntity>> Entities { get; }
-            public Option<T.ReplyMarkup> ReplyMarkup { get; }
+            public readonly bool NoWebpage;
+            public readonly string Message;
+            public readonly Option<Arr<T.MessageEntity>> Entities;
+            public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public TextTag(
                 bool noWebpage,
@@ -86,12 +86,12 @@ namespace TLSharp.Rpc.Types
             (bool, string, Option<Arr<T.MessageEntity>>, Option<T.ReplyMarkup>) CmpTuple =>
                 (NoWebpage, Message, Entities, ReplyMarkup);
 
-            public bool Equals(TextTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(TextTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is TextTag x && Equals(x);
             public static bool operator ==(TextTag x, TextTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(TextTag x, TextTag y) => !(x == y);
 
-            public int CompareTo(TextTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(TextTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is TextTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(TextTag x, TextTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(TextTag x, TextTag y) => x.CompareTo(y) < 0;
@@ -127,8 +127,8 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x3a8fd8b8;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public T.GeoPoint Geo { get; }
-            public Option<T.ReplyMarkup> ReplyMarkup { get; }
+            public readonly T.GeoPoint Geo;
+            public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaGeoTag(
                 Some<T.GeoPoint> geo,
@@ -141,12 +141,12 @@ namespace TLSharp.Rpc.Types
             (T.GeoPoint, Option<T.ReplyMarkup>) CmpTuple =>
                 (Geo, ReplyMarkup);
 
-            public bool Equals(MediaGeoTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(MediaGeoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaGeoTag x && Equals(x);
             public static bool operator ==(MediaGeoTag x, MediaGeoTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(MediaGeoTag x, MediaGeoTag y) => !(x == y);
 
-            public int CompareTo(MediaGeoTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(MediaGeoTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is MediaGeoTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(MediaGeoTag x, MediaGeoTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(MediaGeoTag x, MediaGeoTag y) => x.CompareTo(y) < 0;
@@ -179,12 +179,12 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x4366232e;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public T.GeoPoint Geo { get; }
-            public string Title { get; }
-            public string Address { get; }
-            public string Provider { get; }
-            public string VenueId { get; }
-            public Option<T.ReplyMarkup> ReplyMarkup { get; }
+            public readonly T.GeoPoint Geo;
+            public readonly string Title;
+            public readonly string Address;
+            public readonly string Provider;
+            public readonly string VenueId;
+            public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaVenueTag(
                 Some<T.GeoPoint> geo,
@@ -205,12 +205,12 @@ namespace TLSharp.Rpc.Types
             (T.GeoPoint, string, string, string, string, Option<T.ReplyMarkup>) CmpTuple =>
                 (Geo, Title, Address, Provider, VenueId, ReplyMarkup);
 
-            public bool Equals(MediaVenueTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(MediaVenueTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaVenueTag x && Equals(x);
             public static bool operator ==(MediaVenueTag x, MediaVenueTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(MediaVenueTag x, MediaVenueTag y) => !(x == y);
 
-            public int CompareTo(MediaVenueTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(MediaVenueTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is MediaVenueTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(MediaVenueTag x, MediaVenueTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(MediaVenueTag x, MediaVenueTag y) => x.CompareTo(y) < 0;
@@ -251,10 +251,10 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x35edb4d4;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public string PhoneNumber { get; }
-            public string FirstName { get; }
-            public string LastName { get; }
-            public Option<T.ReplyMarkup> ReplyMarkup { get; }
+            public readonly string PhoneNumber;
+            public readonly string FirstName;
+            public readonly string LastName;
+            public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaContactTag(
                 Some<string> phoneNumber,
@@ -271,12 +271,12 @@ namespace TLSharp.Rpc.Types
             (string, string, string, Option<T.ReplyMarkup>) CmpTuple =>
                 (PhoneNumber, FirstName, LastName, ReplyMarkup);
 
-            public bool Equals(MediaContactTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(MediaContactTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaContactTag x && Equals(x);
             public static bool operator ==(MediaContactTag x, MediaContactTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(MediaContactTag x, MediaContactTag y) => !(x == y);
 
-            public int CompareTo(MediaContactTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(MediaContactTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is MediaContactTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(MediaContactTag x, MediaContactTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(MediaContactTag x, MediaContactTag y) => x.CompareTo(y) < 0;
@@ -386,12 +386,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(BotInlineMessage other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(BotInlineMessage other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is BotInlineMessage x && Equals(x);
         public static bool operator ==(BotInlineMessage x, BotInlineMessage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(BotInlineMessage x, BotInlineMessage y) => !(x == y);
 
-        public int CompareTo(BotInlineMessage other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(BotInlineMessage other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is BotInlineMessage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(BotInlineMessage x, BotInlineMessage y) => x.CompareTo(y) <= 0;
         public static bool operator <(BotInlineMessage x, BotInlineMessage y) => x.CompareTo(y) < 0;

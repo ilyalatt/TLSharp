@@ -30,12 +30,12 @@ namespace TLSharp.Rpc.Functions.Channels
         (bool, bool, string, string) CmpTuple =>
             (Broadcast, Megagroup, Title, About);
 
-        public bool Equals(CreateChannel other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(CreateChannel other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is CreateChannel x && Equals(x);
         public static bool operator ==(CreateChannel x, CreateChannel y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(CreateChannel x, CreateChannel y) => !(x == y);
 
-        public int CompareTo(CreateChannel other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(CreateChannel other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is CreateChannel x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(CreateChannel x, CreateChannel y) => x.CompareTo(y) <= 0;
         public static bool operator <(CreateChannel x, CreateChannel y) => x.CompareTo(y) < 0;

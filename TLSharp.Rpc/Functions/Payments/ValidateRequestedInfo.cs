@@ -27,12 +27,12 @@ namespace TLSharp.Rpc.Functions.Payments
         (bool, int, T.PaymentRequestedInfo) CmpTuple =>
             (Save, MsgId, Info);
 
-        public bool Equals(ValidateRequestedInfo other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(ValidateRequestedInfo other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ValidateRequestedInfo x && Equals(x);
         public static bool operator ==(ValidateRequestedInfo x, ValidateRequestedInfo y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ValidateRequestedInfo x, ValidateRequestedInfo y) => !(x == y);
 
-        public int CompareTo(ValidateRequestedInfo other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ValidateRequestedInfo other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is ValidateRequestedInfo x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ValidateRequestedInfo x, ValidateRequestedInfo y) => x.CompareTo(y) <= 0;
         public static bool operator <(ValidateRequestedInfo x, ValidateRequestedInfo y) => x.CompareTo(y) < 0;

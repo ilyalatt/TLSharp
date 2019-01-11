@@ -27,12 +27,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (T.InputEncryptedChat, long, Arr<byte>) CmpTuple =>
             (Peer, RandomId, Data);
 
-        public bool Equals(SendEncrypted other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SendEncrypted other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SendEncrypted x && Equals(x);
         public static bool operator ==(SendEncrypted x, SendEncrypted y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SendEncrypted x, SendEncrypted y) => !(x == y);
 
-        public int CompareTo(SendEncrypted other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SendEncrypted other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SendEncrypted x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SendEncrypted x, SendEncrypted y) => x.CompareTo(y) <= 0;
         public static bool operator <(SendEncrypted x, SendEncrypted y) => x.CompareTo(y) < 0;

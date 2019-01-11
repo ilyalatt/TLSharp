@@ -14,10 +14,10 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xf392b7f4;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public long ClientId { get; }
-            public string Phone { get; }
-            public string FirstName { get; }
-            public string LastName { get; }
+            public readonly long ClientId;
+            public readonly string Phone;
+            public readonly string FirstName;
+            public readonly string LastName;
             
             public PhoneTag(
                 long clientId,
@@ -34,12 +34,12 @@ namespace TLSharp.Rpc.Types
             (long, string, string, string) CmpTuple =>
                 (ClientId, Phone, FirstName, LastName);
 
-            public bool Equals(PhoneTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(PhoneTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is PhoneTag x && Equals(x);
             public static bool operator ==(PhoneTag x, PhoneTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(PhoneTag x, PhoneTag y) => !(x == y);
 
-            public int CompareTo(PhoneTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(PhoneTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is PhoneTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(PhoneTag x, PhoneTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(PhoneTag x, PhoneTag y) => x.CompareTo(y) < 0;
@@ -119,12 +119,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(InputContact other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(InputContact other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is InputContact x && Equals(x);
         public static bool operator ==(InputContact x, InputContact y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(InputContact x, InputContact y) => !(x == y);
 
-        public int CompareTo(InputContact other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(InputContact other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is InputContact x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(InputContact x, InputContact y) => x.CompareTo(y) <= 0;
         public static bool operator <(InputContact x, InputContact y) => x.CompareTo(y) < 0;

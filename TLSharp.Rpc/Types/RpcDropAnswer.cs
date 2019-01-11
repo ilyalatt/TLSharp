@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(AnswerUnknownTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(AnswerUnknownTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is AnswerUnknownTag x && Equals(x);
             public static bool operator ==(AnswerUnknownTag x, AnswerUnknownTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(AnswerUnknownTag x, AnswerUnknownTag y) => !(x == y);
 
-            public int CompareTo(AnswerUnknownTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(AnswerUnknownTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is AnswerUnknownTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(AnswerUnknownTag x, AnswerUnknownTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(AnswerUnknownTag x, AnswerUnknownTag y) => x.CompareTo(y) < 0;
@@ -70,12 +70,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(AnswerDroppedRunningTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(AnswerDroppedRunningTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is AnswerDroppedRunningTag x && Equals(x);
             public static bool operator ==(AnswerDroppedRunningTag x, AnswerDroppedRunningTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(AnswerDroppedRunningTag x, AnswerDroppedRunningTag y) => !(x == y);
 
-            public int CompareTo(AnswerDroppedRunningTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(AnswerDroppedRunningTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is AnswerDroppedRunningTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(AnswerDroppedRunningTag x, AnswerDroppedRunningTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(AnswerDroppedRunningTag x, AnswerDroppedRunningTag y) => x.CompareTo(y) < 0;
@@ -104,9 +104,9 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xa43ad8b7;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public long MsgId { get; }
-            public int SeqNo { get; }
-            public int Bytes { get; }
+            public readonly long MsgId;
+            public readonly int SeqNo;
+            public readonly int Bytes;
             
             public AnswerDroppedTag(
                 long msgId,
@@ -121,12 +121,12 @@ namespace TLSharp.Rpc.Types
             (long, int, int) CmpTuple =>
                 (MsgId, SeqNo, Bytes);
 
-            public bool Equals(AnswerDroppedTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(AnswerDroppedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is AnswerDroppedTag x && Equals(x);
             public static bool operator ==(AnswerDroppedTag x, AnswerDroppedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(AnswerDroppedTag x, AnswerDroppedTag y) => !(x == y);
 
-            public int CompareTo(AnswerDroppedTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(AnswerDroppedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is AnswerDroppedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(AnswerDroppedTag x, AnswerDroppedTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(AnswerDroppedTag x, AnswerDroppedTag y) => x.CompareTo(y) < 0;
@@ -218,12 +218,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(RpcDropAnswer other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(RpcDropAnswer other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is RpcDropAnswer x && Equals(x);
         public static bool operator ==(RpcDropAnswer x, RpcDropAnswer y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(RpcDropAnswer x, RpcDropAnswer y) => !(x == y);
 
-        public int CompareTo(RpcDropAnswer other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(RpcDropAnswer other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is RpcDropAnswer x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(RpcDropAnswer x, RpcDropAnswer y) => x.CompareTo(y) <= 0;
         public static bool operator <(RpcDropAnswer x, RpcDropAnswer y) => x.CompareTo(y) < 0;

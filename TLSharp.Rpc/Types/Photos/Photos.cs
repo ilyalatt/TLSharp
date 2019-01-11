@@ -14,8 +14,8 @@ namespace TLSharp.Rpc.Types.Photos
             internal const uint TypeNumber = 0x8dca6aa5;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public Arr<T.Photo> Photos { get; }
-            public Arr<T.User> Users { get; }
+            public readonly Arr<T.Photo> Photos;
+            public readonly Arr<T.User> Users;
             
             public Tag(
                 Some<Arr<T.Photo>> photos,
@@ -28,12 +28,12 @@ namespace TLSharp.Rpc.Types.Photos
             (Arr<T.Photo>, Arr<T.User>) CmpTuple =>
                 (Photos, Users);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -64,9 +64,9 @@ namespace TLSharp.Rpc.Types.Photos
             internal const uint TypeNumber = 0x15051f54;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public int Count { get; }
-            public Arr<T.Photo> Photos { get; }
-            public Arr<T.User> Users { get; }
+            public readonly int Count;
+            public readonly Arr<T.Photo> Photos;
+            public readonly Arr<T.User> Users;
             
             public SliceTag(
                 int count,
@@ -81,12 +81,12 @@ namespace TLSharp.Rpc.Types.Photos
             (int, Arr<T.Photo>, Arr<T.User>) CmpTuple =>
                 (Count, Photos, Users);
 
-            public bool Equals(SliceTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(SliceTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is SliceTag x && Equals(x);
             public static bool operator ==(SliceTag x, SliceTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(SliceTag x, SliceTag y) => !(x == y);
 
-            public int CompareTo(SliceTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(SliceTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is SliceTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(SliceTag x, SliceTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(SliceTag x, SliceTag y) => x.CompareTo(y) < 0;
@@ -171,12 +171,12 @@ namespace TLSharp.Rpc.Types.Photos
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(Photos other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(Photos other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is Photos x && Equals(x);
         public static bool operator ==(Photos x, Photos y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Photos x, Photos y) => !(x == y);
 
-        public int CompareTo(Photos other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Photos other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is Photos x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Photos x, Photos y) => x.CompareTo(y) <= 0;
         public static bool operator <(Photos x, Photos y) => x.CompareTo(y) < 0;

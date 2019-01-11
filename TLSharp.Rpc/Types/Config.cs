@@ -14,36 +14,36 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0xcb601684;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool PhonecallsEnabled { get; }
-            public int Date { get; }
-            public int Expires { get; }
-            public bool TestMode { get; }
-            public int ThisDc { get; }
-            public Arr<T.DcOption> DcOptions { get; }
-            public int ChatSizeMax { get; }
-            public int MegagroupSizeMax { get; }
-            public int ForwardedCountMax { get; }
-            public int OnlineUpdatePeriodMs { get; }
-            public int OfflineBlurTimeoutMs { get; }
-            public int OfflineIdleTimeoutMs { get; }
-            public int OnlineCloudTimeoutMs { get; }
-            public int NotifyCloudDelayMs { get; }
-            public int NotifyDefaultDelayMs { get; }
-            public int ChatBigSize { get; }
-            public int PushChatPeriodMs { get; }
-            public int PushChatLimit { get; }
-            public int SavedGifsLimit { get; }
-            public int EditTimeLimit { get; }
-            public int RatingEDecay { get; }
-            public int StickersRecentLimit { get; }
-            public Option<int> TmpSessions { get; }
-            public int PinnedDialogsCountMax { get; }
-            public int CallReceiveTimeoutMs { get; }
-            public int CallRingTimeoutMs { get; }
-            public int CallConnectTimeoutMs { get; }
-            public int CallPacketTimeoutMs { get; }
-            public string MeUrlPrefix { get; }
-            public Arr<T.DisabledFeature> DisabledFeatures { get; }
+            public readonly bool PhonecallsEnabled;
+            public readonly int Date;
+            public readonly int Expires;
+            public readonly bool TestMode;
+            public readonly int ThisDc;
+            public readonly Arr<T.DcOption> DcOptions;
+            public readonly int ChatSizeMax;
+            public readonly int MegagroupSizeMax;
+            public readonly int ForwardedCountMax;
+            public readonly int OnlineUpdatePeriodMs;
+            public readonly int OfflineBlurTimeoutMs;
+            public readonly int OfflineIdleTimeoutMs;
+            public readonly int OnlineCloudTimeoutMs;
+            public readonly int NotifyCloudDelayMs;
+            public readonly int NotifyDefaultDelayMs;
+            public readonly int ChatBigSize;
+            public readonly int PushChatPeriodMs;
+            public readonly int PushChatLimit;
+            public readonly int SavedGifsLimit;
+            public readonly int EditTimeLimit;
+            public readonly int RatingEDecay;
+            public readonly int StickersRecentLimit;
+            public readonly Option<int> TmpSessions;
+            public readonly int PinnedDialogsCountMax;
+            public readonly int CallReceiveTimeoutMs;
+            public readonly int CallRingTimeoutMs;
+            public readonly int CallConnectTimeoutMs;
+            public readonly int CallPacketTimeoutMs;
+            public readonly string MeUrlPrefix;
+            public readonly Arr<T.DisabledFeature> DisabledFeatures;
             
             public Tag(
                 bool phonecallsEnabled,
@@ -112,12 +112,12 @@ namespace TLSharp.Rpc.Types
             (bool, int, int, bool, int, Arr<T.DcOption>, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, Option<int>, int, int, int, int, int, string, Arr<T.DisabledFeature>) CmpTuple =>
                 (PhonecallsEnabled, Date, Expires, TestMode, ThisDc, DcOptions, ChatSizeMax, MegagroupSizeMax, ForwardedCountMax, OnlineUpdatePeriodMs, OfflineBlurTimeoutMs, OfflineIdleTimeoutMs, OnlineCloudTimeoutMs, NotifyCloudDelayMs, NotifyDefaultDelayMs, ChatBigSize, PushChatPeriodMs, PushChatLimit, SavedGifsLimit, EditTimeLimit, RatingEDecay, StickersRecentLimit, TmpSessions, PinnedDialogsCountMax, CallReceiveTimeoutMs, CallRingTimeoutMs, CallConnectTimeoutMs, CallPacketTimeoutMs, MeUrlPrefix, DisabledFeatures);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -250,12 +250,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(Config other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(Config other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is Config x && Equals(x);
         public static bool operator ==(Config x, Config y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Config x, Config y) => !(x == y);
 
-        public int CompareTo(Config other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Config other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is Config x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Config x, Config y) => x.CompareTo(y) <= 0;
         public static bool operator <(Config x, Config y) => x.CompareTo(y) < 0;

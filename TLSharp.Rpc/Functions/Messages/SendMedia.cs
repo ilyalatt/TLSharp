@@ -42,12 +42,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (bool, bool, bool, T.InputPeer, Option<int>, T.InputMedia, long, Option<T.ReplyMarkup>) CmpTuple =>
             (Silent, Background, ClearDraft, Peer, ReplyToMsgId, Media, RandomId, ReplyMarkup);
 
-        public bool Equals(SendMedia other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SendMedia other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SendMedia x && Equals(x);
         public static bool operator ==(SendMedia x, SendMedia y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SendMedia x, SendMedia y) => !(x == y);
 
-        public int CompareTo(SendMedia other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SendMedia other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SendMedia x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SendMedia x, SendMedia y) => x.CompareTo(y) <= 0;
         public static bool operator <(SendMedia x, SendMedia y) => x.CompareTo(y) < 0;

@@ -24,12 +24,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (T.InputPeer, int) CmpTuple =>
             (Peer, MaxId);
 
-        public bool Equals(ReadHistory other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(ReadHistory other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ReadHistory x && Equals(x);
         public static bool operator ==(ReadHistory x, ReadHistory y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ReadHistory x, ReadHistory y) => !(x == y);
 
-        public int CompareTo(ReadHistory other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ReadHistory other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is ReadHistory x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ReadHistory x, ReadHistory y) => x.CompareTo(y) <= 0;
         public static bool operator <(ReadHistory x, ReadHistory y) => x.CompareTo(y) < 0;

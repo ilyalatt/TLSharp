@@ -30,12 +30,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (bool, T.InputPeer, int, Option<Arr<byte>>) CmpTuple =>
             (Game, Peer, MsgId, Data);
 
-        public bool Equals(GetBotCallbackAnswer other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetBotCallbackAnswer other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetBotCallbackAnswer x && Equals(x);
         public static bool operator ==(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => !(x == y);
 
-        public int CompareTo(GetBotCallbackAnswer other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetBotCallbackAnswer other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetBotCallbackAnswer x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x.CompareTo(y) < 0;

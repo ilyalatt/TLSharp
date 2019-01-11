@@ -25,12 +25,12 @@ namespace TLSharp.Rpc.Types
             Unit CmpTuple =>
                 Unit.Default;
 
-            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is EmptyTag x && Equals(x);
             public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
 
-            public int CompareTo(EmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(EmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
@@ -59,10 +59,10 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x64bd0306;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public long Id { get; }
-            public int Parts { get; }
-            public string Md5Checksum { get; }
-            public int KeyFingerprint { get; }
+            public readonly long Id;
+            public readonly int Parts;
+            public readonly string Md5Checksum;
+            public readonly int KeyFingerprint;
             
             public UploadedTag(
                 long id,
@@ -79,12 +79,12 @@ namespace TLSharp.Rpc.Types
             (long, int, string, int) CmpTuple =>
                 (Id, Parts, Md5Checksum, KeyFingerprint);
 
-            public bool Equals(UploadedTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(UploadedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is UploadedTag x && Equals(x);
             public static bool operator ==(UploadedTag x, UploadedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(UploadedTag x, UploadedTag y) => !(x == y);
 
-            public int CompareTo(UploadedTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(UploadedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is UploadedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(UploadedTag x, UploadedTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(UploadedTag x, UploadedTag y) => x.CompareTo(y) < 0;
@@ -119,8 +119,8 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x5a17b5e5;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public long Id { get; }
-            public long AccessHash { get; }
+            public readonly long Id;
+            public readonly long AccessHash;
             
             public Tag(
                 long id,
@@ -133,12 +133,12 @@ namespace TLSharp.Rpc.Types
             (long, long) CmpTuple =>
                 (Id, AccessHash);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -169,9 +169,9 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x2dc173c8;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public long Id { get; }
-            public int Parts { get; }
-            public int KeyFingerprint { get; }
+            public readonly long Id;
+            public readonly int Parts;
+            public readonly int KeyFingerprint;
             
             public BigUploadedTag(
                 long id,
@@ -186,12 +186,12 @@ namespace TLSharp.Rpc.Types
             (long, int, int) CmpTuple =>
                 (Id, Parts, KeyFingerprint);
 
-            public bool Equals(BigUploadedTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(BigUploadedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is BigUploadedTag x && Equals(x);
             public static bool operator ==(BigUploadedTag x, BigUploadedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(BigUploadedTag x, BigUploadedTag y) => !(x == y);
 
-            public int CompareTo(BigUploadedTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(BigUploadedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is BigUploadedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(BigUploadedTag x, BigUploadedTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(BigUploadedTag x, BigUploadedTag y) => x.CompareTo(y) < 0;
@@ -290,12 +290,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(InputEncryptedFile other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(InputEncryptedFile other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is InputEncryptedFile x && Equals(x);
         public static bool operator ==(InputEncryptedFile x, InputEncryptedFile y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(InputEncryptedFile x, InputEncryptedFile y) => !(x == y);
 
-        public int CompareTo(InputEncryptedFile other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(InputEncryptedFile other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is InputEncryptedFile x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(InputEncryptedFile x, InputEncryptedFile y) => x.CompareTo(y) <= 0;
         public static bool operator <(InputEncryptedFile x, InputEncryptedFile y) => x.CompareTo(y) < 0;

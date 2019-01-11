@@ -42,12 +42,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (bool, bool, bool, T.InputPeer, Option<int>, long, long, string) CmpTuple =>
             (Silent, Background, ClearDraft, Peer, ReplyToMsgId, RandomId, QueryId, Id);
 
-        public bool Equals(SendInlineBotResult other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SendInlineBotResult other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SendInlineBotResult x && Equals(x);
         public static bool operator ==(SendInlineBotResult x, SendInlineBotResult y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SendInlineBotResult x, SendInlineBotResult y) => !(x == y);
 
-        public int CompareTo(SendInlineBotResult other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SendInlineBotResult other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SendInlineBotResult x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SendInlineBotResult x, SendInlineBotResult y) => x.CompareTo(y) <= 0;
         public static bool operator <(SendInlineBotResult x, SendInlineBotResult y) => x.CompareTo(y) < 0;

@@ -27,12 +27,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (T.InputUser, int, int) CmpTuple =>
             (UserId, MaxId, Limit);
 
-        public bool Equals(GetCommonChats other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetCommonChats other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetCommonChats x && Equals(x);
         public static bool operator ==(GetCommonChats x, GetCommonChats y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetCommonChats x, GetCommonChats y) => !(x == y);
 
-        public int CompareTo(GetCommonChats other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetCommonChats other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetCommonChats x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetCommonChats x, GetCommonChats y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetCommonChats x, GetCommonChats y) => x.CompareTo(y) < 0;

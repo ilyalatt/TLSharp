@@ -14,19 +14,19 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x7bf2e6f6;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public long Hash { get; }
-            public int Flags { get; }
-            public string DeviceModel { get; }
-            public string Platform { get; }
-            public string SystemVersion { get; }
-            public int ApiId { get; }
-            public string AppName { get; }
-            public string AppVersion { get; }
-            public int DateCreated { get; }
-            public int DateActive { get; }
-            public string Ip { get; }
-            public string Country { get; }
-            public string Region { get; }
+            public readonly long Hash;
+            public readonly int Flags;
+            public readonly string DeviceModel;
+            public readonly string Platform;
+            public readonly string SystemVersion;
+            public readonly int ApiId;
+            public readonly string AppName;
+            public readonly string AppVersion;
+            public readonly int DateCreated;
+            public readonly int DateActive;
+            public readonly string Ip;
+            public readonly string Country;
+            public readonly string Region;
             
             public Tag(
                 long hash,
@@ -61,12 +61,12 @@ namespace TLSharp.Rpc.Types
             (long, int, string, string, string, int, string, string, int, int, string, string, string) CmpTuple =>
                 (Hash, Flags, DeviceModel, Platform, SystemVersion, ApiId, AppName, AppVersion, DateCreated, DateActive, Ip, Country, Region);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -164,12 +164,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(Authorization other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(Authorization other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is Authorization x && Equals(x);
         public static bool operator ==(Authorization x, Authorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Authorization x, Authorization y) => !(x == y);
 
-        public int CompareTo(Authorization other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Authorization other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is Authorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Authorization x, Authorization y) => x.CompareTo(y) <= 0;
         public static bool operator <(Authorization x, Authorization y) => x.CompareTo(y) < 0;

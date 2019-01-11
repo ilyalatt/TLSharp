@@ -48,12 +48,12 @@ namespace TLSharp.Rpc.Functions.Messages
         (bool, bool, bool, bool, T.InputPeer, Option<int>, string, long, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>) CmpTuple =>
             (NoWebpage, Silent, Background, ClearDraft, Peer, ReplyToMsgId, Message, RandomId, ReplyMarkup, Entities);
 
-        public bool Equals(SendMessage other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SendMessage other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SendMessage x && Equals(x);
         public static bool operator ==(SendMessage x, SendMessage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SendMessage x, SendMessage y) => !(x == y);
 
-        public int CompareTo(SendMessage other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SendMessage other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SendMessage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SendMessage x, SendMessage y) => x.CompareTo(y) <= 0;
         public static bool operator <(SendMessage x, SendMessage y) => x.CompareTo(y) < 0;

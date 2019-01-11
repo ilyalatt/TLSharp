@@ -42,12 +42,12 @@ namespace TLSharp.Rpc.Functions.Contacts
         (bool, bool, bool, bool, bool, int, int, int) CmpTuple =>
             (Correspondents, BotsPm, BotsInline, Groups, Channels, Offset, Limit, Hash);
 
-        public bool Equals(GetTopPeers other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetTopPeers other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetTopPeers x && Equals(x);
         public static bool operator ==(GetTopPeers x, GetTopPeers y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetTopPeers x, GetTopPeers y) => !(x == y);
 
-        public int CompareTo(GetTopPeers other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetTopPeers other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetTopPeers x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetTopPeers x, GetTopPeers y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetTopPeers x, GetTopPeers y) => x.CompareTo(y) < 0;

@@ -14,8 +14,8 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x6410a5d2;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public T.StickerSet Set { get; }
-            public T.Document Cover { get; }
+            public readonly T.StickerSet Set;
+            public readonly T.Document Cover;
             
             public Tag(
                 Some<T.StickerSet> set,
@@ -28,12 +28,12 @@ namespace TLSharp.Rpc.Types
             (T.StickerSet, T.Document) CmpTuple =>
                 (Set, Cover);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -64,8 +64,8 @@ namespace TLSharp.Rpc.Types
             internal const uint TypeNumber = 0x3407e51b;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public T.StickerSet Set { get; }
-            public Arr<T.Document> Covers { get; }
+            public readonly T.StickerSet Set;
+            public readonly Arr<T.Document> Covers;
             
             public MultiTag(
                 Some<T.StickerSet> set,
@@ -78,12 +78,12 @@ namespace TLSharp.Rpc.Types
             (T.StickerSet, Arr<T.Document>) CmpTuple =>
                 (Set, Covers);
 
-            public bool Equals(MultiTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(MultiTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MultiTag x && Equals(x);
             public static bool operator ==(MultiTag x, MultiTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(MultiTag x, MultiTag y) => !(x == y);
 
-            public int CompareTo(MultiTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(MultiTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is MultiTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(MultiTag x, MultiTag y) => x.CompareTo(y) <= 0;
             public static bool operator <(MultiTag x, MultiTag y) => x.CompareTo(y) < 0;
@@ -166,12 +166,12 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(StickerSetCovered other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(StickerSetCovered other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is StickerSetCovered x && Equals(x);
         public static bool operator ==(StickerSetCovered x, StickerSetCovered y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(StickerSetCovered x, StickerSetCovered y) => !(x == y);
 
-        public int CompareTo(StickerSetCovered other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(StickerSetCovered other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is StickerSetCovered x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(StickerSetCovered x, StickerSetCovered y) => x.CompareTo(y) <= 0;
         public static bool operator <(StickerSetCovered x, StickerSetCovered y) => x.CompareTo(y) < 0;

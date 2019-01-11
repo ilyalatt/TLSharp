@@ -14,17 +14,17 @@ namespace TLSharp.Rpc.Types.Payments
             internal const uint TypeNumber = 0x3f56aea3;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public bool CanSaveCredentials { get; }
-            public bool PasswordMissing { get; }
-            public int BotId { get; }
-            public T.Invoice Invoice { get; }
-            public int ProviderId { get; }
-            public string Url { get; }
-            public Option<string> NativeProvider { get; }
-            public Option<T.DataJson> NativeParams { get; }
-            public Option<T.PaymentRequestedInfo> SavedInfo { get; }
-            public Option<T.PaymentSavedCredentials> SavedCredentials { get; }
-            public Arr<T.User> Users { get; }
+            public readonly bool CanSaveCredentials;
+            public readonly bool PasswordMissing;
+            public readonly int BotId;
+            public readonly T.Invoice Invoice;
+            public readonly int ProviderId;
+            public readonly string Url;
+            public readonly Option<string> NativeProvider;
+            public readonly Option<T.DataJson> NativeParams;
+            public readonly Option<T.PaymentRequestedInfo> SavedInfo;
+            public readonly Option<T.PaymentSavedCredentials> SavedCredentials;
+            public readonly Arr<T.User> Users;
             
             public Tag(
                 bool canSaveCredentials,
@@ -55,12 +55,12 @@ namespace TLSharp.Rpc.Types.Payments
             (bool, bool, int, T.Invoice, int, string, Option<string>, Option<T.DataJson>, Option<T.PaymentRequestedInfo>, Option<T.PaymentSavedCredentials>, Arr<T.User>) CmpTuple =>
                 (CanSaveCredentials, PasswordMissing, BotId, Invoice, ProviderId, Url, NativeProvider, NativeParams, SavedInfo, SavedCredentials, Users);
 
-            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
             public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
             public static bool operator !=(Tag x, Tag y) => !(x == y);
 
-            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            public int CompareTo(Tag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
             int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
             public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
             public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
@@ -154,12 +154,12 @@ namespace TLSharp.Rpc.Types.Payments
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
-        public bool Equals(PaymentForm other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public bool Equals(PaymentForm other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpPair == other.CmpPair);
         public override bool Equals(object other) => other is PaymentForm x && Equals(x);
         public static bool operator ==(PaymentForm x, PaymentForm y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(PaymentForm x, PaymentForm y) => !(x == y);
 
-        public int CompareTo(PaymentForm other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(PaymentForm other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpPair.CompareTo(other.CmpPair);
         int IComparable.CompareTo(object other) => other is PaymentForm x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(PaymentForm x, PaymentForm y) => x.CompareTo(y) <= 0;
         public static bool operator <(PaymentForm x, PaymentForm y) => x.CompareTo(y) < 0;

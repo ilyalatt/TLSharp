@@ -30,12 +30,12 @@ namespace TLSharp.Rpc.Functions.Updates
         (int, Option<int>, int, int) CmpTuple =>
             (Pts, PtsTotalLimit, Date, Qts);
 
-        public bool Equals(GetDifference other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetDifference other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetDifference x && Equals(x);
         public static bool operator ==(GetDifference x, GetDifference y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetDifference x, GetDifference y) => !(x == y);
 
-        public int CompareTo(GetDifference other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetDifference other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetDifference x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetDifference x, GetDifference y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetDifference x, GetDifference y) => x.CompareTo(y) < 0;

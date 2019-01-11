@@ -24,12 +24,12 @@ namespace TLSharp.Rpc.Functions.Contacts
         (string, int) CmpTuple =>
             (Q, Limit);
 
-        public bool Equals(Search other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(Search other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is Search x && Equals(x);
         public static bool operator ==(Search x, Search y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Search x, Search y) => !(x == y);
 
-        public int CompareTo(Search other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Search other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is Search x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Search x, Search y) => x.CompareTo(y) <= 0;
         public static bool operator <(Search x, Search y) => x.CompareTo(y) < 0;

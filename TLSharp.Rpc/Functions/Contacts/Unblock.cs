@@ -21,12 +21,12 @@ namespace TLSharp.Rpc.Functions.Contacts
         T.InputUser CmpTuple =>
             Id;
 
-        public bool Equals(Unblock other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(Unblock other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is Unblock x && Equals(x);
         public static bool operator ==(Unblock x, Unblock y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(Unblock x, Unblock y) => !(x == y);
 
-        public int CompareTo(Unblock other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(Unblock other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is Unblock x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(Unblock x, Unblock y) => x.CompareTo(y) <= 0;
         public static bool operator <(Unblock x, Unblock y) => x.CompareTo(y) < 0;

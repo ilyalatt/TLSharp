@@ -21,12 +21,12 @@ namespace TLSharp.Rpc.Functions.Account
         T.InputNotifyPeer CmpTuple =>
             Peer;
 
-        public bool Equals(GetNotifySettings other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(GetNotifySettings other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetNotifySettings x && Equals(x);
         public static bool operator ==(GetNotifySettings x, GetNotifySettings y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(GetNotifySettings x, GetNotifySettings y) => !(x == y);
 
-        public int CompareTo(GetNotifySettings other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(GetNotifySettings other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is GetNotifySettings x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(GetNotifySettings x, GetNotifySettings y) => x.CompareTo(y) <= 0;
         public static bool operator <(GetNotifySettings x, GetNotifySettings y) => x.CompareTo(y) < 0;

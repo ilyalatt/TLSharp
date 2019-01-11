@@ -27,12 +27,12 @@ namespace TLSharp.Rpc.Functions.Upload
         (long, int, Arr<byte>) CmpTuple =>
             (FileId, FilePart, Bytes);
 
-        public bool Equals(SaveFilePart other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(SaveFilePart other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SaveFilePart x && Equals(x);
         public static bool operator ==(SaveFilePart x, SaveFilePart y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(SaveFilePart x, SaveFilePart y) => !(x == y);
 
-        public int CompareTo(SaveFilePart other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(SaveFilePart other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is SaveFilePart x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(SaveFilePart x, SaveFilePart y) => x.CompareTo(y) <= 0;
         public static bool operator <(SaveFilePart x, SaveFilePart y) => x.CompareTo(y) < 0;

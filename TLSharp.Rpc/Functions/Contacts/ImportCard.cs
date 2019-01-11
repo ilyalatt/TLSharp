@@ -21,12 +21,12 @@ namespace TLSharp.Rpc.Functions.Contacts
         Arr<int> CmpTuple =>
             ExportCard;
 
-        public bool Equals(ImportCard other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public bool Equals(ImportCard other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ImportCard x && Equals(x);
         public static bool operator ==(ImportCard x, ImportCard y) => x?.Equals(y) ?? ReferenceEquals(y, null);
         public static bool operator !=(ImportCard x, ImportCard y) => !(x == y);
 
-        public int CompareTo(ImportCard other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        public int CompareTo(ImportCard other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
         int IComparable.CompareTo(object other) => other is ImportCard x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
         public static bool operator <=(ImportCard x, ImportCard y) => x.CompareTo(y) <= 0;
         public static bool operator <(ImportCard x, ImportCard y) => x.CompareTo(y) < 0;
