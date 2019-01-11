@@ -178,7 +178,7 @@ namespace TLSharp.Rpc
         public static Func<BinaryReader, bool> ReadOption(
             int mask,
             int bit
-        ) => br => (mask & (1 << bit)) == 0;
+        ) => br => (mask & (1 << bit)) != 0;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int MaskBit<T>(int bit, Option<T> option) =>
