@@ -49,6 +49,8 @@ namespace TLSharp.Rpc
             if (msg == "PHONE_NUMBER_UNOCCUPIED") return new TlPhoneNumberUnoccupiedException(); // 400
             if (msg == "SESSION_PASSWORD_NEEDED") return new TlPasswordNeededException();
 
+            if (msg == "AUTH_KEY_UNREGISTERED") throw new TlNotAuthenticatedException();
+
             return new TlRpcResultUnknownErrorException(code, msg);
         }
     }

@@ -27,6 +27,11 @@ namespace TLSharp
         public TlProtocolViolation() : base("The protocol is violated and now your session is doomed.", None) { }
     }
 
+    public sealed class TlNotAuthenticatedException : TlException
+    {
+        public TlNotAuthenticatedException() : base("Authentication is required.", None) { }
+    }
+
     public sealed class TlFloodException : TlException
     {
         public TimeSpan Delay { get; }

@@ -146,9 +146,9 @@ namespace TLSharp
 
         public bool IsAuthenticated() => _session.IsAuthenticated;
 
-        async Task SetAuthorized(User user)
+        async Task SetAuthenticated(User user)
         {
-            TlTrace.Trace("Authorized: " + user);
+            TlTrace.Trace("Authenticated: " + user);
             _session.IsAuthenticated = true;
             await _sessionSessionStore.Save(_session);
         }
@@ -175,7 +175,7 @@ namespace TLSharp
                 var importAuthorization = new ImportAuthorization(id: exported.Id, bytes: exported.Bytes);
                 var resp = await _transport.Call(importAuthorization);
                 var user = resp.Match(identity).User;
-                await SetAuthorized(user);
+                await SetAuthenticated(user);
             }
         }
 
@@ -194,8 +194,6 @@ namespace TLSharp
             }
         }
 
-        // TODO: call middleware
-        // chains like RequestWithDcMigration -> TlExceptionWrapper -> Delayer
         public Task<T> Call<T>(ITlFunc<T> func) =>
             Wrap(() => RequestWithDcMigration(func ?? throw new ArgumentNullException(nameof(func))));
 
@@ -216,14 +214,12 @@ namespace TLSharp
         {
             var resp = await Call(new SignIn(phoneNumber: phoneNumber, phoneCodeHash: phoneCodeHash, phoneCode: code));
             var user = resp.Match(identity).User;
-            await SetAuthorized(user);
+            await SetAuthenticated(user);
             return user;
         }
 
-        public async Task<Password> GetPasswordSetting()
-        {
-            return await Call(new GetPassword());
-        }
+        public async Task<Password> GetPasswordSetting() =>
+            await Call(new GetPassword());
 
         public async Task<User> MakeAuthWithPassword(Some<Password.Tag> password, Some<string> passwordStr)
         {
@@ -239,7 +235,7 @@ namespace TLSharp
 
             var res = await Call(request);
 
-            await SetAuthorized(res.Match(identity).User);
+            await SetAuthenticated(res.Match(identity).User);
 
             return (res.Match(identity).User);
         }
@@ -259,37 +255,27 @@ namespace TLSharp
                 lastName: lastName
             ));
             var user = res.Match(identity).User;
-            await SetAuthorized(user);
+            await SetAuthenticated(user);
             return user;
         }
 
 
-        public async Task<Contacts> GetContacts()
-        {
-            if (!IsAuthenticated())
-                throw new InvalidOperationException("Authorize user first!");
+        public async Task<Contacts> GetContacts() =>
+            await Call(new GetContacts(hash: 0));
 
-            return await Call(new GetContacts(hash: 0));
-        }
-
-        public async Task<UpdatesType> SendMessage(Some<InputPeer> peer, Some<string> message)
-        {
-            if (!IsAuthenticated())
-                throw new InvalidOperationException("Authorize user first!");
-
-            return await Call(new SendMessage(
-               peer: peer,
-               message: message,
-               randomId: Helpers.GenerateRandomLong(),
-               noWebpage: true,
-               silent: false,
-               background: false,
-               clearDraft: false,
-               replyToMsgId: None,
-               replyMarkup: None,
-               entities: None
-           ));
-        }
+        public async Task<UpdatesType> SendMessage(Some<InputPeer> peer, Some<string> message) =>
+            await Call(new SendMessage(
+                peer: peer,
+                message: message,
+                randomId: Helpers.GenerateRandomLong(),
+                noWebpage: true,
+                silent: false,
+                background: false,
+                clearDraft: false,
+                replyToMsgId: None,
+                replyMarkup: None,
+                entities: None
+            ));
 
         public async Task<bool> SendTyping(Some<InputPeer> peer)
         {
@@ -308,7 +294,11 @@ namespace TLSharp
             );
         }
 
-        public async Task<UpdatesType> SendUploadedPhoto(Some<InputPeer> peer, Some<InputFile> file) =>
+        public async Task<UpdatesType> SendUploadedPhoto(
+            Some<InputPeer> peer,
+            Some<InputFile> file,
+            Some<string> message
+        ) =>
             await Call(new SendMedia(
                 randomId: Helpers.GenerateRandomLong(),
                 background: false,
@@ -318,7 +308,7 @@ namespace TLSharp
                 entities: None,
                 replyToMsgId: None,
                 replyMarkup: None,
-                message: "",
+                message: message,
                 silent: false
             ));
 
@@ -326,7 +316,8 @@ namespace TLSharp
             Some<InputPeer> peer,
             Some<InputFile> file,
             Some<string> mimeType,
-            Some<Arr<DocumentAttribute>> attributes
+            Some<Arr<DocumentAttribute>> attributes,
+            Some<string> message
         ) =>
             await Call(new SendMedia(
                 randomId: Helpers.GenerateRandomLong(),
@@ -346,7 +337,7 @@ namespace TLSharp
                 replyToMsgId: None,
                 replyMarkup: None,
                 entities: None,
-                message: ""
+                message: message
             ));
 
         public async Task<File> GetFile(
@@ -369,11 +360,8 @@ namespace TLSharp
             int maxId = 0,
             int minId = 0,
             int hash = 0
-        ) {
-            if (!IsAuthenticated())
-                throw new InvalidOperationException("Authorize user first!");
-
-            return await Call(new GetHistory(
+        ) =>
+            await Call(new GetHistory(
                 peer,
                 offsetId,
                 offsetDate,
@@ -383,7 +371,6 @@ namespace TLSharp
                 minId,
                 hash
             ));
-        }
 
         /// <summary>
         /// Serch user or chat. API: contacts.search#11f812d8 q:string limit:int = contacts.Found;
