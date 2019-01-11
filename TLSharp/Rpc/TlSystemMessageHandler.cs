@@ -16,13 +16,19 @@ namespace TLSharp.Rpc
         const uint RpcResultTypeNumber = 0xf35c6d01;
         const uint GZipPackedTypeNumber = 0x3072cfa1;
 
-        static uint PeekTypeNumber(BinaryReader br)
+        static Func<BinaryReader, T> Peek<T>(Func<BinaryReader, T> func) => br =>
         {
-            var res = br.ReadUInt32();
             var bs = br.BaseStream;
-            bs.Position -= 4;
+            var pos = bs.Position;
+
+            var res = func(br);
+
+            bs.Position = pos;
             return res;
-        }
+        };
+
+        static uint PeekTypeNumber(BinaryReader br) =>
+            br.Apply(Peek(x => x.ReadUInt32()));
 
         static void EnsureTypeNumber(BinaryReader br, uint expectedTypeNumber)
         {
@@ -115,6 +121,13 @@ namespace TLSharp.Rpc
             return RpcResult.OfFail(msg.BadMsgId, new TlBadSalt());
         }
 
+        static RpcResult HandlePong(BinaryReader br)
+        {
+            var msg = br.Apply(Peek(Pong.Deserialize));
+            var msgId = msg.Match(identity).MsgId;
+            return RpcResult.OfSuccess(msgId, br);
+        }
+
         static void HandleNewSessionCreated(Session session, BinaryReader messageReader)
         {
             messageReader.ReadInt32();
@@ -129,7 +142,6 @@ namespace TLSharp.Rpc
         {
             var br = message.Body;
             var code = PeekTypeNumber(br);
-            Console.WriteLine(code.ToString("x8"));
 
             IEnumerable<RpcResult> Singleton(RpcResult res) => Enumerable.Repeat(res, 1);
 
@@ -146,16 +158,24 @@ namespace TLSharp.Rpc
                     return HandleBadMsgNotification(br).Apply(Singleton);
                 case BadMsgNotification.ServerSaltTag.TypeNumber:
                     return HandleBadServerSalt(session, br).Apply(Singleton);
+                case Pong.Tag.TypeNumber:
+                    return HandlePong(br).Apply(Singleton);
 
                 case NewSession.CreatedTag.TypeNumber:
                     HandleNewSessionCreated(session, br);
                     break;
 
-                case Pong.Tag.TypeNumber:
-                case FutureSalts.Tag.TypeNumber:
                 case MsgsAck.Tag.TypeNumber:
-                case MsgDetailedInfo.Tag.TypeNumber:
-                case MsgDetailedInfo.NewTag.TypeNumber:
+                    // var msg = br.Apply(MsgsAck.Deserialize);
+                    // var ids = msg.Match(identity).MsgIds.Apply(xs => string.Join(", ", xs));
+                    // Console.WriteLine("Ack: " + ids);
+                    break;
+                //case FutureSalts.Tag.TypeNumber:
+                //case MsgDetailedInfo.Tag.TypeNumber:
+                //case MsgDetailedInfo.NewTag.TypeNumber:
+
+                default:
+                    Console.WriteLine("Unhandled msg " + code.ToString("x8"));
                     break;
             }
 
