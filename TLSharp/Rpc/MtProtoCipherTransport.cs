@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
-using TLSharp.Rpc;
 using TLSharp.Utils;
 using static LanguageExt.Prelude;
 

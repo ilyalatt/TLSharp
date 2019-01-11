@@ -28,6 +28,7 @@ namespace TLSharp.Rpc
         readonly ConcurrentStack<long> _unconfirmedMsgIds = new ConcurrentStack<long>(); // such a bad design
 
         readonly Task _receiveLoopTask;
+        // TODO
         readonly Dictionary<long, TaskCompletionSource<RpcResult>> _rpcFlow =
             new Dictionary<long, TaskCompletionSource<RpcResult>>();
         async Task ReceiveLoop()
@@ -38,11 +39,14 @@ namespace TLSharp.Rpc
                 var msg = TlSystemMessageHandler.ReadMsg(msgBody);
                 _unconfirmedMsgIds.Push(msg.Id);
 
-                Option<TaskCompletionSource<RpcResult>> FindFlow(long id) =>
-                    _rpcFlow.TryGetValue(id, out var flow) ? Some(flow) : None;
-                var callResults = msg.Apply(TlSystemMessageHandler.Handle(_session));
+                Option<TaskCompletionSource<RpcResult>> CaptureFlow(long id) =>
+                    _rpcFlow.TryGetValue(id, out var flow) ? Some(flow).Do(_ => _rpcFlow.Remove(id)) : None;
+                var callResults = msg.Apply(TlSystemMessageHandler.Handle(_session)).ToArray();
                 await _sessionStore.Save(_session);
-                callResults.Iter(res => FindFlow(res.Id).Iter(flow => flow.SetResult(res)));
+                callResults.Iter(res => CaptureFlow(res.Id).Match(
+                    flow => flow.SetResult(res),
+                    () => Console.WriteLine("Unexpected RPC result, the message id is " + res.Id)
+                ));
             }
         }
 
@@ -101,6 +105,7 @@ namespace TLSharp.Rpc
 
                 await Task.WhenAny(_receiveLoopTask, respTask);
                 await CheckReceiveLoop();
+
 
                 var resp = await respTask;
                 if (resp.IsSuccess) return resp.Body.Apply(request.DeserializeResult);
