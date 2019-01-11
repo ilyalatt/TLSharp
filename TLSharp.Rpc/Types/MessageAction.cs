@@ -833,6 +833,236 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class ScreenshotTakenTag : ITlTypeTag, IEquatable<ScreenshotTakenTag>, IComparable<ScreenshotTakenTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x4792929b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public ScreenshotTakenTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(ScreenshotTakenTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is ScreenshotTakenTag x && Equals(x);
+            public static bool operator ==(ScreenshotTakenTag x, ScreenshotTakenTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ScreenshotTakenTag x, ScreenshotTakenTag y) => !(x == y);
+
+            public int CompareTo(ScreenshotTakenTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is ScreenshotTakenTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ScreenshotTakenTag x, ScreenshotTakenTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ScreenshotTakenTag x, ScreenshotTakenTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ScreenshotTakenTag x, ScreenshotTakenTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ScreenshotTakenTag x, ScreenshotTakenTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static ScreenshotTakenTag DeserializeTag(BinaryReader br)
+            {
+
+                return new ScreenshotTakenTag();
+            }
+        }
+
+        public sealed class CustomTag : ITlTypeTag, IEquatable<CustomTag>, IComparable<CustomTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xfae69f56;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly string Message;
+            
+            public CustomTag(
+                Some<string> message
+            ) {
+                Message = message;
+            }
+            
+            string CmpTuple =>
+                Message;
+
+            public bool Equals(CustomTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is CustomTag x && Equals(x);
+            public static bool operator ==(CustomTag x, CustomTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(CustomTag x, CustomTag y) => !(x == y);
+
+            public int CompareTo(CustomTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is CustomTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(CustomTag x, CustomTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(CustomTag x, CustomTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(CustomTag x, CustomTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(CustomTag x, CustomTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Message: {Message})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Message, bw, WriteString);
+            }
+            
+            internal static CustomTag DeserializeTag(BinaryReader br)
+            {
+                var message = Read(br, ReadString);
+                return new CustomTag(message);
+            }
+        }
+
+        public sealed class BotAllowedTag : ITlTypeTag, IEquatable<BotAllowedTag>, IComparable<BotAllowedTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xabe9affe;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly string Domain;
+            
+            public BotAllowedTag(
+                Some<string> domain
+            ) {
+                Domain = domain;
+            }
+            
+            string CmpTuple =>
+                Domain;
+
+            public bool Equals(BotAllowedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is BotAllowedTag x && Equals(x);
+            public static bool operator ==(BotAllowedTag x, BotAllowedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(BotAllowedTag x, BotAllowedTag y) => !(x == y);
+
+            public int CompareTo(BotAllowedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is BotAllowedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(BotAllowedTag x, BotAllowedTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(BotAllowedTag x, BotAllowedTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(BotAllowedTag x, BotAllowedTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(BotAllowedTag x, BotAllowedTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Domain: {Domain})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Domain, bw, WriteString);
+            }
+            
+            internal static BotAllowedTag DeserializeTag(BinaryReader br)
+            {
+                var domain = Read(br, ReadString);
+                return new BotAllowedTag(domain);
+            }
+        }
+
+        public sealed class SecureValuesSentMeTag : ITlTypeTag, IEquatable<SecureValuesSentMeTag>, IComparable<SecureValuesSentMeTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x1b287353;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly Arr<T.SecureValue> Values;
+            public readonly T.SecureCredentialsEncrypted Credentials;
+            
+            public SecureValuesSentMeTag(
+                Some<Arr<T.SecureValue>> values,
+                Some<T.SecureCredentialsEncrypted> credentials
+            ) {
+                Values = values;
+                Credentials = credentials;
+            }
+            
+            (Arr<T.SecureValue>, T.SecureCredentialsEncrypted) CmpTuple =>
+                (Values, Credentials);
+
+            public bool Equals(SecureValuesSentMeTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is SecureValuesSentMeTag x && Equals(x);
+            public static bool operator ==(SecureValuesSentMeTag x, SecureValuesSentMeTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(SecureValuesSentMeTag x, SecureValuesSentMeTag y) => !(x == y);
+
+            public int CompareTo(SecureValuesSentMeTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is SecureValuesSentMeTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(SecureValuesSentMeTag x, SecureValuesSentMeTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(SecureValuesSentMeTag x, SecureValuesSentMeTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(SecureValuesSentMeTag x, SecureValuesSentMeTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(SecureValuesSentMeTag x, SecureValuesSentMeTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Values: {Values}, Credentials: {Credentials})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Values, bw, WriteVector<T.SecureValue>(WriteSerializable));
+                Write(Credentials, bw, WriteSerializable);
+            }
+            
+            internal static SecureValuesSentMeTag DeserializeTag(BinaryReader br)
+            {
+                var values = Read(br, ReadVector(T.SecureValue.Deserialize));
+                var credentials = Read(br, T.SecureCredentialsEncrypted.Deserialize);
+                return new SecureValuesSentMeTag(values, credentials);
+            }
+        }
+
+        public sealed class SecureValuesSentTag : ITlTypeTag, IEquatable<SecureValuesSentTag>, IComparable<SecureValuesSentTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xd95c6154;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly Arr<T.SecureValueType> Types;
+            
+            public SecureValuesSentTag(
+                Some<Arr<T.SecureValueType>> types
+            ) {
+                Types = types;
+            }
+            
+            Arr<T.SecureValueType> CmpTuple =>
+                Types;
+
+            public bool Equals(SecureValuesSentTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is SecureValuesSentTag x && Equals(x);
+            public static bool operator ==(SecureValuesSentTag x, SecureValuesSentTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(SecureValuesSentTag x, SecureValuesSentTag y) => !(x == y);
+
+            public int CompareTo(SecureValuesSentTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is SecureValuesSentTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(SecureValuesSentTag x, SecureValuesSentTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(SecureValuesSentTag x, SecureValuesSentTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(SecureValuesSentTag x, SecureValuesSentTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(SecureValuesSentTag x, SecureValuesSentTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Types: {Types})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Types, bw, WriteVector<T.SecureValueType>(WriteSerializable));
+            }
+            
+            internal static SecureValuesSentTag DeserializeTag(BinaryReader br)
+            {
+                var types = Read(br, ReadVector(T.SecureValueType.Deserialize));
+                return new SecureValuesSentTag(types);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         MessageAction(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -853,6 +1083,11 @@ namespace TLSharp.Rpc.Types
         public static explicit operator MessageAction(PaymentSentMeTag tag) => new MessageAction(tag);
         public static explicit operator MessageAction(PaymentSentTag tag) => new MessageAction(tag);
         public static explicit operator MessageAction(PhoneCallTag tag) => new MessageAction(tag);
+        public static explicit operator MessageAction(ScreenshotTakenTag tag) => new MessageAction(tag);
+        public static explicit operator MessageAction(CustomTag tag) => new MessageAction(tag);
+        public static explicit operator MessageAction(BotAllowedTag tag) => new MessageAction(tag);
+        public static explicit operator MessageAction(SecureValuesSentMeTag tag) => new MessageAction(tag);
+        public static explicit operator MessageAction(SecureValuesSentTag tag) => new MessageAction(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -882,7 +1117,12 @@ namespace TLSharp.Rpc.Types
                 case PaymentSentMeTag.TypeNumber: return (MessageAction) PaymentSentMeTag.DeserializeTag(br);
                 case PaymentSentTag.TypeNumber: return (MessageAction) PaymentSentTag.DeserializeTag(br);
                 case PhoneCallTag.TypeNumber: return (MessageAction) PhoneCallTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, ChatCreateTag.TypeNumber, ChatEditTitleTag.TypeNumber, ChatEditPhotoTag.TypeNumber, ChatDeletePhotoTag.TypeNumber, ChatAddUserTag.TypeNumber, ChatDeleteUserTag.TypeNumber, ChatJoinedByLinkTag.TypeNumber, ChannelCreateTag.TypeNumber, ChatMigrateToTag.TypeNumber, ChannelMigrateFromTag.TypeNumber, PinMessageTag.TypeNumber, HistoryClearTag.TypeNumber, GameScoreTag.TypeNumber, PaymentSentMeTag.TypeNumber, PaymentSentTag.TypeNumber, PhoneCallTag.TypeNumber });
+                case ScreenshotTakenTag.TypeNumber: return (MessageAction) ScreenshotTakenTag.DeserializeTag(br);
+                case CustomTag.TypeNumber: return (MessageAction) CustomTag.DeserializeTag(br);
+                case BotAllowedTag.TypeNumber: return (MessageAction) BotAllowedTag.DeserializeTag(br);
+                case SecureValuesSentMeTag.TypeNumber: return (MessageAction) SecureValuesSentMeTag.DeserializeTag(br);
+                case SecureValuesSentTag.TypeNumber: return (MessageAction) SecureValuesSentTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, ChatCreateTag.TypeNumber, ChatEditTitleTag.TypeNumber, ChatEditPhotoTag.TypeNumber, ChatDeletePhotoTag.TypeNumber, ChatAddUserTag.TypeNumber, ChatDeleteUserTag.TypeNumber, ChatJoinedByLinkTag.TypeNumber, ChannelCreateTag.TypeNumber, ChatMigrateToTag.TypeNumber, ChannelMigrateFromTag.TypeNumber, PinMessageTag.TypeNumber, HistoryClearTag.TypeNumber, GameScoreTag.TypeNumber, PaymentSentMeTag.TypeNumber, PaymentSentTag.TypeNumber, PhoneCallTag.TypeNumber, ScreenshotTakenTag.TypeNumber, CustomTag.TypeNumber, BotAllowedTag.TypeNumber, SecureValuesSentMeTag.TypeNumber, SecureValuesSentTag.TypeNumber });
             }
         }
 
@@ -904,7 +1144,12 @@ namespace TLSharp.Rpc.Types
             Func<GameScoreTag, T> gameScoreTag = null,
             Func<PaymentSentMeTag, T> paymentSentMeTag = null,
             Func<PaymentSentTag, T> paymentSentTag = null,
-            Func<PhoneCallTag, T> phoneCallTag = null
+            Func<PhoneCallTag, T> phoneCallTag = null,
+            Func<ScreenshotTakenTag, T> screenshotTakenTag = null,
+            Func<CustomTag, T> customTag = null,
+            Func<BotAllowedTag, T> botAllowedTag = null,
+            Func<SecureValuesSentMeTag, T> secureValuesSentMeTag = null,
+            Func<SecureValuesSentTag, T> secureValuesSentTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -926,6 +1171,11 @@ namespace TLSharp.Rpc.Types
                 case PaymentSentMeTag x when paymentSentMeTag != null: return paymentSentMeTag(x);
                 case PaymentSentTag x when paymentSentTag != null: return paymentSentTag(x);
                 case PhoneCallTag x when phoneCallTag != null: return phoneCallTag(x);
+                case ScreenshotTakenTag x when screenshotTakenTag != null: return screenshotTakenTag(x);
+                case CustomTag x when customTag != null: return customTag(x);
+                case BotAllowedTag x when botAllowedTag != null: return botAllowedTag(x);
+                case SecureValuesSentMeTag x when secureValuesSentMeTag != null: return secureValuesSentMeTag(x);
+                case SecureValuesSentTag x when secureValuesSentTag != null: return secureValuesSentTag(x);
                 default: return _();
             }
         }
@@ -947,7 +1197,12 @@ namespace TLSharp.Rpc.Types
             Func<GameScoreTag, T> gameScoreTag,
             Func<PaymentSentMeTag, T> paymentSentMeTag,
             Func<PaymentSentTag, T> paymentSentTag,
-            Func<PhoneCallTag, T> phoneCallTag
+            Func<PhoneCallTag, T> phoneCallTag,
+            Func<ScreenshotTakenTag, T> screenshotTakenTag,
+            Func<CustomTag, T> customTag,
+            Func<BotAllowedTag, T> botAllowedTag,
+            Func<SecureValuesSentMeTag, T> secureValuesSentMeTag,
+            Func<SecureValuesSentTag, T> secureValuesSentTag
         ) => Match(
             () => throw new Exception("WTF"),
             emptyTag ?? throw new ArgumentNullException(nameof(emptyTag)),
@@ -966,7 +1221,12 @@ namespace TLSharp.Rpc.Types
             gameScoreTag ?? throw new ArgumentNullException(nameof(gameScoreTag)),
             paymentSentMeTag ?? throw new ArgumentNullException(nameof(paymentSentMeTag)),
             paymentSentTag ?? throw new ArgumentNullException(nameof(paymentSentTag)),
-            phoneCallTag ?? throw new ArgumentNullException(nameof(phoneCallTag))
+            phoneCallTag ?? throw new ArgumentNullException(nameof(phoneCallTag)),
+            screenshotTakenTag ?? throw new ArgumentNullException(nameof(screenshotTakenTag)),
+            customTag ?? throw new ArgumentNullException(nameof(customTag)),
+            botAllowedTag ?? throw new ArgumentNullException(nameof(botAllowedTag)),
+            secureValuesSentMeTag ?? throw new ArgumentNullException(nameof(secureValuesSentMeTag)),
+            secureValuesSentTag ?? throw new ArgumentNullException(nameof(secureValuesSentTag))
         );
 
         int GetTagOrder()
@@ -990,6 +1250,11 @@ namespace TLSharp.Rpc.Types
                 case PaymentSentMeTag _: return 14;
                 case PaymentSentTag _: return 15;
                 case PhoneCallTag _: return 16;
+                case ScreenshotTakenTag _: return 17;
+                case CustomTag _: return 18;
+                case BotAllowedTag _: return 19;
+                case SecureValuesSentMeTag _: return 20;
+                case SecureValuesSentTag _: return 21;
                 default: throw new Exception("WTF");
             }
         }

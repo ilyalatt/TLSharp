@@ -10,18 +10,18 @@ namespace TLSharp.Rpc.Functions.Channels
     public sealed class GetMessages : ITlFunc<T.Messages.Messages>, IEquatable<GetMessages>, IComparable<GetMessages>, IComparable
     {
         public T.InputChannel Channel { get; }
-        public Arr<int> Id { get; }
+        public Arr<T.InputMessage> Id { get; }
         
         public GetMessages(
             Some<T.InputChannel> channel,
-            Some<Arr<int>> id
+            Some<Arr<T.InputMessage>> id
         ) {
             Channel = channel;
             Id = id;
         }
         
         
-        (T.InputChannel, Arr<int>) CmpTuple =>
+        (T.InputChannel, Arr<T.InputMessage>) CmpTuple =>
             (Channel, Id);
 
         public bool Equals(GetMessages other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -42,9 +42,9 @@ namespace TLSharp.Rpc.Functions.Channels
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x93d7b347);
+            WriteUint(bw, 0xad8c9a23);
             Write(Channel, bw, WriteSerializable);
-            Write(Id, bw, WriteVector<int>(WriteInt));
+            Write(Id, bw, WriteVector<T.InputMessage>(WriteSerializable));
         }
         
         T.Messages.Messages ITlFunc<T.Messages.Messages>.DeserializeResult(BinaryReader br) =>

@@ -110,11 +110,108 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class ApplePayTag : ITlTypeTag, IEquatable<ApplePayTag>, IComparable<ApplePayTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x0aa1c39f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly T.DataJson PaymentData;
+            
+            public ApplePayTag(
+                Some<T.DataJson> paymentData
+            ) {
+                PaymentData = paymentData;
+            }
+            
+            T.DataJson CmpTuple =>
+                PaymentData;
+
+            public bool Equals(ApplePayTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is ApplePayTag x && Equals(x);
+            public static bool operator ==(ApplePayTag x, ApplePayTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ApplePayTag x, ApplePayTag y) => !(x == y);
+
+            public int CompareTo(ApplePayTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is ApplePayTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ApplePayTag x, ApplePayTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ApplePayTag x, ApplePayTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ApplePayTag x, ApplePayTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ApplePayTag x, ApplePayTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(PaymentData: {PaymentData})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(PaymentData, bw, WriteSerializable);
+            }
+            
+            internal static ApplePayTag DeserializeTag(BinaryReader br)
+            {
+                var paymentData = Read(br, T.DataJson.Deserialize);
+                return new ApplePayTag(paymentData);
+            }
+        }
+
+        public sealed class AndroidPayTag : ITlTypeTag, IEquatable<AndroidPayTag>, IComparable<AndroidPayTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xca05d50e;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly T.DataJson PaymentToken;
+            public readonly string GoogleTransactionId;
+            
+            public AndroidPayTag(
+                Some<T.DataJson> paymentToken,
+                Some<string> googleTransactionId
+            ) {
+                PaymentToken = paymentToken;
+                GoogleTransactionId = googleTransactionId;
+            }
+            
+            (T.DataJson, string) CmpTuple =>
+                (PaymentToken, GoogleTransactionId);
+
+            public bool Equals(AndroidPayTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is AndroidPayTag x && Equals(x);
+            public static bool operator ==(AndroidPayTag x, AndroidPayTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(AndroidPayTag x, AndroidPayTag y) => !(x == y);
+
+            public int CompareTo(AndroidPayTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is AndroidPayTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(AndroidPayTag x, AndroidPayTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(AndroidPayTag x, AndroidPayTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(AndroidPayTag x, AndroidPayTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(AndroidPayTag x, AndroidPayTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(PaymentToken: {PaymentToken}, GoogleTransactionId: {GoogleTransactionId})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(PaymentToken, bw, WriteSerializable);
+                Write(GoogleTransactionId, bw, WriteString);
+            }
+            
+            internal static AndroidPayTag DeserializeTag(BinaryReader br)
+            {
+                var paymentToken = Read(br, T.DataJson.Deserialize);
+                var googleTransactionId = Read(br, ReadString);
+                return new AndroidPayTag(paymentToken, googleTransactionId);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         InputPaymentCredentials(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
         public static explicit operator InputPaymentCredentials(SavedTag tag) => new InputPaymentCredentials(tag);
         public static explicit operator InputPaymentCredentials(Tag tag) => new InputPaymentCredentials(tag);
+        public static explicit operator InputPaymentCredentials(ApplePayTag tag) => new InputPaymentCredentials(tag);
+        public static explicit operator InputPaymentCredentials(AndroidPayTag tag) => new InputPaymentCredentials(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -129,31 +226,41 @@ namespace TLSharp.Rpc.Types
             {
                 case SavedTag.TypeNumber: return (InputPaymentCredentials) SavedTag.DeserializeTag(br);
                 case Tag.TypeNumber: return (InputPaymentCredentials) Tag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { SavedTag.TypeNumber, Tag.TypeNumber });
+                case ApplePayTag.TypeNumber: return (InputPaymentCredentials) ApplePayTag.DeserializeTag(br);
+                case AndroidPayTag.TypeNumber: return (InputPaymentCredentials) AndroidPayTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { SavedTag.TypeNumber, Tag.TypeNumber, ApplePayTag.TypeNumber, AndroidPayTag.TypeNumber });
             }
         }
 
         public T Match<T>(
             Func<T> _,
             Func<SavedTag, T> savedTag = null,
-            Func<Tag, T> tag = null
+            Func<Tag, T> tag = null,
+            Func<ApplePayTag, T> applePayTag = null,
+            Func<AndroidPayTag, T> androidPayTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
             {
                 case SavedTag x when savedTag != null: return savedTag(x);
                 case Tag x when tag != null: return tag(x);
+                case ApplePayTag x when applePayTag != null: return applePayTag(x);
+                case AndroidPayTag x when androidPayTag != null: return androidPayTag(x);
                 default: return _();
             }
         }
 
         public T Match<T>(
             Func<SavedTag, T> savedTag,
-            Func<Tag, T> tag
+            Func<Tag, T> tag,
+            Func<ApplePayTag, T> applePayTag,
+            Func<AndroidPayTag, T> androidPayTag
         ) => Match(
             () => throw new Exception("WTF"),
             savedTag ?? throw new ArgumentNullException(nameof(savedTag)),
-            tag ?? throw new ArgumentNullException(nameof(tag))
+            tag ?? throw new ArgumentNullException(nameof(tag)),
+            applePayTag ?? throw new ArgumentNullException(nameof(applePayTag)),
+            androidPayTag ?? throw new ArgumentNullException(nameof(androidPayTag))
         );
 
         int GetTagOrder()
@@ -162,6 +269,8 @@ namespace TLSharp.Rpc.Types
             {
                 case SavedTag _: return 0;
                 case Tag _: return 1;
+                case ApplePayTag _: return 2;
+                case AndroidPayTag _: return 3;
                 default: throw new Exception("WTF");
             }
         }

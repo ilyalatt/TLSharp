@@ -11,25 +11,25 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class PartTag : ITlTypeTag, IEquatable<PartTag>, IComparable<PartTag>, IComparable
         {
-            internal const uint TypeNumber = 0x8dee6c44;
+            internal const uint TypeNumber = 0x8e3f9ebe;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Arr<T.PageBlock> Blocks;
             public readonly Arr<T.Photo> Photos;
-            public readonly Arr<T.Document> Videos;
+            public readonly Arr<T.Document> Documents;
             
             public PartTag(
                 Some<Arr<T.PageBlock>> blocks,
                 Some<Arr<T.Photo>> photos,
-                Some<Arr<T.Document>> videos
+                Some<Arr<T.Document>> documents
             ) {
                 Blocks = blocks;
                 Photos = photos;
-                Videos = videos;
+                Documents = documents;
             }
             
             (Arr<T.PageBlock>, Arr<T.Photo>, Arr<T.Document>) CmpTuple =>
-                (Blocks, Photos, Videos);
+                (Blocks, Photos, Documents);
 
             public bool Equals(PartTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is PartTag x && Equals(x);
@@ -45,46 +45,46 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Blocks: {Blocks}, Photos: {Photos}, Videos: {Videos})";
+            public override string ToString() => $"(Blocks: {Blocks}, Photos: {Photos}, Documents: {Documents})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Blocks, bw, WriteVector<T.PageBlock>(WriteSerializable));
                 Write(Photos, bw, WriteVector<T.Photo>(WriteSerializable));
-                Write(Videos, bw, WriteVector<T.Document>(WriteSerializable));
+                Write(Documents, bw, WriteVector<T.Document>(WriteSerializable));
             }
             
             internal static PartTag DeserializeTag(BinaryReader br)
             {
                 var blocks = Read(br, ReadVector(T.PageBlock.Deserialize));
                 var photos = Read(br, ReadVector(T.Photo.Deserialize));
-                var videos = Read(br, ReadVector(T.Document.Deserialize));
-                return new PartTag(blocks, photos, videos);
+                var documents = Read(br, ReadVector(T.Document.Deserialize));
+                return new PartTag(blocks, photos, documents);
             }
         }
 
         public sealed class FullTag : ITlTypeTag, IEquatable<FullTag>, IComparable<FullTag>, IComparable
         {
-            internal const uint TypeNumber = 0xd7a19d69;
+            internal const uint TypeNumber = 0x556ec7aa;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Arr<T.PageBlock> Blocks;
             public readonly Arr<T.Photo> Photos;
-            public readonly Arr<T.Document> Videos;
+            public readonly Arr<T.Document> Documents;
             
             public FullTag(
                 Some<Arr<T.PageBlock>> blocks,
                 Some<Arr<T.Photo>> photos,
-                Some<Arr<T.Document>> videos
+                Some<Arr<T.Document>> documents
             ) {
                 Blocks = blocks;
                 Photos = photos;
-                Videos = videos;
+                Documents = documents;
             }
             
             (Arr<T.PageBlock>, Arr<T.Photo>, Arr<T.Document>) CmpTuple =>
-                (Blocks, Photos, Videos);
+                (Blocks, Photos, Documents);
 
             public bool Equals(FullTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is FullTag x && Equals(x);
@@ -100,22 +100,22 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Blocks: {Blocks}, Photos: {Photos}, Videos: {Videos})";
+            public override string ToString() => $"(Blocks: {Blocks}, Photos: {Photos}, Documents: {Documents})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Blocks, bw, WriteVector<T.PageBlock>(WriteSerializable));
                 Write(Photos, bw, WriteVector<T.Photo>(WriteSerializable));
-                Write(Videos, bw, WriteVector<T.Document>(WriteSerializable));
+                Write(Documents, bw, WriteVector<T.Document>(WriteSerializable));
             }
             
             internal static FullTag DeserializeTag(BinaryReader br)
             {
                 var blocks = Read(br, ReadVector(T.PageBlock.Deserialize));
                 var photos = Read(br, ReadVector(T.Photo.Deserialize));
-                var videos = Read(br, ReadVector(T.Document.Deserialize));
-                return new FullTag(blocks, photos, videos);
+                var documents = Read(br, ReadVector(T.Document.Deserialize));
+                return new FullTag(blocks, photos, documents);
             }
         }
 

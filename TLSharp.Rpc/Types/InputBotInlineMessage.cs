@@ -11,22 +11,25 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class MediaAutoTag : ITlTypeTag, IEquatable<MediaAutoTag>, IComparable<MediaAutoTag>, IComparable
         {
-            internal const uint TypeNumber = 0x292fed13;
+            internal const uint TypeNumber = 0x3380c786;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly string Caption;
+            public readonly string Message;
+            public readonly Option<Arr<T.MessageEntity>> Entities;
             public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaAutoTag(
-                Some<string> caption,
+                Some<string> message,
+                Option<Arr<T.MessageEntity>> entities,
                 Option<T.ReplyMarkup> replyMarkup
             ) {
-                Caption = caption;
+                Message = message;
+                Entities = entities;
                 ReplyMarkup = replyMarkup;
             }
             
-            (string, Option<T.ReplyMarkup>) CmpTuple =>
-                (Caption, ReplyMarkup);
+            (string, Option<Arr<T.MessageEntity>>, Option<T.ReplyMarkup>) CmpTuple =>
+                (Message, Entities, ReplyMarkup);
 
             public bool Equals(MediaAutoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaAutoTag x && Equals(x);
@@ -42,22 +45,24 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Caption: {Caption}, ReplyMarkup: {ReplyMarkup})";
+            public override string ToString() => $"(Message: {Message}, Entities: {Entities}, ReplyMarkup: {ReplyMarkup})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(2, ReplyMarkup), bw, WriteInt);
-                Write(Caption, bw, WriteString);
+                Write(MaskBit(1, Entities) | MaskBit(2, ReplyMarkup), bw, WriteInt);
+                Write(Message, bw, WriteString);
+                Write(Entities, bw, WriteOption<Arr<T.MessageEntity>>(WriteVector<T.MessageEntity>(WriteSerializable)));
                 Write(ReplyMarkup, bw, WriteOption<T.ReplyMarkup>(WriteSerializable));
             }
             
             internal static MediaAutoTag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
-                var caption = Read(br, ReadString);
+                var message = Read(br, ReadString);
+                var entities = Read(br, ReadOption(flags, 1, ReadVector(T.MessageEntity.Deserialize)));
                 var replyMarkup = Read(br, ReadOption(flags, 2, T.ReplyMarkup.Deserialize));
-                return new MediaAutoTag(caption, replyMarkup);
+                return new MediaAutoTag(message, entities, replyMarkup);
             }
         }
 
@@ -124,22 +129,25 @@ namespace TLSharp.Rpc.Types
 
         public sealed class MediaGeoTag : ITlTypeTag, IEquatable<MediaGeoTag>, IComparable<MediaGeoTag>, IComparable
         {
-            internal const uint TypeNumber = 0xf4a59de1;
+            internal const uint TypeNumber = 0xc1b15d65;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly T.InputGeoPoint GeoPoint;
+            public readonly int Period;
             public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaGeoTag(
                 Some<T.InputGeoPoint> geoPoint,
+                int period,
                 Option<T.ReplyMarkup> replyMarkup
             ) {
                 GeoPoint = geoPoint;
+                Period = period;
                 ReplyMarkup = replyMarkup;
             }
             
-            (T.InputGeoPoint, Option<T.ReplyMarkup>) CmpTuple =>
-                (GeoPoint, ReplyMarkup);
+            (T.InputGeoPoint, int, Option<T.ReplyMarkup>) CmpTuple =>
+                (GeoPoint, Period, ReplyMarkup);
 
             public bool Equals(MediaGeoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaGeoTag x && Equals(x);
@@ -155,13 +163,14 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(GeoPoint: {GeoPoint}, ReplyMarkup: {ReplyMarkup})";
+            public override string ToString() => $"(GeoPoint: {GeoPoint}, Period: {Period}, ReplyMarkup: {ReplyMarkup})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(MaskBit(2, ReplyMarkup), bw, WriteInt);
                 Write(GeoPoint, bw, WriteSerializable);
+                Write(Period, bw, WriteInt);
                 Write(ReplyMarkup, bw, WriteOption<T.ReplyMarkup>(WriteSerializable));
             }
             
@@ -169,14 +178,15 @@ namespace TLSharp.Rpc.Types
             {
                 var flags = Read(br, ReadInt);
                 var geoPoint = Read(br, T.InputGeoPoint.Deserialize);
+                var period = Read(br, ReadInt);
                 var replyMarkup = Read(br, ReadOption(flags, 2, T.ReplyMarkup.Deserialize));
-                return new MediaGeoTag(geoPoint, replyMarkup);
+                return new MediaGeoTag(geoPoint, period, replyMarkup);
             }
         }
 
         public sealed class MediaVenueTag : ITlTypeTag, IEquatable<MediaVenueTag>, IComparable<MediaVenueTag>, IComparable
         {
-            internal const uint TypeNumber = 0xaaafadc8;
+            internal const uint TypeNumber = 0x417bbf11;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly T.InputGeoPoint GeoPoint;
@@ -184,6 +194,7 @@ namespace TLSharp.Rpc.Types
             public readonly string Address;
             public readonly string Provider;
             public readonly string VenueId;
+            public readonly string VenueType;
             public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaVenueTag(
@@ -192,6 +203,7 @@ namespace TLSharp.Rpc.Types
                 Some<string> address,
                 Some<string> provider,
                 Some<string> venueId,
+                Some<string> venueType,
                 Option<T.ReplyMarkup> replyMarkup
             ) {
                 GeoPoint = geoPoint;
@@ -199,11 +211,12 @@ namespace TLSharp.Rpc.Types
                 Address = address;
                 Provider = provider;
                 VenueId = venueId;
+                VenueType = venueType;
                 ReplyMarkup = replyMarkup;
             }
             
-            (T.InputGeoPoint, string, string, string, string, Option<T.ReplyMarkup>) CmpTuple =>
-                (GeoPoint, Title, Address, Provider, VenueId, ReplyMarkup);
+            (T.InputGeoPoint, string, string, string, string, string, Option<T.ReplyMarkup>) CmpTuple =>
+                (GeoPoint, Title, Address, Provider, VenueId, VenueType, ReplyMarkup);
 
             public bool Equals(MediaVenueTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaVenueTag x && Equals(x);
@@ -219,7 +232,7 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(GeoPoint: {GeoPoint}, Title: {Title}, Address: {Address}, Provider: {Provider}, VenueId: {VenueId}, ReplyMarkup: {ReplyMarkup})";
+            public override string ToString() => $"(GeoPoint: {GeoPoint}, Title: {Title}, Address: {Address}, Provider: {Provider}, VenueId: {VenueId}, VenueType: {VenueType}, ReplyMarkup: {ReplyMarkup})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -230,6 +243,7 @@ namespace TLSharp.Rpc.Types
                 Write(Address, bw, WriteString);
                 Write(Provider, bw, WriteString);
                 Write(VenueId, bw, WriteString);
+                Write(VenueType, bw, WriteString);
                 Write(ReplyMarkup, bw, WriteOption<T.ReplyMarkup>(WriteSerializable));
             }
             
@@ -241,35 +255,39 @@ namespace TLSharp.Rpc.Types
                 var address = Read(br, ReadString);
                 var provider = Read(br, ReadString);
                 var venueId = Read(br, ReadString);
+                var venueType = Read(br, ReadString);
                 var replyMarkup = Read(br, ReadOption(flags, 2, T.ReplyMarkup.Deserialize));
-                return new MediaVenueTag(geoPoint, title, address, provider, venueId, replyMarkup);
+                return new MediaVenueTag(geoPoint, title, address, provider, venueId, venueType, replyMarkup);
             }
         }
 
         public sealed class MediaContactTag : ITlTypeTag, IEquatable<MediaContactTag>, IComparable<MediaContactTag>, IComparable
         {
-            internal const uint TypeNumber = 0x2daf01a7;
+            internal const uint TypeNumber = 0xa6edbffd;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly string PhoneNumber;
             public readonly string FirstName;
             public readonly string LastName;
+            public readonly string Vcard;
             public readonly Option<T.ReplyMarkup> ReplyMarkup;
             
             public MediaContactTag(
                 Some<string> phoneNumber,
                 Some<string> firstName,
                 Some<string> lastName,
+                Some<string> vcard,
                 Option<T.ReplyMarkup> replyMarkup
             ) {
                 PhoneNumber = phoneNumber;
                 FirstName = firstName;
                 LastName = lastName;
+                Vcard = vcard;
                 ReplyMarkup = replyMarkup;
             }
             
-            (string, string, string, Option<T.ReplyMarkup>) CmpTuple =>
-                (PhoneNumber, FirstName, LastName, ReplyMarkup);
+            (string, string, string, string, Option<T.ReplyMarkup>) CmpTuple =>
+                (PhoneNumber, FirstName, LastName, Vcard, ReplyMarkup);
 
             public bool Equals(MediaContactTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is MediaContactTag x && Equals(x);
@@ -285,7 +303,7 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(PhoneNumber: {PhoneNumber}, FirstName: {FirstName}, LastName: {LastName}, ReplyMarkup: {ReplyMarkup})";
+            public override string ToString() => $"(PhoneNumber: {PhoneNumber}, FirstName: {FirstName}, LastName: {LastName}, Vcard: {Vcard}, ReplyMarkup: {ReplyMarkup})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -294,6 +312,7 @@ namespace TLSharp.Rpc.Types
                 Write(PhoneNumber, bw, WriteString);
                 Write(FirstName, bw, WriteString);
                 Write(LastName, bw, WriteString);
+                Write(Vcard, bw, WriteString);
                 Write(ReplyMarkup, bw, WriteOption<T.ReplyMarkup>(WriteSerializable));
             }
             
@@ -303,8 +322,9 @@ namespace TLSharp.Rpc.Types
                 var phoneNumber = Read(br, ReadString);
                 var firstName = Read(br, ReadString);
                 var lastName = Read(br, ReadString);
+                var vcard = Read(br, ReadString);
                 var replyMarkup = Read(br, ReadOption(flags, 2, T.ReplyMarkup.Deserialize));
-                return new MediaContactTag(phoneNumber, firstName, lastName, replyMarkup);
+                return new MediaContactTag(phoneNumber, firstName, lastName, vcard, replyMarkup);
             }
         }
 

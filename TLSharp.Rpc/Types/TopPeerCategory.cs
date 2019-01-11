@@ -234,6 +234,51 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class PhoneCallsTag : ITlTypeTag, IEquatable<PhoneCallsTag>, IComparable<PhoneCallsTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x1e76a78c;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public PhoneCallsTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(PhoneCallsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is PhoneCallsTag x && Equals(x);
+            public static bool operator ==(PhoneCallsTag x, PhoneCallsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(PhoneCallsTag x, PhoneCallsTag y) => !(x == y);
+
+            public int CompareTo(PhoneCallsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is PhoneCallsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(PhoneCallsTag x, PhoneCallsTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(PhoneCallsTag x, PhoneCallsTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(PhoneCallsTag x, PhoneCallsTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(PhoneCallsTag x, PhoneCallsTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static PhoneCallsTag DeserializeTag(BinaryReader br)
+            {
+
+                return new PhoneCallsTag();
+            }
+        }
+
         readonly ITlTypeTag _tag;
         TopPeerCategory(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -242,6 +287,7 @@ namespace TLSharp.Rpc.Types
         public static explicit operator TopPeerCategory(CorrespondentsTag tag) => new TopPeerCategory(tag);
         public static explicit operator TopPeerCategory(GroupsTag tag) => new TopPeerCategory(tag);
         public static explicit operator TopPeerCategory(ChannelsTag tag) => new TopPeerCategory(tag);
+        public static explicit operator TopPeerCategory(PhoneCallsTag tag) => new TopPeerCategory(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -259,7 +305,8 @@ namespace TLSharp.Rpc.Types
                 case CorrespondentsTag.TypeNumber: return (TopPeerCategory) CorrespondentsTag.DeserializeTag(br);
                 case GroupsTag.TypeNumber: return (TopPeerCategory) GroupsTag.DeserializeTag(br);
                 case ChannelsTag.TypeNumber: return (TopPeerCategory) ChannelsTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { BotsPmTag.TypeNumber, BotsInlineTag.TypeNumber, CorrespondentsTag.TypeNumber, GroupsTag.TypeNumber, ChannelsTag.TypeNumber });
+                case PhoneCallsTag.TypeNumber: return (TopPeerCategory) PhoneCallsTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { BotsPmTag.TypeNumber, BotsInlineTag.TypeNumber, CorrespondentsTag.TypeNumber, GroupsTag.TypeNumber, ChannelsTag.TypeNumber, PhoneCallsTag.TypeNumber });
             }
         }
 
@@ -269,7 +316,8 @@ namespace TLSharp.Rpc.Types
             Func<BotsInlineTag, T> botsInlineTag = null,
             Func<CorrespondentsTag, T> correspondentsTag = null,
             Func<GroupsTag, T> groupsTag = null,
-            Func<ChannelsTag, T> channelsTag = null
+            Func<ChannelsTag, T> channelsTag = null,
+            Func<PhoneCallsTag, T> phoneCallsTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -279,6 +327,7 @@ namespace TLSharp.Rpc.Types
                 case CorrespondentsTag x when correspondentsTag != null: return correspondentsTag(x);
                 case GroupsTag x when groupsTag != null: return groupsTag(x);
                 case ChannelsTag x when channelsTag != null: return channelsTag(x);
+                case PhoneCallsTag x when phoneCallsTag != null: return phoneCallsTag(x);
                 default: return _();
             }
         }
@@ -288,14 +337,16 @@ namespace TLSharp.Rpc.Types
             Func<BotsInlineTag, T> botsInlineTag,
             Func<CorrespondentsTag, T> correspondentsTag,
             Func<GroupsTag, T> groupsTag,
-            Func<ChannelsTag, T> channelsTag
+            Func<ChannelsTag, T> channelsTag,
+            Func<PhoneCallsTag, T> phoneCallsTag
         ) => Match(
             () => throw new Exception("WTF"),
             botsPmTag ?? throw new ArgumentNullException(nameof(botsPmTag)),
             botsInlineTag ?? throw new ArgumentNullException(nameof(botsInlineTag)),
             correspondentsTag ?? throw new ArgumentNullException(nameof(correspondentsTag)),
             groupsTag ?? throw new ArgumentNullException(nameof(groupsTag)),
-            channelsTag ?? throw new ArgumentNullException(nameof(channelsTag))
+            channelsTag ?? throw new ArgumentNullException(nameof(channelsTag)),
+            phoneCallsTag ?? throw new ArgumentNullException(nameof(phoneCallsTag))
         );
 
         int GetTagOrder()
@@ -307,6 +358,7 @@ namespace TLSharp.Rpc.Types
                 case CorrespondentsTag _: return 2;
                 case GroupsTag _: return 3;
                 case ChannelsTag _: return 4;
+                case PhoneCallsTag _: return 5;
                 default: throw new Exception("WTF");
             }
         }

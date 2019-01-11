@@ -11,25 +11,28 @@ namespace TLSharp.Rpc.Types.Contacts
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x1aa1f784;
+            internal const uint TypeNumber = 0xb3134d9d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
+            public readonly Arr<T.Peer> MyResults;
             public readonly Arr<T.Peer> Results;
             public readonly Arr<T.Chat> Chats;
             public readonly Arr<T.User> Users;
             
             public Tag(
+                Some<Arr<T.Peer>> myResults,
                 Some<Arr<T.Peer>> results,
                 Some<Arr<T.Chat>> chats,
                 Some<Arr<T.User>> users
             ) {
+                MyResults = myResults;
                 Results = results;
                 Chats = chats;
                 Users = users;
             }
             
-            (Arr<T.Peer>, Arr<T.Chat>, Arr<T.User>) CmpTuple =>
-                (Results, Chats, Users);
+            (Arr<T.Peer>, Arr<T.Peer>, Arr<T.Chat>, Arr<T.User>) CmpTuple =>
+                (MyResults, Results, Chats, Users);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -45,11 +48,12 @@ namespace TLSharp.Rpc.Types.Contacts
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Results: {Results}, Chats: {Chats}, Users: {Users})";
+            public override string ToString() => $"(MyResults: {MyResults}, Results: {Results}, Chats: {Chats}, Users: {Users})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
+                Write(MyResults, bw, WriteVector<T.Peer>(WriteSerializable));
                 Write(Results, bw, WriteVector<T.Peer>(WriteSerializable));
                 Write(Chats, bw, WriteVector<T.Chat>(WriteSerializable));
                 Write(Users, bw, WriteVector<T.User>(WriteSerializable));
@@ -57,10 +61,11 @@ namespace TLSharp.Rpc.Types.Contacts
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
+                var myResults = Read(br, ReadVector(T.Peer.Deserialize));
                 var results = Read(br, ReadVector(T.Peer.Deserialize));
                 var chats = Read(br, ReadVector(T.Chat.Deserialize));
                 var users = Read(br, ReadVector(T.User.Deserialize));
-                return new Tag(results, chats, users);
+                return new Tag(myResults, results, chats, users);
             }
         }
 

@@ -9,16 +9,16 @@ namespace TLSharp.Rpc.Functions.Messages
 {
     public sealed class GetPeerDialogs : ITlFunc<T.Messages.PeerDialogs>, IEquatable<GetPeerDialogs>, IComparable<GetPeerDialogs>, IComparable
     {
-        public Arr<T.InputPeer> Peers { get; }
+        public Arr<T.InputDialogPeer> Peers { get; }
         
         public GetPeerDialogs(
-            Some<Arr<T.InputPeer>> peers
+            Some<Arr<T.InputDialogPeer>> peers
         ) {
             Peers = peers;
         }
         
         
-        Arr<T.InputPeer> CmpTuple =>
+        Arr<T.InputDialogPeer> CmpTuple =>
             Peers;
 
         public bool Equals(GetPeerDialogs other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -39,8 +39,8 @@ namespace TLSharp.Rpc.Functions.Messages
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x2d9776b9);
-            Write(Peers, bw, WriteVector<T.InputPeer>(WriteSerializable));
+            WriteUint(bw, 0xe470bcfd);
+            Write(Peers, bw, WriteVector<T.InputDialogPeer>(WriteSerializable));
         }
         
         T.Messages.PeerDialogs ITlFunc<T.Messages.PeerDialogs>.DeserializeResult(BinaryReader br) =>

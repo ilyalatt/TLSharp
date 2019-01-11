@@ -11,25 +11,28 @@ namespace TLSharp.Rpc.Types.Contacts
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xad524315;
+            internal const uint TypeNumber = 0x77d01c3b;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Arr<T.ImportedContact> Imported;
+            public readonly Arr<T.PopularContact> PopularInvites;
             public readonly Arr<long> RetryContacts;
             public readonly Arr<T.User> Users;
             
             public Tag(
                 Some<Arr<T.ImportedContact>> imported,
+                Some<Arr<T.PopularContact>> popularInvites,
                 Some<Arr<long>> retryContacts,
                 Some<Arr<T.User>> users
             ) {
                 Imported = imported;
+                PopularInvites = popularInvites;
                 RetryContacts = retryContacts;
                 Users = users;
             }
             
-            (Arr<T.ImportedContact>, Arr<long>, Arr<T.User>) CmpTuple =>
-                (Imported, RetryContacts, Users);
+            (Arr<T.ImportedContact>, Arr<T.PopularContact>, Arr<long>, Arr<T.User>) CmpTuple =>
+                (Imported, PopularInvites, RetryContacts, Users);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -45,12 +48,13 @@ namespace TLSharp.Rpc.Types.Contacts
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Imported: {Imported}, RetryContacts: {RetryContacts}, Users: {Users})";
+            public override string ToString() => $"(Imported: {Imported}, PopularInvites: {PopularInvites}, RetryContacts: {RetryContacts}, Users: {Users})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Imported, bw, WriteVector<T.ImportedContact>(WriteSerializable));
+                Write(PopularInvites, bw, WriteVector<T.PopularContact>(WriteSerializable));
                 Write(RetryContacts, bw, WriteVector<long>(WriteLong));
                 Write(Users, bw, WriteVector<T.User>(WriteSerializable));
             }
@@ -58,9 +62,10 @@ namespace TLSharp.Rpc.Types.Contacts
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var imported = Read(br, ReadVector(T.ImportedContact.Deserialize));
+                var popularInvites = Read(br, ReadVector(T.PopularContact.Deserialize));
                 var retryContacts = Read(br, ReadVector(ReadLong));
                 var users = Read(br, ReadVector(T.User.Deserialize));
-                return new Tag(imported, retryContacts, users);
+                return new Tag(imported, popularInvites, retryContacts, users);
             }
         }
 

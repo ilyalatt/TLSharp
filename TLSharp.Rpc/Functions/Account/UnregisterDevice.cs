@@ -11,18 +11,21 @@ namespace TLSharp.Rpc.Functions.Account
     {
         public int TokenType { get; }
         public string Token { get; }
+        public Arr<int> OtherUids { get; }
         
         public UnregisterDevice(
             int tokenType,
-            Some<string> token
+            Some<string> token,
+            Some<Arr<int>> otherUids
         ) {
             TokenType = tokenType;
             Token = token;
+            OtherUids = otherUids;
         }
         
         
-        (int, string) CmpTuple =>
-            (TokenType, Token);
+        (int, string, Arr<int>) CmpTuple =>
+            (TokenType, Token, OtherUids);
 
         public bool Equals(UnregisterDevice other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is UnregisterDevice x && Equals(x);
@@ -38,13 +41,14 @@ namespace TLSharp.Rpc.Functions.Account
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(TokenType: {TokenType}, Token: {Token})";
+        public override string ToString() => $"(TokenType: {TokenType}, Token: {Token}, OtherUids: {OtherUids})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x65c55b40);
+            WriteUint(bw, 0x3076c4bf);
             Write(TokenType, bw, WriteInt);
             Write(Token, bw, WriteString);
+            Write(OtherUids, bw, WriteVector<int>(WriteInt));
         }
         
         bool ITlFunc<bool>.DeserializeResult(BinaryReader br) =>

@@ -169,12 +169,109 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class SecureTag : ITlTypeTag, IEquatable<SecureTag>, IComparable<SecureTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xcbc7ee28;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly long Id;
+            public readonly long AccessHash;
+            
+            public SecureTag(
+                long id,
+                long accessHash
+            ) {
+                Id = id;
+                AccessHash = accessHash;
+            }
+            
+            (long, long) CmpTuple =>
+                (Id, AccessHash);
+
+            public bool Equals(SecureTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is SecureTag x && Equals(x);
+            public static bool operator ==(SecureTag x, SecureTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(SecureTag x, SecureTag y) => !(x == y);
+
+            public int CompareTo(SecureTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is SecureTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(SecureTag x, SecureTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(SecureTag x, SecureTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(SecureTag x, SecureTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(SecureTag x, SecureTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, AccessHash: {AccessHash})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Id, bw, WriteLong);
+                Write(AccessHash, bw, WriteLong);
+            }
+            
+            internal static SecureTag DeserializeTag(BinaryReader br)
+            {
+                var id = Read(br, ReadLong);
+                var accessHash = Read(br, ReadLong);
+                return new SecureTag(id, accessHash);
+            }
+        }
+
+        public sealed class TakeoutTag : ITlTypeTag, IEquatable<TakeoutTag>, IComparable<TakeoutTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x29be5899;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public TakeoutTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(TakeoutTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is TakeoutTag x && Equals(x);
+            public static bool operator ==(TakeoutTag x, TakeoutTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(TakeoutTag x, TakeoutTag y) => !(x == y);
+
+            public int CompareTo(TakeoutTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is TakeoutTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(TakeoutTag x, TakeoutTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(TakeoutTag x, TakeoutTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(TakeoutTag x, TakeoutTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(TakeoutTag x, TakeoutTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static TakeoutTag DeserializeTag(BinaryReader br)
+            {
+
+                return new TakeoutTag();
+            }
+        }
+
         readonly ITlTypeTag _tag;
         InputFileLocation(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
         public static explicit operator InputFileLocation(Tag tag) => new InputFileLocation(tag);
         public static explicit operator InputFileLocation(EncryptedTag tag) => new InputFileLocation(tag);
         public static explicit operator InputFileLocation(DocumentTag tag) => new InputFileLocation(tag);
+        public static explicit operator InputFileLocation(SecureTag tag) => new InputFileLocation(tag);
+        public static explicit operator InputFileLocation(TakeoutTag tag) => new InputFileLocation(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -190,7 +287,9 @@ namespace TLSharp.Rpc.Types
                 case Tag.TypeNumber: return (InputFileLocation) Tag.DeserializeTag(br);
                 case EncryptedTag.TypeNumber: return (InputFileLocation) EncryptedTag.DeserializeTag(br);
                 case DocumentTag.TypeNumber: return (InputFileLocation) DocumentTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, EncryptedTag.TypeNumber, DocumentTag.TypeNumber });
+                case SecureTag.TypeNumber: return (InputFileLocation) SecureTag.DeserializeTag(br);
+                case TakeoutTag.TypeNumber: return (InputFileLocation) TakeoutTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, EncryptedTag.TypeNumber, DocumentTag.TypeNumber, SecureTag.TypeNumber, TakeoutTag.TypeNumber });
             }
         }
 
@@ -198,7 +297,9 @@ namespace TLSharp.Rpc.Types
             Func<T> _,
             Func<Tag, T> tag = null,
             Func<EncryptedTag, T> encryptedTag = null,
-            Func<DocumentTag, T> documentTag = null
+            Func<DocumentTag, T> documentTag = null,
+            Func<SecureTag, T> secureTag = null,
+            Func<TakeoutTag, T> takeoutTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -206,6 +307,8 @@ namespace TLSharp.Rpc.Types
                 case Tag x when tag != null: return tag(x);
                 case EncryptedTag x when encryptedTag != null: return encryptedTag(x);
                 case DocumentTag x when documentTag != null: return documentTag(x);
+                case SecureTag x when secureTag != null: return secureTag(x);
+                case TakeoutTag x when takeoutTag != null: return takeoutTag(x);
                 default: return _();
             }
         }
@@ -213,12 +316,16 @@ namespace TLSharp.Rpc.Types
         public T Match<T>(
             Func<Tag, T> tag,
             Func<EncryptedTag, T> encryptedTag,
-            Func<DocumentTag, T> documentTag
+            Func<DocumentTag, T> documentTag,
+            Func<SecureTag, T> secureTag,
+            Func<TakeoutTag, T> takeoutTag
         ) => Match(
             () => throw new Exception("WTF"),
             tag ?? throw new ArgumentNullException(nameof(tag)),
             encryptedTag ?? throw new ArgumentNullException(nameof(encryptedTag)),
-            documentTag ?? throw new ArgumentNullException(nameof(documentTag))
+            documentTag ?? throw new ArgumentNullException(nameof(documentTag)),
+            secureTag ?? throw new ArgumentNullException(nameof(secureTag)),
+            takeoutTag ?? throw new ArgumentNullException(nameof(takeoutTag))
         );
 
         int GetTagOrder()
@@ -228,6 +335,8 @@ namespace TLSharp.Rpc.Types
                 case Tag _: return 0;
                 case EncryptedTag _: return 1;
                 case DocumentTag _: return 2;
+                case SecureTag _: return 3;
+                case TakeoutTag _: return 4;
                 default: throw new Exception("WTF");
             }
         }

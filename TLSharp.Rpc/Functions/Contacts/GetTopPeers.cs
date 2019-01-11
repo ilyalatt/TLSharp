@@ -12,6 +12,7 @@ namespace TLSharp.Rpc.Functions.Contacts
         public bool Correspondents { get; }
         public bool BotsPm { get; }
         public bool BotsInline { get; }
+        public bool PhoneCalls { get; }
         public bool Groups { get; }
         public bool Channels { get; }
         public int Offset { get; }
@@ -22,6 +23,7 @@ namespace TLSharp.Rpc.Functions.Contacts
             bool correspondents,
             bool botsPm,
             bool botsInline,
+            bool phoneCalls,
             bool groups,
             bool channels,
             int offset,
@@ -31,6 +33,7 @@ namespace TLSharp.Rpc.Functions.Contacts
             Correspondents = correspondents;
             BotsPm = botsPm;
             BotsInline = botsInline;
+            PhoneCalls = phoneCalls;
             Groups = groups;
             Channels = channels;
             Offset = offset;
@@ -39,8 +42,8 @@ namespace TLSharp.Rpc.Functions.Contacts
         }
         
         
-        (bool, bool, bool, bool, bool, int, int, int) CmpTuple =>
-            (Correspondents, BotsPm, BotsInline, Groups, Channels, Offset, Limit, Hash);
+        (bool, bool, bool, bool, bool, bool, int, int, int) CmpTuple =>
+            (Correspondents, BotsPm, BotsInline, PhoneCalls, Groups, Channels, Offset, Limit, Hash);
 
         public bool Equals(GetTopPeers other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetTopPeers x && Equals(x);
@@ -56,12 +59,12 @@ namespace TLSharp.Rpc.Functions.Contacts
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Correspondents: {Correspondents}, BotsPm: {BotsPm}, BotsInline: {BotsInline}, Groups: {Groups}, Channels: {Channels}, Offset: {Offset}, Limit: {Limit}, Hash: {Hash})";
+        public override string ToString() => $"(Correspondents: {Correspondents}, BotsPm: {BotsPm}, BotsInline: {BotsInline}, PhoneCalls: {PhoneCalls}, Groups: {Groups}, Channels: {Channels}, Offset: {Offset}, Limit: {Limit}, Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
             WriteUint(bw, 0xd4982db5);
-            Write(MaskBit(0, Correspondents) | MaskBit(1, BotsPm) | MaskBit(2, BotsInline) | MaskBit(10, Groups) | MaskBit(15, Channels), bw, WriteInt);
+            Write(MaskBit(0, Correspondents) | MaskBit(1, BotsPm) | MaskBit(2, BotsInline) | MaskBit(3, PhoneCalls) | MaskBit(10, Groups) | MaskBit(15, Channels), bw, WriteInt);
             Write(Offset, bw, WriteInt);
             Write(Limit, bw, WriteInt);
             Write(Hash, bw, WriteInt);

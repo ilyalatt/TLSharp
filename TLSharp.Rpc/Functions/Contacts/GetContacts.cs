@@ -9,16 +9,16 @@ namespace TLSharp.Rpc.Functions.Contacts
 {
     public sealed class GetContacts : ITlFunc<T.Contacts.Contacts>, IEquatable<GetContacts>, IComparable<GetContacts>, IComparable
     {
-        public string Hash { get; }
+        public int Hash { get; }
         
         public GetContacts(
-            Some<string> hash
+            int hash
         ) {
             Hash = hash;
         }
         
         
-        string CmpTuple =>
+        int CmpTuple =>
             Hash;
 
         public bool Equals(GetContacts other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -39,8 +39,8 @@ namespace TLSharp.Rpc.Functions.Contacts
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x22c6aa08);
-            Write(Hash, bw, WriteString);
+            WriteUint(bw, 0xc023849f);
+            Write(Hash, bw, WriteInt);
         }
         
         T.Contacts.Contacts ITlFunc<T.Contacts.Contacts>.DeserializeResult(BinaryReader br) =>

@@ -114,171 +114,6 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class ModeratorTag : ITlTypeTag, IEquatable<ModeratorTag>, IComparable<ModeratorTag>, IComparable
-        {
-            internal const uint TypeNumber = 0x91057fef;
-            uint ITlTypeTag.TypeNumber => TypeNumber;
-            
-            public readonly int UserId;
-            public readonly int InviterId;
-            public readonly int Date;
-            
-            public ModeratorTag(
-                int userId,
-                int inviterId,
-                int date
-            ) {
-                UserId = userId;
-                InviterId = inviterId;
-                Date = date;
-            }
-            
-            (int, int, int) CmpTuple =>
-                (UserId, InviterId, Date);
-
-            public bool Equals(ModeratorTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
-            public override bool Equals(object other) => other is ModeratorTag x && Equals(x);
-            public static bool operator ==(ModeratorTag x, ModeratorTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
-            public static bool operator !=(ModeratorTag x, ModeratorTag y) => !(x == y);
-
-            public int CompareTo(ModeratorTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
-            int IComparable.CompareTo(object other) => other is ModeratorTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-            public static bool operator <=(ModeratorTag x, ModeratorTag y) => x.CompareTo(y) <= 0;
-            public static bool operator <(ModeratorTag x, ModeratorTag y) => x.CompareTo(y) < 0;
-            public static bool operator >(ModeratorTag x, ModeratorTag y) => x.CompareTo(y) > 0;
-            public static bool operator >=(ModeratorTag x, ModeratorTag y) => x.CompareTo(y) >= 0;
-
-            public override int GetHashCode() => CmpTuple.GetHashCode();
-
-            public override string ToString() => $"(UserId: {UserId}, InviterId: {InviterId}, Date: {Date})";
-            
-            
-            void ITlSerializable.Serialize(BinaryWriter bw)
-            {
-                Write(UserId, bw, WriteInt);
-                Write(InviterId, bw, WriteInt);
-                Write(Date, bw, WriteInt);
-            }
-            
-            internal static ModeratorTag DeserializeTag(BinaryReader br)
-            {
-                var userId = Read(br, ReadInt);
-                var inviterId = Read(br, ReadInt);
-                var date = Read(br, ReadInt);
-                return new ModeratorTag(userId, inviterId, date);
-            }
-        }
-
-        public sealed class EditorTag : ITlTypeTag, IEquatable<EditorTag>, IComparable<EditorTag>, IComparable
-        {
-            internal const uint TypeNumber = 0x98192d61;
-            uint ITlTypeTag.TypeNumber => TypeNumber;
-            
-            public readonly int UserId;
-            public readonly int InviterId;
-            public readonly int Date;
-            
-            public EditorTag(
-                int userId,
-                int inviterId,
-                int date
-            ) {
-                UserId = userId;
-                InviterId = inviterId;
-                Date = date;
-            }
-            
-            (int, int, int) CmpTuple =>
-                (UserId, InviterId, Date);
-
-            public bool Equals(EditorTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
-            public override bool Equals(object other) => other is EditorTag x && Equals(x);
-            public static bool operator ==(EditorTag x, EditorTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
-            public static bool operator !=(EditorTag x, EditorTag y) => !(x == y);
-
-            public int CompareTo(EditorTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
-            int IComparable.CompareTo(object other) => other is EditorTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-            public static bool operator <=(EditorTag x, EditorTag y) => x.CompareTo(y) <= 0;
-            public static bool operator <(EditorTag x, EditorTag y) => x.CompareTo(y) < 0;
-            public static bool operator >(EditorTag x, EditorTag y) => x.CompareTo(y) > 0;
-            public static bool operator >=(EditorTag x, EditorTag y) => x.CompareTo(y) >= 0;
-
-            public override int GetHashCode() => CmpTuple.GetHashCode();
-
-            public override string ToString() => $"(UserId: {UserId}, InviterId: {InviterId}, Date: {Date})";
-            
-            
-            void ITlSerializable.Serialize(BinaryWriter bw)
-            {
-                Write(UserId, bw, WriteInt);
-                Write(InviterId, bw, WriteInt);
-                Write(Date, bw, WriteInt);
-            }
-            
-            internal static EditorTag DeserializeTag(BinaryReader br)
-            {
-                var userId = Read(br, ReadInt);
-                var inviterId = Read(br, ReadInt);
-                var date = Read(br, ReadInt);
-                return new EditorTag(userId, inviterId, date);
-            }
-        }
-
-        public sealed class KickedTag : ITlTypeTag, IEquatable<KickedTag>, IComparable<KickedTag>, IComparable
-        {
-            internal const uint TypeNumber = 0x8cc5e69a;
-            uint ITlTypeTag.TypeNumber => TypeNumber;
-            
-            public readonly int UserId;
-            public readonly int KickedBy;
-            public readonly int Date;
-            
-            public KickedTag(
-                int userId,
-                int kickedBy,
-                int date
-            ) {
-                UserId = userId;
-                KickedBy = kickedBy;
-                Date = date;
-            }
-            
-            (int, int, int) CmpTuple =>
-                (UserId, KickedBy, Date);
-
-            public bool Equals(KickedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
-            public override bool Equals(object other) => other is KickedTag x && Equals(x);
-            public static bool operator ==(KickedTag x, KickedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
-            public static bool operator !=(KickedTag x, KickedTag y) => !(x == y);
-
-            public int CompareTo(KickedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
-            int IComparable.CompareTo(object other) => other is KickedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-            public static bool operator <=(KickedTag x, KickedTag y) => x.CompareTo(y) <= 0;
-            public static bool operator <(KickedTag x, KickedTag y) => x.CompareTo(y) < 0;
-            public static bool operator >(KickedTag x, KickedTag y) => x.CompareTo(y) > 0;
-            public static bool operator >=(KickedTag x, KickedTag y) => x.CompareTo(y) >= 0;
-
-            public override int GetHashCode() => CmpTuple.GetHashCode();
-
-            public override string ToString() => $"(UserId: {UserId}, KickedBy: {KickedBy}, Date: {Date})";
-            
-            
-            void ITlSerializable.Serialize(BinaryWriter bw)
-            {
-                Write(UserId, bw, WriteInt);
-                Write(KickedBy, bw, WriteInt);
-                Write(Date, bw, WriteInt);
-            }
-            
-            internal static KickedTag DeserializeTag(BinaryReader br)
-            {
-                var userId = Read(br, ReadInt);
-                var kickedBy = Read(br, ReadInt);
-                var date = Read(br, ReadInt);
-                return new KickedTag(userId, kickedBy, date);
-            }
-        }
-
         public sealed class CreatorTag : ITlTypeTag, IEquatable<CreatorTag>, IComparable<CreatorTag>, IComparable
         {
             internal const uint TypeNumber = 0xe3e2e1f9;
@@ -324,15 +159,151 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class AdminTag : ITlTypeTag, IEquatable<AdminTag>, IComparable<AdminTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xa82fa898;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly bool CanEdit;
+            public readonly int UserId;
+            public readonly int InviterId;
+            public readonly int PromotedBy;
+            public readonly int Date;
+            public readonly T.ChannelAdminRights AdminRights;
+            
+            public AdminTag(
+                bool canEdit,
+                int userId,
+                int inviterId,
+                int promotedBy,
+                int date,
+                Some<T.ChannelAdminRights> adminRights
+            ) {
+                CanEdit = canEdit;
+                UserId = userId;
+                InviterId = inviterId;
+                PromotedBy = promotedBy;
+                Date = date;
+                AdminRights = adminRights;
+            }
+            
+            (bool, int, int, int, int, T.ChannelAdminRights) CmpTuple =>
+                (CanEdit, UserId, InviterId, PromotedBy, Date, AdminRights);
+
+            public bool Equals(AdminTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is AdminTag x && Equals(x);
+            public static bool operator ==(AdminTag x, AdminTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(AdminTag x, AdminTag y) => !(x == y);
+
+            public int CompareTo(AdminTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is AdminTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(AdminTag x, AdminTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(AdminTag x, AdminTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(AdminTag x, AdminTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(AdminTag x, AdminTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(CanEdit: {CanEdit}, UserId: {UserId}, InviterId: {InviterId}, PromotedBy: {PromotedBy}, Date: {Date}, AdminRights: {AdminRights})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(MaskBit(0, CanEdit), bw, WriteInt);
+                Write(UserId, bw, WriteInt);
+                Write(InviterId, bw, WriteInt);
+                Write(PromotedBy, bw, WriteInt);
+                Write(Date, bw, WriteInt);
+                Write(AdminRights, bw, WriteSerializable);
+            }
+            
+            internal static AdminTag DeserializeTag(BinaryReader br)
+            {
+                var flags = Read(br, ReadInt);
+                var canEdit = Read(br, ReadOption(flags, 0));
+                var userId = Read(br, ReadInt);
+                var inviterId = Read(br, ReadInt);
+                var promotedBy = Read(br, ReadInt);
+                var date = Read(br, ReadInt);
+                var adminRights = Read(br, T.ChannelAdminRights.Deserialize);
+                return new AdminTag(canEdit, userId, inviterId, promotedBy, date, adminRights);
+            }
+        }
+
+        public sealed class BannedTag : ITlTypeTag, IEquatable<BannedTag>, IComparable<BannedTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x222c1886;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly bool Left;
+            public readonly int UserId;
+            public readonly int KickedBy;
+            public readonly int Date;
+            public readonly T.ChannelBannedRights BannedRights;
+            
+            public BannedTag(
+                bool left,
+                int userId,
+                int kickedBy,
+                int date,
+                Some<T.ChannelBannedRights> bannedRights
+            ) {
+                Left = left;
+                UserId = userId;
+                KickedBy = kickedBy;
+                Date = date;
+                BannedRights = bannedRights;
+            }
+            
+            (bool, int, int, int, T.ChannelBannedRights) CmpTuple =>
+                (Left, UserId, KickedBy, Date, BannedRights);
+
+            public bool Equals(BannedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is BannedTag x && Equals(x);
+            public static bool operator ==(BannedTag x, BannedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(BannedTag x, BannedTag y) => !(x == y);
+
+            public int CompareTo(BannedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is BannedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(BannedTag x, BannedTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(BannedTag x, BannedTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(BannedTag x, BannedTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(BannedTag x, BannedTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Left: {Left}, UserId: {UserId}, KickedBy: {KickedBy}, Date: {Date}, BannedRights: {BannedRights})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(MaskBit(0, Left), bw, WriteInt);
+                Write(UserId, bw, WriteInt);
+                Write(KickedBy, bw, WriteInt);
+                Write(Date, bw, WriteInt);
+                Write(BannedRights, bw, WriteSerializable);
+            }
+            
+            internal static BannedTag DeserializeTag(BinaryReader br)
+            {
+                var flags = Read(br, ReadInt);
+                var left = Read(br, ReadOption(flags, 0));
+                var userId = Read(br, ReadInt);
+                var kickedBy = Read(br, ReadInt);
+                var date = Read(br, ReadInt);
+                var bannedRights = Read(br, T.ChannelBannedRights.Deserialize);
+                return new BannedTag(left, userId, kickedBy, date, bannedRights);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         ChannelParticipant(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
         public static explicit operator ChannelParticipant(Tag tag) => new ChannelParticipant(tag);
         public static explicit operator ChannelParticipant(SelfTag tag) => new ChannelParticipant(tag);
-        public static explicit operator ChannelParticipant(ModeratorTag tag) => new ChannelParticipant(tag);
-        public static explicit operator ChannelParticipant(EditorTag tag) => new ChannelParticipant(tag);
-        public static explicit operator ChannelParticipant(KickedTag tag) => new ChannelParticipant(tag);
         public static explicit operator ChannelParticipant(CreatorTag tag) => new ChannelParticipant(tag);
+        public static explicit operator ChannelParticipant(AdminTag tag) => new ChannelParticipant(tag);
+        public static explicit operator ChannelParticipant(BannedTag tag) => new ChannelParticipant(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -347,11 +318,10 @@ namespace TLSharp.Rpc.Types
             {
                 case Tag.TypeNumber: return (ChannelParticipant) Tag.DeserializeTag(br);
                 case SelfTag.TypeNumber: return (ChannelParticipant) SelfTag.DeserializeTag(br);
-                case ModeratorTag.TypeNumber: return (ChannelParticipant) ModeratorTag.DeserializeTag(br);
-                case EditorTag.TypeNumber: return (ChannelParticipant) EditorTag.DeserializeTag(br);
-                case KickedTag.TypeNumber: return (ChannelParticipant) KickedTag.DeserializeTag(br);
                 case CreatorTag.TypeNumber: return (ChannelParticipant) CreatorTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, SelfTag.TypeNumber, ModeratorTag.TypeNumber, EditorTag.TypeNumber, KickedTag.TypeNumber, CreatorTag.TypeNumber });
+                case AdminTag.TypeNumber: return (ChannelParticipant) AdminTag.DeserializeTag(br);
+                case BannedTag.TypeNumber: return (ChannelParticipant) BannedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, SelfTag.TypeNumber, CreatorTag.TypeNumber, AdminTag.TypeNumber, BannedTag.TypeNumber });
             }
         }
 
@@ -359,20 +329,18 @@ namespace TLSharp.Rpc.Types
             Func<T> _,
             Func<Tag, T> tag = null,
             Func<SelfTag, T> selfTag = null,
-            Func<ModeratorTag, T> moderatorTag = null,
-            Func<EditorTag, T> editorTag = null,
-            Func<KickedTag, T> kickedTag = null,
-            Func<CreatorTag, T> creatorTag = null
+            Func<CreatorTag, T> creatorTag = null,
+            Func<AdminTag, T> adminTag = null,
+            Func<BannedTag, T> bannedTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
             {
                 case Tag x when tag != null: return tag(x);
                 case SelfTag x when selfTag != null: return selfTag(x);
-                case ModeratorTag x when moderatorTag != null: return moderatorTag(x);
-                case EditorTag x when editorTag != null: return editorTag(x);
-                case KickedTag x when kickedTag != null: return kickedTag(x);
                 case CreatorTag x when creatorTag != null: return creatorTag(x);
+                case AdminTag x when adminTag != null: return adminTag(x);
+                case BannedTag x when bannedTag != null: return bannedTag(x);
                 default: return _();
             }
         }
@@ -380,18 +348,16 @@ namespace TLSharp.Rpc.Types
         public T Match<T>(
             Func<Tag, T> tag,
             Func<SelfTag, T> selfTag,
-            Func<ModeratorTag, T> moderatorTag,
-            Func<EditorTag, T> editorTag,
-            Func<KickedTag, T> kickedTag,
-            Func<CreatorTag, T> creatorTag
+            Func<CreatorTag, T> creatorTag,
+            Func<AdminTag, T> adminTag,
+            Func<BannedTag, T> bannedTag
         ) => Match(
             () => throw new Exception("WTF"),
             tag ?? throw new ArgumentNullException(nameof(tag)),
             selfTag ?? throw new ArgumentNullException(nameof(selfTag)),
-            moderatorTag ?? throw new ArgumentNullException(nameof(moderatorTag)),
-            editorTag ?? throw new ArgumentNullException(nameof(editorTag)),
-            kickedTag ?? throw new ArgumentNullException(nameof(kickedTag)),
-            creatorTag ?? throw new ArgumentNullException(nameof(creatorTag))
+            creatorTag ?? throw new ArgumentNullException(nameof(creatorTag)),
+            adminTag ?? throw new ArgumentNullException(nameof(adminTag)),
+            bannedTag ?? throw new ArgumentNullException(nameof(bannedTag))
         );
 
         int GetTagOrder()
@@ -400,10 +366,9 @@ namespace TLSharp.Rpc.Types
             {
                 case Tag _: return 0;
                 case SelfTag _: return 1;
-                case ModeratorTag _: return 2;
-                case EditorTag _: return 3;
-                case KickedTag _: return 4;
-                case CreatorTag _: return 5;
+                case CreatorTag _: return 2;
+                case AdminTag _: return 3;
+                case BannedTag _: return 4;
                 default: throw new Exception("WTF");
             }
         }

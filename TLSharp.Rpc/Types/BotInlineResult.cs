@@ -11,7 +11,7 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x9bebaeb9;
+            internal const uint TypeNumber = 0x11965f3a;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly string Id;
@@ -19,12 +19,8 @@ namespace TLSharp.Rpc.Types
             public readonly Option<string> Title;
             public readonly Option<string> Description;
             public readonly Option<string> Url;
-            public readonly Option<string> ThumbUrl;
-            public readonly Option<string> ContentUrl;
-            public readonly Option<string> ContentType;
-            public readonly Option<int> W;
-            public readonly Option<int> H;
-            public readonly Option<int> Duration;
+            public readonly Option<T.WebDocument> Thumb;
+            public readonly Option<T.WebDocument> Content;
             public readonly T.BotInlineMessage SendMessage;
             
             public Tag(
@@ -33,12 +29,8 @@ namespace TLSharp.Rpc.Types
                 Option<string> title,
                 Option<string> description,
                 Option<string> url,
-                Option<string> thumbUrl,
-                Option<string> contentUrl,
-                Option<string> contentType,
-                Option<int> w,
-                Option<int> h,
-                Option<int> duration,
+                Option<T.WebDocument> thumb,
+                Option<T.WebDocument> content,
                 Some<T.BotInlineMessage> sendMessage
             ) {
                 Id = id;
@@ -46,17 +38,13 @@ namespace TLSharp.Rpc.Types
                 Title = title;
                 Description = description;
                 Url = url;
-                ThumbUrl = thumbUrl;
-                ContentUrl = contentUrl;
-                ContentType = contentType;
-                W = w;
-                H = h;
-                Duration = duration;
+                Thumb = thumb;
+                Content = content;
                 SendMessage = sendMessage;
             }
             
-            (string, string, Option<string>, Option<string>, Option<string>, Option<string>, Option<string>, Option<string>, Option<int>, Option<int>, Option<int>, T.BotInlineMessage) CmpTuple =>
-                (Id, Type, Title, Description, Url, ThumbUrl, ContentUrl, ContentType, W, H, Duration, SendMessage);
+            (string, string, Option<string>, Option<string>, Option<string>, Option<T.WebDocument>, Option<T.WebDocument>, T.BotInlineMessage) CmpTuple =>
+                (Id, Type, Title, Description, Url, Thumb, Content, SendMessage);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -72,23 +60,19 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Id: {Id}, Type: {Type}, Title: {Title}, Description: {Description}, Url: {Url}, ThumbUrl: {ThumbUrl}, ContentUrl: {ContentUrl}, ContentType: {ContentType}, W: {W}, H: {H}, Duration: {Duration}, SendMessage: {SendMessage})";
+            public override string ToString() => $"(Id: {Id}, Type: {Type}, Title: {Title}, Description: {Description}, Url: {Url}, Thumb: {Thumb}, Content: {Content}, SendMessage: {SendMessage})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(1, Title) | MaskBit(2, Description) | MaskBit(3, Url) | MaskBit(4, ThumbUrl) | MaskBit(5, ContentUrl) | MaskBit(5, ContentType) | MaskBit(6, W) | MaskBit(6, H) | MaskBit(7, Duration), bw, WriteInt);
+                Write(MaskBit(1, Title) | MaskBit(2, Description) | MaskBit(3, Url) | MaskBit(4, Thumb) | MaskBit(5, Content), bw, WriteInt);
                 Write(Id, bw, WriteString);
                 Write(Type, bw, WriteString);
                 Write(Title, bw, WriteOption<string>(WriteString));
                 Write(Description, bw, WriteOption<string>(WriteString));
                 Write(Url, bw, WriteOption<string>(WriteString));
-                Write(ThumbUrl, bw, WriteOption<string>(WriteString));
-                Write(ContentUrl, bw, WriteOption<string>(WriteString));
-                Write(ContentType, bw, WriteOption<string>(WriteString));
-                Write(W, bw, WriteOption<int>(WriteInt));
-                Write(H, bw, WriteOption<int>(WriteInt));
-                Write(Duration, bw, WriteOption<int>(WriteInt));
+                Write(Thumb, bw, WriteOption<T.WebDocument>(WriteSerializable));
+                Write(Content, bw, WriteOption<T.WebDocument>(WriteSerializable));
                 Write(SendMessage, bw, WriteSerializable);
             }
             
@@ -100,14 +84,10 @@ namespace TLSharp.Rpc.Types
                 var title = Read(br, ReadOption(flags, 1, ReadString));
                 var description = Read(br, ReadOption(flags, 2, ReadString));
                 var url = Read(br, ReadOption(flags, 3, ReadString));
-                var thumbUrl = Read(br, ReadOption(flags, 4, ReadString));
-                var contentUrl = Read(br, ReadOption(flags, 5, ReadString));
-                var contentType = Read(br, ReadOption(flags, 5, ReadString));
-                var w = Read(br, ReadOption(flags, 6, ReadInt));
-                var h = Read(br, ReadOption(flags, 6, ReadInt));
-                var duration = Read(br, ReadOption(flags, 7, ReadInt));
+                var thumb = Read(br, ReadOption(flags, 4, T.WebDocument.Deserialize));
+                var content = Read(br, ReadOption(flags, 5, T.WebDocument.Deserialize));
                 var sendMessage = Read(br, T.BotInlineMessage.Deserialize);
-                return new Tag(id, type, title, description, url, thumbUrl, contentUrl, contentType, w, h, duration, sendMessage);
+                return new Tag(id, type, title, description, url, thumb, content, sendMessage);
             }
         }
 

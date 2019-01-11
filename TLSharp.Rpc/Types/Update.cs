@@ -2863,21 +2863,21 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DialogPinnedTag : ITlTypeTag, IEquatable<DialogPinnedTag>, IComparable<DialogPinnedTag>, IComparable
         {
-            internal const uint TypeNumber = 0xd711a2cc;
+            internal const uint TypeNumber = 0x19d27f3c;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Pinned;
-            public readonly T.Peer Peer;
+            public readonly T.DialogPeer Peer;
             
             public DialogPinnedTag(
                 bool pinned,
-                Some<T.Peer> peer
+                Some<T.DialogPeer> peer
             ) {
                 Pinned = pinned;
                 Peer = peer;
             }
             
-            (bool, T.Peer) CmpTuple =>
+            (bool, T.DialogPeer) CmpTuple =>
                 (Pinned, Peer);
 
             public bool Equals(DialogPinnedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -2907,25 +2907,25 @@ namespace TLSharp.Rpc.Types
             {
                 var flags = Read(br, ReadInt);
                 var pinned = Read(br, ReadOption(flags, 0));
-                var peer = Read(br, T.Peer.Deserialize);
+                var peer = Read(br, T.DialogPeer.Deserialize);
                 return new DialogPinnedTag(pinned, peer);
             }
         }
 
         public sealed class PinnedDialogsTag : ITlTypeTag, IEquatable<PinnedDialogsTag>, IComparable<PinnedDialogsTag>, IComparable
         {
-            internal const uint TypeNumber = 0xd8caf68d;
+            internal const uint TypeNumber = 0xea4cb65b;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly Option<Arr<T.Peer>> Order;
+            public readonly Option<Arr<T.DialogPeer>> Order;
             
             public PinnedDialogsTag(
-                Option<Arr<T.Peer>> order
+                Option<Arr<T.DialogPeer>> order
             ) {
                 Order = order;
             }
             
-            Option<Arr<T.Peer>> CmpTuple =>
+            Option<Arr<T.DialogPeer>> CmpTuple =>
                 Order;
 
             public bool Equals(PinnedDialogsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -2948,13 +2948,13 @@ namespace TLSharp.Rpc.Types
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(MaskBit(0, Order), bw, WriteInt);
-                Write(Order, bw, WriteOption<Arr<T.Peer>>(WriteVector<T.Peer>(WriteSerializable)));
+                Write(Order, bw, WriteOption<Arr<T.DialogPeer>>(WriteVector<T.DialogPeer>(WriteSerializable)));
             }
             
             internal static PinnedDialogsTag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
-                var order = Read(br, ReadOption(flags, 0, ReadVector(T.Peer.Deserialize)));
+                var order = Read(br, ReadOption(flags, 0, ReadVector(T.DialogPeer.Deserialize)));
                 return new PinnedDialogsTag(order);
             }
         }
@@ -3241,6 +3241,337 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class LangPackTooLongTag : ITlTypeTag, IEquatable<LangPackTooLongTag>, IComparable<LangPackTooLongTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x10c2404b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public LangPackTooLongTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(LangPackTooLongTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is LangPackTooLongTag x && Equals(x);
+            public static bool operator ==(LangPackTooLongTag x, LangPackTooLongTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(LangPackTooLongTag x, LangPackTooLongTag y) => !(x == y);
+
+            public int CompareTo(LangPackTooLongTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is LangPackTooLongTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(LangPackTooLongTag x, LangPackTooLongTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(LangPackTooLongTag x, LangPackTooLongTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(LangPackTooLongTag x, LangPackTooLongTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(LangPackTooLongTag x, LangPackTooLongTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static LangPackTooLongTag DeserializeTag(BinaryReader br)
+            {
+
+                return new LangPackTooLongTag();
+            }
+        }
+
+        public sealed class LangPackTag : ITlTypeTag, IEquatable<LangPackTag>, IComparable<LangPackTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x56022f4d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly T.LangPackDifference Difference;
+            
+            public LangPackTag(
+                Some<T.LangPackDifference> difference
+            ) {
+                Difference = difference;
+            }
+            
+            T.LangPackDifference CmpTuple =>
+                Difference;
+
+            public bool Equals(LangPackTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is LangPackTag x && Equals(x);
+            public static bool operator ==(LangPackTag x, LangPackTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(LangPackTag x, LangPackTag y) => !(x == y);
+
+            public int CompareTo(LangPackTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is LangPackTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(LangPackTag x, LangPackTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(LangPackTag x, LangPackTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(LangPackTag x, LangPackTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(LangPackTag x, LangPackTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Difference: {Difference})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Difference, bw, WriteSerializable);
+            }
+            
+            internal static LangPackTag DeserializeTag(BinaryReader br)
+            {
+                var difference = Read(br, T.LangPackDifference.Deserialize);
+                return new LangPackTag(difference);
+            }
+        }
+
+        public sealed class FavedStickersTag : ITlTypeTag, IEquatable<FavedStickersTag>, IComparable<FavedStickersTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xe511996d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public FavedStickersTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(FavedStickersTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is FavedStickersTag x && Equals(x);
+            public static bool operator ==(FavedStickersTag x, FavedStickersTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(FavedStickersTag x, FavedStickersTag y) => !(x == y);
+
+            public int CompareTo(FavedStickersTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is FavedStickersTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(FavedStickersTag x, FavedStickersTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(FavedStickersTag x, FavedStickersTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(FavedStickersTag x, FavedStickersTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(FavedStickersTag x, FavedStickersTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static FavedStickersTag DeserializeTag(BinaryReader br)
+            {
+
+                return new FavedStickersTag();
+            }
+        }
+
+        public sealed class ChannelReadMessagesContentsTag : ITlTypeTag, IEquatable<ChannelReadMessagesContentsTag>, IComparable<ChannelReadMessagesContentsTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x89893b45;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly int ChannelId;
+            public readonly Arr<int> Messages;
+            
+            public ChannelReadMessagesContentsTag(
+                int channelId,
+                Some<Arr<int>> messages
+            ) {
+                ChannelId = channelId;
+                Messages = messages;
+            }
+            
+            (int, Arr<int>) CmpTuple =>
+                (ChannelId, Messages);
+
+            public bool Equals(ChannelReadMessagesContentsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is ChannelReadMessagesContentsTag x && Equals(x);
+            public static bool operator ==(ChannelReadMessagesContentsTag x, ChannelReadMessagesContentsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ChannelReadMessagesContentsTag x, ChannelReadMessagesContentsTag y) => !(x == y);
+
+            public int CompareTo(ChannelReadMessagesContentsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is ChannelReadMessagesContentsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ChannelReadMessagesContentsTag x, ChannelReadMessagesContentsTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ChannelReadMessagesContentsTag x, ChannelReadMessagesContentsTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ChannelReadMessagesContentsTag x, ChannelReadMessagesContentsTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ChannelReadMessagesContentsTag x, ChannelReadMessagesContentsTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(ChannelId: {ChannelId}, Messages: {Messages})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(ChannelId, bw, WriteInt);
+                Write(Messages, bw, WriteVector<int>(WriteInt));
+            }
+            
+            internal static ChannelReadMessagesContentsTag DeserializeTag(BinaryReader br)
+            {
+                var channelId = Read(br, ReadInt);
+                var messages = Read(br, ReadVector(ReadInt));
+                return new ChannelReadMessagesContentsTag(channelId, messages);
+            }
+        }
+
+        public sealed class ContactsResetTag : ITlTypeTag, IEquatable<ContactsResetTag>, IComparable<ContactsResetTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x7084a7be;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public ContactsResetTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(ContactsResetTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is ContactsResetTag x && Equals(x);
+            public static bool operator ==(ContactsResetTag x, ContactsResetTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ContactsResetTag x, ContactsResetTag y) => !(x == y);
+
+            public int CompareTo(ContactsResetTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is ContactsResetTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ContactsResetTag x, ContactsResetTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ContactsResetTag x, ContactsResetTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ContactsResetTag x, ContactsResetTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ContactsResetTag x, ContactsResetTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static ContactsResetTag DeserializeTag(BinaryReader br)
+            {
+
+                return new ContactsResetTag();
+            }
+        }
+
+        public sealed class ChannelAvailableMessagesTag : ITlTypeTag, IEquatable<ChannelAvailableMessagesTag>, IComparable<ChannelAvailableMessagesTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x70db6837;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly int ChannelId;
+            public readonly int AvailableMinId;
+            
+            public ChannelAvailableMessagesTag(
+                int channelId,
+                int availableMinId
+            ) {
+                ChannelId = channelId;
+                AvailableMinId = availableMinId;
+            }
+            
+            (int, int) CmpTuple =>
+                (ChannelId, AvailableMinId);
+
+            public bool Equals(ChannelAvailableMessagesTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is ChannelAvailableMessagesTag x && Equals(x);
+            public static bool operator ==(ChannelAvailableMessagesTag x, ChannelAvailableMessagesTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ChannelAvailableMessagesTag x, ChannelAvailableMessagesTag y) => !(x == y);
+
+            public int CompareTo(ChannelAvailableMessagesTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is ChannelAvailableMessagesTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ChannelAvailableMessagesTag x, ChannelAvailableMessagesTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ChannelAvailableMessagesTag x, ChannelAvailableMessagesTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ChannelAvailableMessagesTag x, ChannelAvailableMessagesTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ChannelAvailableMessagesTag x, ChannelAvailableMessagesTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(ChannelId: {ChannelId}, AvailableMinId: {AvailableMinId})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(ChannelId, bw, WriteInt);
+                Write(AvailableMinId, bw, WriteInt);
+            }
+            
+            internal static ChannelAvailableMessagesTag DeserializeTag(BinaryReader br)
+            {
+                var channelId = Read(br, ReadInt);
+                var availableMinId = Read(br, ReadInt);
+                return new ChannelAvailableMessagesTag(channelId, availableMinId);
+            }
+        }
+
+        public sealed class DialogUnreadMarkTag : ITlTypeTag, IEquatable<DialogUnreadMarkTag>, IComparable<DialogUnreadMarkTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xe16459c3;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly bool Unread;
+            public readonly T.DialogPeer Peer;
+            
+            public DialogUnreadMarkTag(
+                bool unread,
+                Some<T.DialogPeer> peer
+            ) {
+                Unread = unread;
+                Peer = peer;
+            }
+            
+            (bool, T.DialogPeer) CmpTuple =>
+                (Unread, Peer);
+
+            public bool Equals(DialogUnreadMarkTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is DialogUnreadMarkTag x && Equals(x);
+            public static bool operator ==(DialogUnreadMarkTag x, DialogUnreadMarkTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(DialogUnreadMarkTag x, DialogUnreadMarkTag y) => !(x == y);
+
+            public int CompareTo(DialogUnreadMarkTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is DialogUnreadMarkTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(DialogUnreadMarkTag x, DialogUnreadMarkTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(DialogUnreadMarkTag x, DialogUnreadMarkTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(DialogUnreadMarkTag x, DialogUnreadMarkTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(DialogUnreadMarkTag x, DialogUnreadMarkTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Unread: {Unread}, Peer: {Peer})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(MaskBit(0, Unread), bw, WriteInt);
+                Write(Peer, bw, WriteSerializable);
+            }
+            
+            internal static DialogUnreadMarkTag DeserializeTag(BinaryReader br)
+            {
+                var flags = Read(br, ReadInt);
+                var unread = Read(br, ReadOption(flags, 0));
+                var peer = Read(br, T.DialogPeer.Deserialize);
+                return new DialogUnreadMarkTag(unread, peer);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         Update(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -3304,6 +3635,13 @@ namespace TLSharp.Rpc.Types
         public static explicit operator Update(BotShippingQueryTag tag) => new Update(tag);
         public static explicit operator Update(BotPrecheckoutQueryTag tag) => new Update(tag);
         public static explicit operator Update(PhoneCallTag tag) => new Update(tag);
+        public static explicit operator Update(LangPackTooLongTag tag) => new Update(tag);
+        public static explicit operator Update(LangPackTag tag) => new Update(tag);
+        public static explicit operator Update(FavedStickersTag tag) => new Update(tag);
+        public static explicit operator Update(ChannelReadMessagesContentsTag tag) => new Update(tag);
+        public static explicit operator Update(ContactsResetTag tag) => new Update(tag);
+        public static explicit operator Update(ChannelAvailableMessagesTag tag) => new Update(tag);
+        public static explicit operator Update(DialogUnreadMarkTag tag) => new Update(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -3376,7 +3714,14 @@ namespace TLSharp.Rpc.Types
                 case BotShippingQueryTag.TypeNumber: return (Update) BotShippingQueryTag.DeserializeTag(br);
                 case BotPrecheckoutQueryTag.TypeNumber: return (Update) BotPrecheckoutQueryTag.DeserializeTag(br);
                 case PhoneCallTag.TypeNumber: return (Update) PhoneCallTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { NewMessageTag.TypeNumber, MessageIdTag.TypeNumber, DeleteMessagesTag.TypeNumber, UserTypingTag.TypeNumber, ChatUserTypingTag.TypeNumber, ChatParticipantsTag.TypeNumber, UserStatusTag.TypeNumber, UserNameTag.TypeNumber, UserPhotoTag.TypeNumber, ContactRegisteredTag.TypeNumber, ContactLinkTag.TypeNumber, NewEncryptedMessageTag.TypeNumber, EncryptedChatTypingTag.TypeNumber, EncryptionTag.TypeNumber, EncryptedMessagesReadTag.TypeNumber, ChatParticipantAddTag.TypeNumber, ChatParticipantDeleteTag.TypeNumber, DcOptionsTag.TypeNumber, UserBlockedTag.TypeNumber, NotifySettingsTag.TypeNumber, ServiceNotificationTag.TypeNumber, PrivacyTag.TypeNumber, UserPhoneTag.TypeNumber, ReadHistoryInboxTag.TypeNumber, ReadHistoryOutboxTag.TypeNumber, WebPageTag.TypeNumber, ReadMessagesContentsTag.TypeNumber, ChannelTooLongTag.TypeNumber, ChannelTag.TypeNumber, NewChannelMessageTag.TypeNumber, ReadChannelInboxTag.TypeNumber, DeleteChannelMessagesTag.TypeNumber, ChannelMessageViewsTag.TypeNumber, ChatAdminsTag.TypeNumber, ChatParticipantAdminTag.TypeNumber, NewStickerSetTag.TypeNumber, StickerSetsOrderTag.TypeNumber, StickerSetsTag.TypeNumber, SavedGifsTag.TypeNumber, BotInlineQueryTag.TypeNumber, BotInlineSendTag.TypeNumber, EditChannelMessageTag.TypeNumber, ChannelPinnedMessageTag.TypeNumber, BotCallbackQueryTag.TypeNumber, EditMessageTag.TypeNumber, InlineBotCallbackQueryTag.TypeNumber, ReadChannelOutboxTag.TypeNumber, DraftMessageTag.TypeNumber, ReadFeaturedStickersTag.TypeNumber, RecentStickersTag.TypeNumber, ConfigTag.TypeNumber, PtsChangedTag.TypeNumber, ChannelWebPageTag.TypeNumber, DialogPinnedTag.TypeNumber, PinnedDialogsTag.TypeNumber, BotWebhookJsonTag.TypeNumber, BotWebhookJsonQueryTag.TypeNumber, BotShippingQueryTag.TypeNumber, BotPrecheckoutQueryTag.TypeNumber, PhoneCallTag.TypeNumber });
+                case LangPackTooLongTag.TypeNumber: return (Update) LangPackTooLongTag.DeserializeTag(br);
+                case LangPackTag.TypeNumber: return (Update) LangPackTag.DeserializeTag(br);
+                case FavedStickersTag.TypeNumber: return (Update) FavedStickersTag.DeserializeTag(br);
+                case ChannelReadMessagesContentsTag.TypeNumber: return (Update) ChannelReadMessagesContentsTag.DeserializeTag(br);
+                case ContactsResetTag.TypeNumber: return (Update) ContactsResetTag.DeserializeTag(br);
+                case ChannelAvailableMessagesTag.TypeNumber: return (Update) ChannelAvailableMessagesTag.DeserializeTag(br);
+                case DialogUnreadMarkTag.TypeNumber: return (Update) DialogUnreadMarkTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { NewMessageTag.TypeNumber, MessageIdTag.TypeNumber, DeleteMessagesTag.TypeNumber, UserTypingTag.TypeNumber, ChatUserTypingTag.TypeNumber, ChatParticipantsTag.TypeNumber, UserStatusTag.TypeNumber, UserNameTag.TypeNumber, UserPhotoTag.TypeNumber, ContactRegisteredTag.TypeNumber, ContactLinkTag.TypeNumber, NewEncryptedMessageTag.TypeNumber, EncryptedChatTypingTag.TypeNumber, EncryptionTag.TypeNumber, EncryptedMessagesReadTag.TypeNumber, ChatParticipantAddTag.TypeNumber, ChatParticipantDeleteTag.TypeNumber, DcOptionsTag.TypeNumber, UserBlockedTag.TypeNumber, NotifySettingsTag.TypeNumber, ServiceNotificationTag.TypeNumber, PrivacyTag.TypeNumber, UserPhoneTag.TypeNumber, ReadHistoryInboxTag.TypeNumber, ReadHistoryOutboxTag.TypeNumber, WebPageTag.TypeNumber, ReadMessagesContentsTag.TypeNumber, ChannelTooLongTag.TypeNumber, ChannelTag.TypeNumber, NewChannelMessageTag.TypeNumber, ReadChannelInboxTag.TypeNumber, DeleteChannelMessagesTag.TypeNumber, ChannelMessageViewsTag.TypeNumber, ChatAdminsTag.TypeNumber, ChatParticipantAdminTag.TypeNumber, NewStickerSetTag.TypeNumber, StickerSetsOrderTag.TypeNumber, StickerSetsTag.TypeNumber, SavedGifsTag.TypeNumber, BotInlineQueryTag.TypeNumber, BotInlineSendTag.TypeNumber, EditChannelMessageTag.TypeNumber, ChannelPinnedMessageTag.TypeNumber, BotCallbackQueryTag.TypeNumber, EditMessageTag.TypeNumber, InlineBotCallbackQueryTag.TypeNumber, ReadChannelOutboxTag.TypeNumber, DraftMessageTag.TypeNumber, ReadFeaturedStickersTag.TypeNumber, RecentStickersTag.TypeNumber, ConfigTag.TypeNumber, PtsChangedTag.TypeNumber, ChannelWebPageTag.TypeNumber, DialogPinnedTag.TypeNumber, PinnedDialogsTag.TypeNumber, BotWebhookJsonTag.TypeNumber, BotWebhookJsonQueryTag.TypeNumber, BotShippingQueryTag.TypeNumber, BotPrecheckoutQueryTag.TypeNumber, PhoneCallTag.TypeNumber, LangPackTooLongTag.TypeNumber, LangPackTag.TypeNumber, FavedStickersTag.TypeNumber, ChannelReadMessagesContentsTag.TypeNumber, ContactsResetTag.TypeNumber, ChannelAvailableMessagesTag.TypeNumber, DialogUnreadMarkTag.TypeNumber });
             }
         }
 
@@ -3441,7 +3786,14 @@ namespace TLSharp.Rpc.Types
             Func<BotWebhookJsonQueryTag, T> botWebhookJsonQueryTag = null,
             Func<BotShippingQueryTag, T> botShippingQueryTag = null,
             Func<BotPrecheckoutQueryTag, T> botPrecheckoutQueryTag = null,
-            Func<PhoneCallTag, T> phoneCallTag = null
+            Func<PhoneCallTag, T> phoneCallTag = null,
+            Func<LangPackTooLongTag, T> langPackTooLongTag = null,
+            Func<LangPackTag, T> langPackTag = null,
+            Func<FavedStickersTag, T> favedStickersTag = null,
+            Func<ChannelReadMessagesContentsTag, T> channelReadMessagesContentsTag = null,
+            Func<ContactsResetTag, T> contactsResetTag = null,
+            Func<ChannelAvailableMessagesTag, T> channelAvailableMessagesTag = null,
+            Func<DialogUnreadMarkTag, T> dialogUnreadMarkTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -3506,6 +3858,13 @@ namespace TLSharp.Rpc.Types
                 case BotShippingQueryTag x when botShippingQueryTag != null: return botShippingQueryTag(x);
                 case BotPrecheckoutQueryTag x when botPrecheckoutQueryTag != null: return botPrecheckoutQueryTag(x);
                 case PhoneCallTag x when phoneCallTag != null: return phoneCallTag(x);
+                case LangPackTooLongTag x when langPackTooLongTag != null: return langPackTooLongTag(x);
+                case LangPackTag x when langPackTag != null: return langPackTag(x);
+                case FavedStickersTag x when favedStickersTag != null: return favedStickersTag(x);
+                case ChannelReadMessagesContentsTag x when channelReadMessagesContentsTag != null: return channelReadMessagesContentsTag(x);
+                case ContactsResetTag x when contactsResetTag != null: return contactsResetTag(x);
+                case ChannelAvailableMessagesTag x when channelAvailableMessagesTag != null: return channelAvailableMessagesTag(x);
+                case DialogUnreadMarkTag x when dialogUnreadMarkTag != null: return dialogUnreadMarkTag(x);
                 default: return _();
             }
         }
@@ -3570,7 +3929,14 @@ namespace TLSharp.Rpc.Types
             Func<BotWebhookJsonQueryTag, T> botWebhookJsonQueryTag,
             Func<BotShippingQueryTag, T> botShippingQueryTag,
             Func<BotPrecheckoutQueryTag, T> botPrecheckoutQueryTag,
-            Func<PhoneCallTag, T> phoneCallTag
+            Func<PhoneCallTag, T> phoneCallTag,
+            Func<LangPackTooLongTag, T> langPackTooLongTag,
+            Func<LangPackTag, T> langPackTag,
+            Func<FavedStickersTag, T> favedStickersTag,
+            Func<ChannelReadMessagesContentsTag, T> channelReadMessagesContentsTag,
+            Func<ContactsResetTag, T> contactsResetTag,
+            Func<ChannelAvailableMessagesTag, T> channelAvailableMessagesTag,
+            Func<DialogUnreadMarkTag, T> dialogUnreadMarkTag
         ) => Match(
             () => throw new Exception("WTF"),
             newMessageTag ?? throw new ArgumentNullException(nameof(newMessageTag)),
@@ -3632,7 +3998,14 @@ namespace TLSharp.Rpc.Types
             botWebhookJsonQueryTag ?? throw new ArgumentNullException(nameof(botWebhookJsonQueryTag)),
             botShippingQueryTag ?? throw new ArgumentNullException(nameof(botShippingQueryTag)),
             botPrecheckoutQueryTag ?? throw new ArgumentNullException(nameof(botPrecheckoutQueryTag)),
-            phoneCallTag ?? throw new ArgumentNullException(nameof(phoneCallTag))
+            phoneCallTag ?? throw new ArgumentNullException(nameof(phoneCallTag)),
+            langPackTooLongTag ?? throw new ArgumentNullException(nameof(langPackTooLongTag)),
+            langPackTag ?? throw new ArgumentNullException(nameof(langPackTag)),
+            favedStickersTag ?? throw new ArgumentNullException(nameof(favedStickersTag)),
+            channelReadMessagesContentsTag ?? throw new ArgumentNullException(nameof(channelReadMessagesContentsTag)),
+            contactsResetTag ?? throw new ArgumentNullException(nameof(contactsResetTag)),
+            channelAvailableMessagesTag ?? throw new ArgumentNullException(nameof(channelAvailableMessagesTag)),
+            dialogUnreadMarkTag ?? throw new ArgumentNullException(nameof(dialogUnreadMarkTag))
         );
 
         int GetTagOrder()
@@ -3699,6 +4072,13 @@ namespace TLSharp.Rpc.Types
                 case BotShippingQueryTag _: return 57;
                 case BotPrecheckoutQueryTag _: return 58;
                 case PhoneCallTag _: return 59;
+                case LangPackTooLongTag _: return 60;
+                case LangPackTag _: return 61;
+                case FavedStickersTag _: return 62;
+                case ChannelReadMessagesContentsTag _: return 63;
+                case ContactsResetTag _: return 64;
+                case ChannelAvailableMessagesTag _: return 65;
+                case DialogUnreadMarkTag _: return 66;
                 default: throw new Exception("WTF");
             }
         }

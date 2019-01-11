@@ -11,18 +11,21 @@ namespace TLSharp.Rpc.Functions.Channels
     {
         public T.InputChannel Channel { get; }
         public int Id { get; }
+        public bool Grouped { get; }
         
         public ExportMessageLink(
             Some<T.InputChannel> channel,
-            int id
+            int id,
+            bool grouped
         ) {
             Channel = channel;
             Id = id;
+            Grouped = grouped;
         }
         
         
-        (T.InputChannel, int) CmpTuple =>
-            (Channel, Id);
+        (T.InputChannel, int, bool) CmpTuple =>
+            (Channel, Id, Grouped);
 
         public bool Equals(ExportMessageLink other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ExportMessageLink x && Equals(x);
@@ -38,13 +41,14 @@ namespace TLSharp.Rpc.Functions.Channels
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Channel: {Channel}, Id: {Id})";
+        public override string ToString() => $"(Channel: {Channel}, Id: {Id}, Grouped: {Grouped})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0xc846d22d);
+            WriteUint(bw, 0xceb77163);
             Write(Channel, bw, WriteSerializable);
             Write(Id, bw, WriteInt);
+            Write(Grouped, bw, WriteBool);
         }
         
         T.ExportedMessageLink ITlFunc<T.ExportedMessageLink>.DeserializeResult(BinaryReader br) =>

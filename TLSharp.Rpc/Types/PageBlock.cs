@@ -1074,6 +1074,101 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class ChannelTag : ITlTypeTag, IEquatable<ChannelTag>, IComparable<ChannelTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xef1751b5;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly T.Chat Channel;
+            
+            public ChannelTag(
+                Some<T.Chat> channel
+            ) {
+                Channel = channel;
+            }
+            
+            T.Chat CmpTuple =>
+                Channel;
+
+            public bool Equals(ChannelTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is ChannelTag x && Equals(x);
+            public static bool operator ==(ChannelTag x, ChannelTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ChannelTag x, ChannelTag y) => !(x == y);
+
+            public int CompareTo(ChannelTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is ChannelTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ChannelTag x, ChannelTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ChannelTag x, ChannelTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ChannelTag x, ChannelTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ChannelTag x, ChannelTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Channel: {Channel})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Channel, bw, WriteSerializable);
+            }
+            
+            internal static ChannelTag DeserializeTag(BinaryReader br)
+            {
+                var channel = Read(br, T.Chat.Deserialize);
+                return new ChannelTag(channel);
+            }
+        }
+
+        public sealed class AudioTag : ITlTypeTag, IEquatable<AudioTag>, IComparable<AudioTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x31b81a7f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly long AudioId;
+            public readonly T.RichText Caption;
+            
+            public AudioTag(
+                long audioId,
+                Some<T.RichText> caption
+            ) {
+                AudioId = audioId;
+                Caption = caption;
+            }
+            
+            (long, T.RichText) CmpTuple =>
+                (AudioId, Caption);
+
+            public bool Equals(AudioTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is AudioTag x && Equals(x);
+            public static bool operator ==(AudioTag x, AudioTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(AudioTag x, AudioTag y) => !(x == y);
+
+            public int CompareTo(AudioTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is AudioTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(AudioTag x, AudioTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(AudioTag x, AudioTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(AudioTag x, AudioTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(AudioTag x, AudioTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(AudioId: {AudioId}, Caption: {Caption})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(AudioId, bw, WriteLong);
+                Write(Caption, bw, WriteSerializable);
+            }
+            
+            internal static AudioTag DeserializeTag(BinaryReader br)
+            {
+                var audioId = Read(br, ReadLong);
+                var caption = Read(br, T.RichText.Deserialize);
+                return new AudioTag(audioId, caption);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         PageBlock(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -1098,6 +1193,8 @@ namespace TLSharp.Rpc.Types
         public static explicit operator PageBlock(EmbedPostTag tag) => new PageBlock(tag);
         public static explicit operator PageBlock(CollageTag tag) => new PageBlock(tag);
         public static explicit operator PageBlock(SlideshowTag tag) => new PageBlock(tag);
+        public static explicit operator PageBlock(ChannelTag tag) => new PageBlock(tag);
+        public static explicit operator PageBlock(AudioTag tag) => new PageBlock(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -1131,7 +1228,9 @@ namespace TLSharp.Rpc.Types
                 case EmbedPostTag.TypeNumber: return (PageBlock) EmbedPostTag.DeserializeTag(br);
                 case CollageTag.TypeNumber: return (PageBlock) CollageTag.DeserializeTag(br);
                 case SlideshowTag.TypeNumber: return (PageBlock) SlideshowTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnsupportedTag.TypeNumber, TitleTag.TypeNumber, SubtitleTag.TypeNumber, AuthorDateTag.TypeNumber, HeaderTag.TypeNumber, SubheaderTag.TypeNumber, ParagraphTag.TypeNumber, PreformattedTag.TypeNumber, FooterTag.TypeNumber, DividerTag.TypeNumber, AnchorTag.TypeNumber, ListTag.TypeNumber, BlockquoteTag.TypeNumber, PullquoteTag.TypeNumber, PhotoTag.TypeNumber, VideoTag.TypeNumber, CoverTag.TypeNumber, EmbedTag.TypeNumber, EmbedPostTag.TypeNumber, CollageTag.TypeNumber, SlideshowTag.TypeNumber });
+                case ChannelTag.TypeNumber: return (PageBlock) ChannelTag.DeserializeTag(br);
+                case AudioTag.TypeNumber: return (PageBlock) AudioTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnsupportedTag.TypeNumber, TitleTag.TypeNumber, SubtitleTag.TypeNumber, AuthorDateTag.TypeNumber, HeaderTag.TypeNumber, SubheaderTag.TypeNumber, ParagraphTag.TypeNumber, PreformattedTag.TypeNumber, FooterTag.TypeNumber, DividerTag.TypeNumber, AnchorTag.TypeNumber, ListTag.TypeNumber, BlockquoteTag.TypeNumber, PullquoteTag.TypeNumber, PhotoTag.TypeNumber, VideoTag.TypeNumber, CoverTag.TypeNumber, EmbedTag.TypeNumber, EmbedPostTag.TypeNumber, CollageTag.TypeNumber, SlideshowTag.TypeNumber, ChannelTag.TypeNumber, AudioTag.TypeNumber });
             }
         }
 
@@ -1157,7 +1256,9 @@ namespace TLSharp.Rpc.Types
             Func<EmbedTag, T> embedTag = null,
             Func<EmbedPostTag, T> embedPostTag = null,
             Func<CollageTag, T> collageTag = null,
-            Func<SlideshowTag, T> slideshowTag = null
+            Func<SlideshowTag, T> slideshowTag = null,
+            Func<ChannelTag, T> channelTag = null,
+            Func<AudioTag, T> audioTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -1183,6 +1284,8 @@ namespace TLSharp.Rpc.Types
                 case EmbedPostTag x when embedPostTag != null: return embedPostTag(x);
                 case CollageTag x when collageTag != null: return collageTag(x);
                 case SlideshowTag x when slideshowTag != null: return slideshowTag(x);
+                case ChannelTag x when channelTag != null: return channelTag(x);
+                case AudioTag x when audioTag != null: return audioTag(x);
                 default: return _();
             }
         }
@@ -1208,7 +1311,9 @@ namespace TLSharp.Rpc.Types
             Func<EmbedTag, T> embedTag,
             Func<EmbedPostTag, T> embedPostTag,
             Func<CollageTag, T> collageTag,
-            Func<SlideshowTag, T> slideshowTag
+            Func<SlideshowTag, T> slideshowTag,
+            Func<ChannelTag, T> channelTag,
+            Func<AudioTag, T> audioTag
         ) => Match(
             () => throw new Exception("WTF"),
             unsupportedTag ?? throw new ArgumentNullException(nameof(unsupportedTag)),
@@ -1231,7 +1336,9 @@ namespace TLSharp.Rpc.Types
             embedTag ?? throw new ArgumentNullException(nameof(embedTag)),
             embedPostTag ?? throw new ArgumentNullException(nameof(embedPostTag)),
             collageTag ?? throw new ArgumentNullException(nameof(collageTag)),
-            slideshowTag ?? throw new ArgumentNullException(nameof(slideshowTag))
+            slideshowTag ?? throw new ArgumentNullException(nameof(slideshowTag)),
+            channelTag ?? throw new ArgumentNullException(nameof(channelTag)),
+            audioTag ?? throw new ArgumentNullException(nameof(audioTag))
         );
 
         int GetTagOrder()
@@ -1259,6 +1366,8 @@ namespace TLSharp.Rpc.Types
                 case EmbedPostTag _: return 18;
                 case CollageTag _: return 19;
                 case SlideshowTag _: return 20;
+                case ChannelTag _: return 21;
+                case AudioTag _: return 22;
                 default: throw new Exception("WTF");
             }
         }

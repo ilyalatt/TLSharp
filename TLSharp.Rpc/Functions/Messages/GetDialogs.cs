@@ -14,24 +14,27 @@ namespace TLSharp.Rpc.Functions.Messages
         public int OffsetId { get; }
         public T.InputPeer OffsetPeer { get; }
         public int Limit { get; }
+        public int Hash { get; }
         
         public GetDialogs(
             bool excludePinned,
             int offsetDate,
             int offsetId,
             Some<T.InputPeer> offsetPeer,
-            int limit
+            int limit,
+            int hash
         ) {
             ExcludePinned = excludePinned;
             OffsetDate = offsetDate;
             OffsetId = offsetId;
             OffsetPeer = offsetPeer;
             Limit = limit;
+            Hash = hash;
         }
         
         
-        (bool, int, int, T.InputPeer, int) CmpTuple =>
-            (ExcludePinned, OffsetDate, OffsetId, OffsetPeer, Limit);
+        (bool, int, int, T.InputPeer, int, int) CmpTuple =>
+            (ExcludePinned, OffsetDate, OffsetId, OffsetPeer, Limit, Hash);
 
         public bool Equals(GetDialogs other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetDialogs x && Equals(x);
@@ -47,16 +50,17 @@ namespace TLSharp.Rpc.Functions.Messages
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(ExcludePinned: {ExcludePinned}, OffsetDate: {OffsetDate}, OffsetId: {OffsetId}, OffsetPeer: {OffsetPeer}, Limit: {Limit})";
+        public override string ToString() => $"(ExcludePinned: {ExcludePinned}, OffsetDate: {OffsetDate}, OffsetId: {OffsetId}, OffsetPeer: {OffsetPeer}, Limit: {Limit}, Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x191ba9c5);
+            WriteUint(bw, 0xb098aee6);
             Write(MaskBit(0, ExcludePinned), bw, WriteInt);
             Write(OffsetDate, bw, WriteInt);
             Write(OffsetId, bw, WriteInt);
             Write(OffsetPeer, bw, WriteSerializable);
             Write(Limit, bw, WriteInt);
+            Write(Hash, bw, WriteInt);
         }
         
         T.Messages.Dialogs ITlFunc<T.Messages.Dialogs>.DeserializeResult(BinaryReader br) =>

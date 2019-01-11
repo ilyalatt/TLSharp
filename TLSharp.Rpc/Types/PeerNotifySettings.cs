@@ -9,66 +9,21 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class PeerNotifySettings : ITlType, IEquatable<PeerNotifySettings>, IComparable<PeerNotifySettings>, IComparable
     {
-        public sealed class EmptyTag : ITlTypeTag, IEquatable<EmptyTag>, IComparable<EmptyTag>, IComparable
-        {
-            internal const uint TypeNumber = 0x70a68512;
-            uint ITlTypeTag.TypeNumber => TypeNumber;
-            
-
-            
-            public EmptyTag(
-
-            ) {
-
-            }
-            
-            Unit CmpTuple =>
-                Unit.Default;
-
-            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
-            public override bool Equals(object other) => other is EmptyTag x && Equals(x);
-            public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
-            public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
-
-            public int CompareTo(EmptyTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
-            int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-            public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
-            public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
-            public static bool operator >(EmptyTag x, EmptyTag y) => x.CompareTo(y) > 0;
-            public static bool operator >=(EmptyTag x, EmptyTag y) => x.CompareTo(y) >= 0;
-
-            public override int GetHashCode() => CmpTuple.GetHashCode();
-
-            public override string ToString() => $"()";
-            
-            
-            void ITlSerializable.Serialize(BinaryWriter bw)
-            {
-
-            }
-            
-            internal static EmptyTag DeserializeTag(BinaryReader br)
-            {
-
-                return new EmptyTag();
-            }
-        }
-
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x9acda4c0;
+            internal const uint TypeNumber = 0xaf509d20;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly bool ShowPreviews;
-            public readonly bool Silent;
-            public readonly int MuteUntil;
-            public readonly string Sound;
+            public readonly Option<bool> ShowPreviews;
+            public readonly Option<bool> Silent;
+            public readonly Option<int> MuteUntil;
+            public readonly Option<string> Sound;
             
             public Tag(
-                bool showPreviews,
-                bool silent,
-                int muteUntil,
-                Some<string> sound
+                Option<bool> showPreviews,
+                Option<bool> silent,
+                Option<int> muteUntil,
+                Option<string> sound
             ) {
                 ShowPreviews = showPreviews;
                 Silent = silent;
@@ -76,7 +31,7 @@ namespace TLSharp.Rpc.Types
                 Sound = sound;
             }
             
-            (bool, bool, int, string) CmpTuple =>
+            (Option<bool>, Option<bool>, Option<int>, Option<string>) CmpTuple =>
                 (ShowPreviews, Silent, MuteUntil, Sound);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -98,18 +53,20 @@ namespace TLSharp.Rpc.Types
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, ShowPreviews) | MaskBit(1, Silent), bw, WriteInt);
-                Write(MuteUntil, bw, WriteInt);
-                Write(Sound, bw, WriteString);
+                Write(MaskBit(0, ShowPreviews) | MaskBit(1, Silent) | MaskBit(2, MuteUntil) | MaskBit(3, Sound), bw, WriteInt);
+                Write(ShowPreviews, bw, WriteOption<bool>(WriteBool));
+                Write(Silent, bw, WriteOption<bool>(WriteBool));
+                Write(MuteUntil, bw, WriteOption<int>(WriteInt));
+                Write(Sound, bw, WriteOption<string>(WriteString));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
-                var showPreviews = Read(br, ReadOption(flags, 0));
-                var silent = Read(br, ReadOption(flags, 1));
-                var muteUntil = Read(br, ReadInt);
-                var sound = Read(br, ReadString);
+                var showPreviews = Read(br, ReadOption(flags, 0, ReadBool));
+                var silent = Read(br, ReadOption(flags, 1, ReadBool));
+                var muteUntil = Read(br, ReadOption(flags, 2, ReadInt));
+                var sound = Read(br, ReadOption(flags, 3, ReadString));
                 return new Tag(showPreviews, silent, muteUntil, sound);
             }
         }
@@ -117,7 +74,6 @@ namespace TLSharp.Rpc.Types
         readonly ITlTypeTag _tag;
         PeerNotifySettings(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
-        public static explicit operator PeerNotifySettings(EmptyTag tag) => new PeerNotifySettings(tag);
         public static explicit operator PeerNotifySettings(Tag tag) => new PeerNotifySettings(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
@@ -131,32 +87,27 @@ namespace TLSharp.Rpc.Types
             var typeNumber = ReadUint(br);
             switch (typeNumber)
             {
-                case EmptyTag.TypeNumber: return (PeerNotifySettings) EmptyTag.DeserializeTag(br);
                 case Tag.TypeNumber: return (PeerNotifySettings) Tag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, Tag.TypeNumber });
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
             }
         }
 
-        public T Match<T>(
+        T Match<T>(
             Func<T> _,
-            Func<EmptyTag, T> emptyTag = null,
             Func<Tag, T> tag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
             {
-                case EmptyTag x when emptyTag != null: return emptyTag(x);
                 case Tag x when tag != null: return tag(x);
                 default: return _();
             }
         }
 
         public T Match<T>(
-            Func<EmptyTag, T> emptyTag,
             Func<Tag, T> tag
         ) => Match(
             () => throw new Exception("WTF"),
-            emptyTag ?? throw new ArgumentNullException(nameof(emptyTag)),
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
@@ -164,8 +115,7 @@ namespace TLSharp.Rpc.Types
         {
             switch (_tag)
             {
-                case EmptyTag _: return 0;
-                case Tag _: return 1;
+                case Tag _: return 0;
                 default: throw new Exception("WTF");
             }
         }

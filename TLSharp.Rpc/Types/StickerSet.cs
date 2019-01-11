@@ -11,13 +11,13 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xcd303b41;
+            internal const uint TypeNumber = 0x5585a139;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly bool Installed;
             public readonly bool Archived;
             public readonly bool Official;
             public readonly bool Masks;
+            public readonly Option<int> InstalledDate;
             public readonly long Id;
             public readonly long AccessHash;
             public readonly string Title;
@@ -26,10 +26,10 @@ namespace TLSharp.Rpc.Types
             public readonly int Hash;
             
             public Tag(
-                bool installed,
                 bool archived,
                 bool official,
                 bool masks,
+                Option<int> installedDate,
                 long id,
                 long accessHash,
                 Some<string> title,
@@ -37,10 +37,10 @@ namespace TLSharp.Rpc.Types
                 int count,
                 int hash
             ) {
-                Installed = installed;
                 Archived = archived;
                 Official = official;
                 Masks = masks;
+                InstalledDate = installedDate;
                 Id = id;
                 AccessHash = accessHash;
                 Title = title;
@@ -49,8 +49,8 @@ namespace TLSharp.Rpc.Types
                 Hash = hash;
             }
             
-            (bool, bool, bool, bool, long, long, string, string, int, int) CmpTuple =>
-                (Installed, Archived, Official, Masks, Id, AccessHash, Title, ShortName, Count, Hash);
+            (bool, bool, bool, Option<int>, long, long, string, string, int, int) CmpTuple =>
+                (Archived, Official, Masks, InstalledDate, Id, AccessHash, Title, ShortName, Count, Hash);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -66,12 +66,13 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Installed: {Installed}, Archived: {Archived}, Official: {Official}, Masks: {Masks}, Id: {Id}, AccessHash: {AccessHash}, Title: {Title}, ShortName: {ShortName}, Count: {Count}, Hash: {Hash})";
+            public override string ToString() => $"(Archived: {Archived}, Official: {Official}, Masks: {Masks}, InstalledDate: {InstalledDate}, Id: {Id}, AccessHash: {AccessHash}, Title: {Title}, ShortName: {ShortName}, Count: {Count}, Hash: {Hash})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, Installed) | MaskBit(1, Archived) | MaskBit(2, Official) | MaskBit(3, Masks), bw, WriteInt);
+                Write(MaskBit(1, Archived) | MaskBit(2, Official) | MaskBit(3, Masks) | MaskBit(0, InstalledDate), bw, WriteInt);
+                Write(InstalledDate, bw, WriteOption<int>(WriteInt));
                 Write(Id, bw, WriteLong);
                 Write(AccessHash, bw, WriteLong);
                 Write(Title, bw, WriteString);
@@ -83,17 +84,17 @@ namespace TLSharp.Rpc.Types
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
-                var installed = Read(br, ReadOption(flags, 0));
                 var archived = Read(br, ReadOption(flags, 1));
                 var official = Read(br, ReadOption(flags, 2));
                 var masks = Read(br, ReadOption(flags, 3));
+                var installedDate = Read(br, ReadOption(flags, 0, ReadInt));
                 var id = Read(br, ReadLong);
                 var accessHash = Read(br, ReadLong);
                 var title = Read(br, ReadString);
                 var shortName = Read(br, ReadString);
                 var count = Read(br, ReadInt);
                 var hash = Read(br, ReadInt);
-                return new Tag(installed, archived, official, masks, id, accessHash, title, shortName, count, hash);
+                return new Tag(archived, official, masks, installedDate, id, accessHash, title, shortName, count, hash);
             }
         }
 

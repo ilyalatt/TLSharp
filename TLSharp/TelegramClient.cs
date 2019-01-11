@@ -107,10 +107,10 @@ namespace TLSharp
                 deviceModel: "PC",
                 langCode: "en",
                 query: config,
-                systemVersion: "Win 10.0"
-                //systemLangCode: "en",
-                //langPack: "en",
-                //proxy: None
+                systemVersion: "Win 10.0",
+                systemLangCode: "en",
+                langPack: "tdesktop",
+                proxy: None
             );
             var invokeWithLayer = new InvokeWithLayer<InitConnection<GetConfig, Config>, Config>(layer: SchemeInfo.LayerVersion, query: request);
             var cfg = await _transport.Call(invokeWithLayer);
@@ -269,7 +269,7 @@ namespace TLSharp
             if (!IsAuthenticated())
                 throw new InvalidOperationException("Authorize user first!");
 
-            return await Call(new GetContacts(hash: ""));
+            return await Call(new GetContacts(hash: 0));
         }
 
         public async Task<UpdatesType> SendMessage(Some<InputPeer> peer, Some<string> message)
@@ -304,7 +304,7 @@ namespace TLSharp
         {
             var peer = (InputPeer) new InputPeer.SelfTag();
             return await Call(
-                new GetDialogs(offsetDate: 0, offsetPeer: peer, limit: 100, excludePinned: false, offsetId: 0/*, hash: 0*/)
+                new GetDialogs(offsetDate: 0, offsetPeer: peer, limit: 100, excludePinned: false, offsetId: 0, hash: 0)
             );
         }
 
@@ -313,12 +313,12 @@ namespace TLSharp
                 randomId: Helpers.GenerateRandomLong(),
                 background: false,
                 clearDraft: false,
-                media: (InputMedia) new InputMedia.UploadedPhotoTag(file: file, stickers: None, caption: ""/*, ttlSeconds: None*/),
+                media: (InputMedia) new InputMedia.UploadedPhotoTag(file: file, stickers: None, ttlSeconds: None),
                 peer: peer,
-                //entities: None,
+                entities: None,
                 replyToMsgId: None,
                 replyMarkup: None,
-                //message: "",
+                message: "",
                 silent: false
             ));
 
@@ -333,21 +333,20 @@ namespace TLSharp
                 background: false,
                 clearDraft: false,
                 media: (InputMedia) new InputMedia.UploadedDocumentTag(
-                    // nosoundVideo: false,
+                    nosoundVideo: false,
                     file: file,
                     mimeType: mimeType,
                     attributes: attributes,
-                    // thumb: None,
+                    thumb: None,
                     stickers: None,
-                    caption: ""
-                    // ttlSeconds: None
+                    ttlSeconds: None
                 ),
                 peer: peer,
                 silent: false,
                 replyToMsgId: None,
-                replyMarkup: None
-                // entities: None,
-                // message: ""
+                replyMarkup: None,
+                entities: None,
+                message: ""
             ));
 
         public async Task<File> GetFile(
@@ -368,8 +367,8 @@ namespace TLSharp
             int addOffset = 0,
             int limit = 100,
             int maxId = 0,
-            int minId = 0
-            //int has = 0
+            int minId = 0,
+            int hash = 0
         ) {
             if (!IsAuthenticated())
                 throw new InvalidOperationException("Authorize user first!");
@@ -381,7 +380,8 @@ namespace TLSharp
                 addOffset,
                 limit,
                 maxId,
-                minId
+                minId,
+                hash
             ));
         }
 

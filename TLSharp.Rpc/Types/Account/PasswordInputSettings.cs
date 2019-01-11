@@ -11,28 +11,37 @@ namespace TLSharp.Rpc.Types.Account
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x86916deb;
+            internal const uint TypeNumber = 0x21ffa60d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Option<Arr<byte>> NewSalt;
             public readonly Option<Arr<byte>> NewPasswordHash;
             public readonly Option<string> Hint;
             public readonly Option<string> Email;
+            public readonly Option<Arr<byte>> NewSecureSalt;
+            public readonly Option<Arr<byte>> NewSecureSecret;
+            public readonly Option<long> NewSecureSecretId;
             
             public Tag(
                 Option<Arr<byte>> newSalt,
                 Option<Arr<byte>> newPasswordHash,
                 Option<string> hint,
-                Option<string> email
+                Option<string> email,
+                Option<Arr<byte>> newSecureSalt,
+                Option<Arr<byte>> newSecureSecret,
+                Option<long> newSecureSecretId
             ) {
                 NewSalt = newSalt;
                 NewPasswordHash = newPasswordHash;
                 Hint = hint;
                 Email = email;
+                NewSecureSalt = newSecureSalt;
+                NewSecureSecret = newSecureSecret;
+                NewSecureSecretId = newSecureSecretId;
             }
             
-            (Option<Arr<byte>>, Option<Arr<byte>>, Option<string>, Option<string>) CmpTuple =>
-                (NewSalt, NewPasswordHash, Hint, Email);
+            (Option<Arr<byte>>, Option<Arr<byte>>, Option<string>, Option<string>, Option<Arr<byte>>, Option<Arr<byte>>, Option<long>) CmpTuple =>
+                (NewSalt, NewPasswordHash, Hint, Email, NewSecureSalt, NewSecureSecret, NewSecureSecretId);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -48,16 +57,19 @@ namespace TLSharp.Rpc.Types.Account
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(NewSalt: {NewSalt}, NewPasswordHash: {NewPasswordHash}, Hint: {Hint}, Email: {Email})";
+            public override string ToString() => $"(NewSalt: {NewSalt}, NewPasswordHash: {NewPasswordHash}, Hint: {Hint}, Email: {Email}, NewSecureSalt: {NewSecureSalt}, NewSecureSecret: {NewSecureSecret}, NewSecureSecretId: {NewSecureSecretId})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, NewSalt) | MaskBit(0, NewPasswordHash) | MaskBit(0, Hint) | MaskBit(1, Email), bw, WriteInt);
+                Write(MaskBit(0, NewSalt) | MaskBit(0, NewPasswordHash) | MaskBit(0, Hint) | MaskBit(1, Email) | MaskBit(2, NewSecureSalt) | MaskBit(2, NewSecureSecret) | MaskBit(2, NewSecureSecretId), bw, WriteInt);
                 Write(NewSalt, bw, WriteOption<Arr<byte>>(WriteBytes));
                 Write(NewPasswordHash, bw, WriteOption<Arr<byte>>(WriteBytes));
                 Write(Hint, bw, WriteOption<string>(WriteString));
                 Write(Email, bw, WriteOption<string>(WriteString));
+                Write(NewSecureSalt, bw, WriteOption<Arr<byte>>(WriteBytes));
+                Write(NewSecureSecret, bw, WriteOption<Arr<byte>>(WriteBytes));
+                Write(NewSecureSecretId, bw, WriteOption<long>(WriteLong));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
@@ -67,7 +79,10 @@ namespace TLSharp.Rpc.Types.Account
                 var newPasswordHash = Read(br, ReadOption(flags, 0, ReadBytes));
                 var hint = Read(br, ReadOption(flags, 0, ReadString));
                 var email = Read(br, ReadOption(flags, 1, ReadString));
-                return new Tag(newSalt, newPasswordHash, hint, email);
+                var newSecureSalt = Read(br, ReadOption(flags, 2, ReadBytes));
+                var newSecureSecret = Read(br, ReadOption(flags, 2, ReadBytes));
+                var newSecureSecretId = Read(br, ReadOption(flags, 2, ReadLong));
+                return new Tag(newSalt, newPasswordHash, hint, email, newSecureSalt, newSecureSecret, newSecureSecretId);
             }
         }
 

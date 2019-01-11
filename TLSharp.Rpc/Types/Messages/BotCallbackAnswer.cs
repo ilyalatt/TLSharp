@@ -16,6 +16,7 @@ namespace TLSharp.Rpc.Types.Messages
             
             public readonly bool Alert;
             public readonly bool HasUrl;
+            public readonly bool NativeUi;
             public readonly Option<string> Message;
             public readonly Option<string> Url;
             public readonly int CacheTime;
@@ -23,19 +24,21 @@ namespace TLSharp.Rpc.Types.Messages
             public Tag(
                 bool alert,
                 bool hasUrl,
+                bool nativeUi,
                 Option<string> message,
                 Option<string> url,
                 int cacheTime
             ) {
                 Alert = alert;
                 HasUrl = hasUrl;
+                NativeUi = nativeUi;
                 Message = message;
                 Url = url;
                 CacheTime = cacheTime;
             }
             
-            (bool, bool, Option<string>, Option<string>, int) CmpTuple =>
-                (Alert, HasUrl, Message, Url, CacheTime);
+            (bool, bool, bool, Option<string>, Option<string>, int) CmpTuple =>
+                (Alert, HasUrl, NativeUi, Message, Url, CacheTime);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -51,12 +54,12 @@ namespace TLSharp.Rpc.Types.Messages
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Alert: {Alert}, HasUrl: {HasUrl}, Message: {Message}, Url: {Url}, CacheTime: {CacheTime})";
+            public override string ToString() => $"(Alert: {Alert}, HasUrl: {HasUrl}, NativeUi: {NativeUi}, Message: {Message}, Url: {Url}, CacheTime: {CacheTime})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(1, Alert) | MaskBit(3, HasUrl) | MaskBit(0, Message) | MaskBit(2, Url), bw, WriteInt);
+                Write(MaskBit(1, Alert) | MaskBit(3, HasUrl) | MaskBit(4, NativeUi) | MaskBit(0, Message) | MaskBit(2, Url), bw, WriteInt);
                 Write(Message, bw, WriteOption<string>(WriteString));
                 Write(Url, bw, WriteOption<string>(WriteString));
                 Write(CacheTime, bw, WriteInt);
@@ -67,10 +70,11 @@ namespace TLSharp.Rpc.Types.Messages
                 var flags = Read(br, ReadInt);
                 var alert = Read(br, ReadOption(flags, 1));
                 var hasUrl = Read(br, ReadOption(flags, 3));
+                var nativeUi = Read(br, ReadOption(flags, 4));
                 var message = Read(br, ReadOption(flags, 0, ReadString));
                 var url = Read(br, ReadOption(flags, 2, ReadString));
                 var cacheTime = Read(br, ReadInt);
-                return new Tag(alert, hasUrl, message, url, cacheTime);
+                return new Tag(alert, hasUrl, nativeUi, message, url, cacheTime);
             }
         }
 

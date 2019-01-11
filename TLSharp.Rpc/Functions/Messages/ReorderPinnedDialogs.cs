@@ -10,18 +10,18 @@ namespace TLSharp.Rpc.Functions.Messages
     public sealed class ReorderPinnedDialogs : ITlFunc<bool>, IEquatable<ReorderPinnedDialogs>, IComparable<ReorderPinnedDialogs>, IComparable
     {
         public bool Force { get; }
-        public Arr<T.InputPeer> Order { get; }
+        public Arr<T.InputDialogPeer> Order { get; }
         
         public ReorderPinnedDialogs(
             bool force,
-            Some<Arr<T.InputPeer>> order
+            Some<Arr<T.InputDialogPeer>> order
         ) {
             Force = force;
             Order = order;
         }
         
         
-        (bool, Arr<T.InputPeer>) CmpTuple =>
+        (bool, Arr<T.InputDialogPeer>) CmpTuple =>
             (Force, Order);
 
         public bool Equals(ReorderPinnedDialogs other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -42,9 +42,9 @@ namespace TLSharp.Rpc.Functions.Messages
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x959ff644);
+            WriteUint(bw, 0x5b51d63f);
             Write(MaskBit(0, Force), bw, WriteInt);
-            Write(Order, bw, WriteVector<T.InputPeer>(WriteSerializable));
+            Write(Order, bw, WriteVector<T.InputDialogPeer>(WriteSerializable));
         }
         
         bool ITlFunc<bool>.DeserializeResult(BinaryReader br) =>

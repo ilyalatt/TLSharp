@@ -11,7 +11,7 @@ namespace TLSharp.Rpc.Types.Auth
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x5e002502;
+            internal const uint TypeNumber = 0x38faab5f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool PhoneRegistered;
@@ -19,23 +19,26 @@ namespace TLSharp.Rpc.Types.Auth
             public readonly string PhoneCodeHash;
             public readonly Option<T.Auth.CodeType> NextType;
             public readonly Option<int> Timeout;
+            public readonly Option<T.Help.TermsOfService> TermsOfService;
             
             public Tag(
                 bool phoneRegistered,
                 Some<T.Auth.SentCodeType> type,
                 Some<string> phoneCodeHash,
                 Option<T.Auth.CodeType> nextType,
-                Option<int> timeout
+                Option<int> timeout,
+                Option<T.Help.TermsOfService> termsOfService
             ) {
                 PhoneRegistered = phoneRegistered;
                 Type = type;
                 PhoneCodeHash = phoneCodeHash;
                 NextType = nextType;
                 Timeout = timeout;
+                TermsOfService = termsOfService;
             }
             
-            (bool, T.Auth.SentCodeType, string, Option<T.Auth.CodeType>, Option<int>) CmpTuple =>
-                (PhoneRegistered, Type, PhoneCodeHash, NextType, Timeout);
+            (bool, T.Auth.SentCodeType, string, Option<T.Auth.CodeType>, Option<int>, Option<T.Help.TermsOfService>) CmpTuple =>
+                (PhoneRegistered, Type, PhoneCodeHash, NextType, Timeout, TermsOfService);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -51,16 +54,17 @@ namespace TLSharp.Rpc.Types.Auth
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(PhoneRegistered: {PhoneRegistered}, Type: {Type}, PhoneCodeHash: {PhoneCodeHash}, NextType: {NextType}, Timeout: {Timeout})";
+            public override string ToString() => $"(PhoneRegistered: {PhoneRegistered}, Type: {Type}, PhoneCodeHash: {PhoneCodeHash}, NextType: {NextType}, Timeout: {Timeout}, TermsOfService: {TermsOfService})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, PhoneRegistered) | MaskBit(1, NextType) | MaskBit(2, Timeout), bw, WriteInt);
+                Write(MaskBit(0, PhoneRegistered) | MaskBit(1, NextType) | MaskBit(2, Timeout) | MaskBit(3, TermsOfService), bw, WriteInt);
                 Write(Type, bw, WriteSerializable);
                 Write(PhoneCodeHash, bw, WriteString);
                 Write(NextType, bw, WriteOption<T.Auth.CodeType>(WriteSerializable));
                 Write(Timeout, bw, WriteOption<int>(WriteInt));
+                Write(TermsOfService, bw, WriteOption<T.Help.TermsOfService>(WriteSerializable));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
@@ -71,7 +75,8 @@ namespace TLSharp.Rpc.Types.Auth
                 var phoneCodeHash = Read(br, ReadString);
                 var nextType = Read(br, ReadOption(flags, 1, T.Auth.CodeType.Deserialize));
                 var timeout = Read(br, ReadOption(flags, 2, ReadInt));
-                return new Tag(phoneRegistered, type, phoneCodeHash, nextType, timeout);
+                var termsOfService = Read(br, ReadOption(flags, 3, T.Help.TermsOfService.Deserialize));
+                return new Tag(phoneRegistered, type, phoneCodeHash, nextType, timeout, termsOfService);
             }
         }
 

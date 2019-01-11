@@ -9,6 +9,6 @@ namespace TLSharp.Rpc
 {
     static class SchemeInfo
     {
-        public const int LayerVersion = 66;
+        public const int LayerVersion = 82;
     }
 }

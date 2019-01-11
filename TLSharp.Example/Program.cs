@@ -55,9 +55,7 @@ namespace TLSharp.Example
             using (var tg = await TelegramClient.Connect(cfg.ApiId, cfg.ApiHash))
             {
                 await SignIn(tg, cfg);
-                await Task.Delay(1300);
-                await tg.Call(new Ping(2344254363452));
-                await Task.Delay(1000);
+                var chats = await tg.GetUserDialogs();
             }
         }
     }

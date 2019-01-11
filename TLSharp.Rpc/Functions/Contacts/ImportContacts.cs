@@ -10,19 +10,16 @@ namespace TLSharp.Rpc.Functions.Contacts
     public sealed class ImportContacts : ITlFunc<T.Contacts.ImportedContacts>, IEquatable<ImportContacts>, IComparable<ImportContacts>, IComparable
     {
         public Arr<T.InputContact> Contacts { get; }
-        public bool Replace { get; }
         
         public ImportContacts(
-            Some<Arr<T.InputContact>> contacts,
-            bool replace
+            Some<Arr<T.InputContact>> contacts
         ) {
             Contacts = contacts;
-            Replace = replace;
         }
         
         
-        (Arr<T.InputContact>, bool) CmpTuple =>
-            (Contacts, Replace);
+        Arr<T.InputContact> CmpTuple =>
+            Contacts;
 
         public bool Equals(ImportContacts other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ImportContacts x && Equals(x);
@@ -38,13 +35,12 @@ namespace TLSharp.Rpc.Functions.Contacts
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Contacts: {Contacts}, Replace: {Replace})";
+        public override string ToString() => $"(Contacts: {Contacts})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0xda30b32d);
+            WriteUint(bw, 0x2c800be5);
             Write(Contacts, bw, WriteVector<T.InputContact>(WriteSerializable));
-            Write(Replace, bw, WriteBool);
         }
         
         T.Contacts.ImportedContacts ITlFunc<T.Contacts.ImportedContacts>.DeserializeResult(BinaryReader br) =>

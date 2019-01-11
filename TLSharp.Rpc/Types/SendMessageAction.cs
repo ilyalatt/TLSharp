@@ -551,19 +551,19 @@ namespace TLSharp.Rpc.Types
 
         public sealed class UploadRoundTag : ITlTypeTag, IEquatable<UploadRoundTag>, IComparable<UploadRoundTag>, IComparable
         {
-            internal const uint TypeNumber = 0xbb718624;
+            internal const uint TypeNumber = 0x243e1c66;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-
+            public readonly int Progress;
             
             public UploadRoundTag(
-
+                int progress
             ) {
-
+                Progress = progress;
             }
             
-            Unit CmpTuple =>
-                Unit.Default;
+            int CmpTuple =>
+                Progress;
 
             public bool Equals(UploadRoundTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is UploadRoundTag x && Equals(x);
@@ -579,18 +579,18 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"()";
+            public override string ToString() => $"(Progress: {Progress})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-
+                Write(Progress, bw, WriteInt);
             }
             
             internal static UploadRoundTag DeserializeTag(BinaryReader br)
             {
-
-                return new UploadRoundTag();
+                var progress = Read(br, ReadInt);
+                return new UploadRoundTag(progress);
             }
         }
 

@@ -11,43 +11,49 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x66ffba14;
+            internal const uint TypeNumber = 0xe4def5db;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Pinned;
+            public readonly bool UnreadMark;
             public readonly T.Peer Peer;
             public readonly int TopMessage;
             public readonly int ReadInboxMaxId;
             public readonly int ReadOutboxMaxId;
             public readonly int UnreadCount;
+            public readonly int UnreadMentionsCount;
             public readonly T.PeerNotifySettings NotifySettings;
             public readonly Option<int> Pts;
             public readonly Option<T.DraftMessage> Draft;
             
             public Tag(
                 bool pinned,
+                bool unreadMark,
                 Some<T.Peer> peer,
                 int topMessage,
                 int readInboxMaxId,
                 int readOutboxMaxId,
                 int unreadCount,
+                int unreadMentionsCount,
                 Some<T.PeerNotifySettings> notifySettings,
                 Option<int> pts,
                 Option<T.DraftMessage> draft
             ) {
                 Pinned = pinned;
+                UnreadMark = unreadMark;
                 Peer = peer;
                 TopMessage = topMessage;
                 ReadInboxMaxId = readInboxMaxId;
                 ReadOutboxMaxId = readOutboxMaxId;
                 UnreadCount = unreadCount;
+                UnreadMentionsCount = unreadMentionsCount;
                 NotifySettings = notifySettings;
                 Pts = pts;
                 Draft = draft;
             }
             
-            (bool, T.Peer, int, int, int, int, T.PeerNotifySettings, Option<int>, Option<T.DraftMessage>) CmpTuple =>
-                (Pinned, Peer, TopMessage, ReadInboxMaxId, ReadOutboxMaxId, UnreadCount, NotifySettings, Pts, Draft);
+            (bool, bool, T.Peer, int, int, int, int, int, T.PeerNotifySettings, Option<int>, Option<T.DraftMessage>) CmpTuple =>
+                (Pinned, UnreadMark, Peer, TopMessage, ReadInboxMaxId, ReadOutboxMaxId, UnreadCount, UnreadMentionsCount, NotifySettings, Pts, Draft);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -63,17 +69,18 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Pinned: {Pinned}, Peer: {Peer}, TopMessage: {TopMessage}, ReadInboxMaxId: {ReadInboxMaxId}, ReadOutboxMaxId: {ReadOutboxMaxId}, UnreadCount: {UnreadCount}, NotifySettings: {NotifySettings}, Pts: {Pts}, Draft: {Draft})";
+            public override string ToString() => $"(Pinned: {Pinned}, UnreadMark: {UnreadMark}, Peer: {Peer}, TopMessage: {TopMessage}, ReadInboxMaxId: {ReadInboxMaxId}, ReadOutboxMaxId: {ReadOutboxMaxId}, UnreadCount: {UnreadCount}, UnreadMentionsCount: {UnreadMentionsCount}, NotifySettings: {NotifySettings}, Pts: {Pts}, Draft: {Draft})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(2, Pinned) | MaskBit(0, Pts) | MaskBit(1, Draft), bw, WriteInt);
+                Write(MaskBit(2, Pinned) | MaskBit(3, UnreadMark) | MaskBit(0, Pts) | MaskBit(1, Draft), bw, WriteInt);
                 Write(Peer, bw, WriteSerializable);
                 Write(TopMessage, bw, WriteInt);
                 Write(ReadInboxMaxId, bw, WriteInt);
                 Write(ReadOutboxMaxId, bw, WriteInt);
                 Write(UnreadCount, bw, WriteInt);
+                Write(UnreadMentionsCount, bw, WriteInt);
                 Write(NotifySettings, bw, WriteSerializable);
                 Write(Pts, bw, WriteOption<int>(WriteInt));
                 Write(Draft, bw, WriteOption<T.DraftMessage>(WriteSerializable));
@@ -83,15 +90,17 @@ namespace TLSharp.Rpc.Types
             {
                 var flags = Read(br, ReadInt);
                 var pinned = Read(br, ReadOption(flags, 2));
+                var unreadMark = Read(br, ReadOption(flags, 3));
                 var peer = Read(br, T.Peer.Deserialize);
                 var topMessage = Read(br, ReadInt);
                 var readInboxMaxId = Read(br, ReadInt);
                 var readOutboxMaxId = Read(br, ReadInt);
                 var unreadCount = Read(br, ReadInt);
+                var unreadMentionsCount = Read(br, ReadInt);
                 var notifySettings = Read(br, T.PeerNotifySettings.Deserialize);
                 var pts = Read(br, ReadOption(flags, 0, ReadInt));
                 var draft = Read(br, ReadOption(flags, 1, T.DraftMessage.Deserialize));
-                return new Tag(pinned, peer, topMessage, readInboxMaxId, readOutboxMaxId, unreadCount, notifySettings, pts, draft);
+                return new Tag(pinned, unreadMark, peer, topMessage, readInboxMaxId, readOutboxMaxId, unreadCount, unreadMentionsCount, notifySettings, pts, draft);
             }
         }
 

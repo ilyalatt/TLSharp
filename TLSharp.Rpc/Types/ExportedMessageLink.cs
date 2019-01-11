@@ -11,19 +11,22 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x1f486803;
+            internal const uint TypeNumber = 0x5dab1af4;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly string Link;
+            public readonly string Html;
             
             public Tag(
-                Some<string> link
+                Some<string> link,
+                Some<string> html
             ) {
                 Link = link;
+                Html = html;
             }
             
-            string CmpTuple =>
-                Link;
+            (string, string) CmpTuple =>
+                (Link, Html);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -39,18 +42,20 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Link: {Link})";
+            public override string ToString() => $"(Link: {Link}, Html: {Html})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Link, bw, WriteString);
+                Write(Html, bw, WriteString);
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var link = Read(br, ReadString);
-                return new Tag(link);
+                var html = Read(br, ReadString);
+                return new Tag(link, html);
             }
         }
 

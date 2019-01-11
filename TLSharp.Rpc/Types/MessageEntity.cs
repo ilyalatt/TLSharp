@@ -679,6 +679,106 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class PhoneTag : ITlTypeTag, IEquatable<PhoneTag>, IComparable<PhoneTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x9b69e34b;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly int Offset;
+            public readonly int Length;
+            
+            public PhoneTag(
+                int offset,
+                int length
+            ) {
+                Offset = offset;
+                Length = length;
+            }
+            
+            (int, int) CmpTuple =>
+                (Offset, Length);
+
+            public bool Equals(PhoneTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is PhoneTag x && Equals(x);
+            public static bool operator ==(PhoneTag x, PhoneTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(PhoneTag x, PhoneTag y) => !(x == y);
+
+            public int CompareTo(PhoneTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is PhoneTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(PhoneTag x, PhoneTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(PhoneTag x, PhoneTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(PhoneTag x, PhoneTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(PhoneTag x, PhoneTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Offset: {Offset}, Length: {Length})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Offset, bw, WriteInt);
+                Write(Length, bw, WriteInt);
+            }
+            
+            internal static PhoneTag DeserializeTag(BinaryReader br)
+            {
+                var offset = Read(br, ReadInt);
+                var length = Read(br, ReadInt);
+                return new PhoneTag(offset, length);
+            }
+        }
+
+        public sealed class CashtagTag : ITlTypeTag, IEquatable<CashtagTag>, IComparable<CashtagTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x4c4e743f;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly int Offset;
+            public readonly int Length;
+            
+            public CashtagTag(
+                int offset,
+                int length
+            ) {
+                Offset = offset;
+                Length = length;
+            }
+            
+            (int, int) CmpTuple =>
+                (Offset, Length);
+
+            public bool Equals(CashtagTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is CashtagTag x && Equals(x);
+            public static bool operator ==(CashtagTag x, CashtagTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(CashtagTag x, CashtagTag y) => !(x == y);
+
+            public int CompareTo(CashtagTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is CashtagTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(CashtagTag x, CashtagTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(CashtagTag x, CashtagTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(CashtagTag x, CashtagTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(CashtagTag x, CashtagTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Offset: {Offset}, Length: {Length})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Offset, bw, WriteInt);
+                Write(Length, bw, WriteInt);
+            }
+            
+            internal static CashtagTag DeserializeTag(BinaryReader br)
+            {
+                var offset = Read(br, ReadInt);
+                var length = Read(br, ReadInt);
+                return new CashtagTag(offset, length);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         MessageEntity(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -695,6 +795,8 @@ namespace TLSharp.Rpc.Types
         public static explicit operator MessageEntity(TextUrlTag tag) => new MessageEntity(tag);
         public static explicit operator MessageEntity(MentionNameTag tag) => new MessageEntity(tag);
         public static explicit operator MessageEntity(InputMentionNameTag tag) => new MessageEntity(tag);
+        public static explicit operator MessageEntity(PhoneTag tag) => new MessageEntity(tag);
+        public static explicit operator MessageEntity(CashtagTag tag) => new MessageEntity(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -720,7 +822,9 @@ namespace TLSharp.Rpc.Types
                 case TextUrlTag.TypeNumber: return (MessageEntity) TextUrlTag.DeserializeTag(br);
                 case MentionNameTag.TypeNumber: return (MessageEntity) MentionNameTag.DeserializeTag(br);
                 case InputMentionNameTag.TypeNumber: return (MessageEntity) InputMentionNameTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnknownTag.TypeNumber, MentionTag.TypeNumber, HashtagTag.TypeNumber, BotCommandTag.TypeNumber, UrlTag.TypeNumber, EmailTag.TypeNumber, BoldTag.TypeNumber, ItalicTag.TypeNumber, CodeTag.TypeNumber, PreTag.TypeNumber, TextUrlTag.TypeNumber, MentionNameTag.TypeNumber, InputMentionNameTag.TypeNumber });
+                case PhoneTag.TypeNumber: return (MessageEntity) PhoneTag.DeserializeTag(br);
+                case CashtagTag.TypeNumber: return (MessageEntity) CashtagTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { UnknownTag.TypeNumber, MentionTag.TypeNumber, HashtagTag.TypeNumber, BotCommandTag.TypeNumber, UrlTag.TypeNumber, EmailTag.TypeNumber, BoldTag.TypeNumber, ItalicTag.TypeNumber, CodeTag.TypeNumber, PreTag.TypeNumber, TextUrlTag.TypeNumber, MentionNameTag.TypeNumber, InputMentionNameTag.TypeNumber, PhoneTag.TypeNumber, CashtagTag.TypeNumber });
             }
         }
 
@@ -738,7 +842,9 @@ namespace TLSharp.Rpc.Types
             Func<PreTag, T> preTag = null,
             Func<TextUrlTag, T> textUrlTag = null,
             Func<MentionNameTag, T> mentionNameTag = null,
-            Func<InputMentionNameTag, T> inputMentionNameTag = null
+            Func<InputMentionNameTag, T> inputMentionNameTag = null,
+            Func<PhoneTag, T> phoneTag = null,
+            Func<CashtagTag, T> cashtagTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -756,6 +862,8 @@ namespace TLSharp.Rpc.Types
                 case TextUrlTag x when textUrlTag != null: return textUrlTag(x);
                 case MentionNameTag x when mentionNameTag != null: return mentionNameTag(x);
                 case InputMentionNameTag x when inputMentionNameTag != null: return inputMentionNameTag(x);
+                case PhoneTag x when phoneTag != null: return phoneTag(x);
+                case CashtagTag x when cashtagTag != null: return cashtagTag(x);
                 default: return _();
             }
         }
@@ -773,7 +881,9 @@ namespace TLSharp.Rpc.Types
             Func<PreTag, T> preTag,
             Func<TextUrlTag, T> textUrlTag,
             Func<MentionNameTag, T> mentionNameTag,
-            Func<InputMentionNameTag, T> inputMentionNameTag
+            Func<InputMentionNameTag, T> inputMentionNameTag,
+            Func<PhoneTag, T> phoneTag,
+            Func<CashtagTag, T> cashtagTag
         ) => Match(
             () => throw new Exception("WTF"),
             unknownTag ?? throw new ArgumentNullException(nameof(unknownTag)),
@@ -788,7 +898,9 @@ namespace TLSharp.Rpc.Types
             preTag ?? throw new ArgumentNullException(nameof(preTag)),
             textUrlTag ?? throw new ArgumentNullException(nameof(textUrlTag)),
             mentionNameTag ?? throw new ArgumentNullException(nameof(mentionNameTag)),
-            inputMentionNameTag ?? throw new ArgumentNullException(nameof(inputMentionNameTag))
+            inputMentionNameTag ?? throw new ArgumentNullException(nameof(inputMentionNameTag)),
+            phoneTag ?? throw new ArgumentNullException(nameof(phoneTag)),
+            cashtagTag ?? throw new ArgumentNullException(nameof(cashtagTag))
         );
 
         int GetTagOrder()
@@ -808,6 +920,8 @@ namespace TLSharp.Rpc.Types
                 case TextUrlTag _: return 10;
                 case MentionNameTag _: return 11;
                 case InputMentionNameTag _: return 12;
+                case PhoneTag _: return 13;
+                case CashtagTag _: return 14;
                 default: throw new Exception("WTF");
             }
         }

@@ -144,58 +144,12 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class AllTag : ITlTypeTag, IEquatable<AllTag>, IComparable<AllTag>, IComparable
-        {
-            internal const uint TypeNumber = 0x74d07c60;
-            uint ITlTypeTag.TypeNumber => TypeNumber;
-            
-
-            
-            public AllTag(
-
-            ) {
-
-            }
-            
-            Unit CmpTuple =>
-                Unit.Default;
-
-            public bool Equals(AllTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
-            public override bool Equals(object other) => other is AllTag x && Equals(x);
-            public static bool operator ==(AllTag x, AllTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
-            public static bool operator !=(AllTag x, AllTag y) => !(x == y);
-
-            public int CompareTo(AllTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
-            int IComparable.CompareTo(object other) => other is AllTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-            public static bool operator <=(AllTag x, AllTag y) => x.CompareTo(y) <= 0;
-            public static bool operator <(AllTag x, AllTag y) => x.CompareTo(y) < 0;
-            public static bool operator >(AllTag x, AllTag y) => x.CompareTo(y) > 0;
-            public static bool operator >=(AllTag x, AllTag y) => x.CompareTo(y) >= 0;
-
-            public override int GetHashCode() => CmpTuple.GetHashCode();
-
-            public override string ToString() => $"()";
-            
-            
-            void ITlSerializable.Serialize(BinaryWriter bw)
-            {
-
-            }
-            
-            internal static AllTag DeserializeTag(BinaryReader br)
-            {
-
-                return new AllTag();
-            }
-        }
-
         readonly ITlTypeTag _tag;
         NotifyPeer(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
         public static explicit operator NotifyPeer(Tag tag) => new NotifyPeer(tag);
         public static explicit operator NotifyPeer(UsersTag tag) => new NotifyPeer(tag);
         public static explicit operator NotifyPeer(ChatsTag tag) => new NotifyPeer(tag);
-        public static explicit operator NotifyPeer(AllTag tag) => new NotifyPeer(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -211,8 +165,7 @@ namespace TLSharp.Rpc.Types
                 case Tag.TypeNumber: return (NotifyPeer) Tag.DeserializeTag(br);
                 case UsersTag.TypeNumber: return (NotifyPeer) UsersTag.DeserializeTag(br);
                 case ChatsTag.TypeNumber: return (NotifyPeer) ChatsTag.DeserializeTag(br);
-                case AllTag.TypeNumber: return (NotifyPeer) AllTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, UsersTag.TypeNumber, ChatsTag.TypeNumber, AllTag.TypeNumber });
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, UsersTag.TypeNumber, ChatsTag.TypeNumber });
             }
         }
 
@@ -220,8 +173,7 @@ namespace TLSharp.Rpc.Types
             Func<T> _,
             Func<Tag, T> tag = null,
             Func<UsersTag, T> usersTag = null,
-            Func<ChatsTag, T> chatsTag = null,
-            Func<AllTag, T> allTag = null
+            Func<ChatsTag, T> chatsTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -229,7 +181,6 @@ namespace TLSharp.Rpc.Types
                 case Tag x when tag != null: return tag(x);
                 case UsersTag x when usersTag != null: return usersTag(x);
                 case ChatsTag x when chatsTag != null: return chatsTag(x);
-                case AllTag x when allTag != null: return allTag(x);
                 default: return _();
             }
         }
@@ -237,14 +188,12 @@ namespace TLSharp.Rpc.Types
         public T Match<T>(
             Func<Tag, T> tag,
             Func<UsersTag, T> usersTag,
-            Func<ChatsTag, T> chatsTag,
-            Func<AllTag, T> allTag
+            Func<ChatsTag, T> chatsTag
         ) => Match(
             () => throw new Exception("WTF"),
             tag ?? throw new ArgumentNullException(nameof(tag)),
             usersTag ?? throw new ArgumentNullException(nameof(usersTag)),
-            chatsTag ?? throw new ArgumentNullException(nameof(chatsTag)),
-            allTag ?? throw new ArgumentNullException(nameof(allTag))
+            chatsTag ?? throw new ArgumentNullException(nameof(chatsTag))
         );
 
         int GetTagOrder()
@@ -254,7 +203,6 @@ namespace TLSharp.Rpc.Types
                 case Tag _: return 0;
                 case UsersTag _: return 1;
                 case ChatsTag _: return 2;
-                case AllTag _: return 3;
                 default: throw new Exception("WTF");
             }
         }

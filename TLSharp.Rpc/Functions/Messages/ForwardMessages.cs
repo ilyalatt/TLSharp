@@ -12,6 +12,7 @@ namespace TLSharp.Rpc.Functions.Messages
         public bool Silent { get; }
         public bool Background { get; }
         public bool WithMyScore { get; }
+        public bool Grouped { get; }
         public T.InputPeer FromPeer { get; }
         public Arr<int> Id { get; }
         public Arr<long> RandomId { get; }
@@ -21,6 +22,7 @@ namespace TLSharp.Rpc.Functions.Messages
             bool silent,
             bool background,
             bool withMyScore,
+            bool grouped,
             Some<T.InputPeer> fromPeer,
             Some<Arr<int>> id,
             Some<Arr<long>> randomId,
@@ -29,6 +31,7 @@ namespace TLSharp.Rpc.Functions.Messages
             Silent = silent;
             Background = background;
             WithMyScore = withMyScore;
+            Grouped = grouped;
             FromPeer = fromPeer;
             Id = id;
             RandomId = randomId;
@@ -36,8 +39,8 @@ namespace TLSharp.Rpc.Functions.Messages
         }
         
         
-        (bool, bool, bool, T.InputPeer, Arr<int>, Arr<long>, T.InputPeer) CmpTuple =>
-            (Silent, Background, WithMyScore, FromPeer, Id, RandomId, ToPeer);
+        (bool, bool, bool, bool, T.InputPeer, Arr<int>, Arr<long>, T.InputPeer) CmpTuple =>
+            (Silent, Background, WithMyScore, Grouped, FromPeer, Id, RandomId, ToPeer);
 
         public bool Equals(ForwardMessages other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is ForwardMessages x && Equals(x);
@@ -53,12 +56,12 @@ namespace TLSharp.Rpc.Functions.Messages
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, WithMyScore: {WithMyScore}, FromPeer: {FromPeer}, Id: {Id}, RandomId: {RandomId}, ToPeer: {ToPeer})";
+        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, WithMyScore: {WithMyScore}, Grouped: {Grouped}, FromPeer: {FromPeer}, Id: {Id}, RandomId: {RandomId}, ToPeer: {ToPeer})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
             WriteUint(bw, 0x708e0195);
-            Write(MaskBit(5, Silent) | MaskBit(6, Background) | MaskBit(8, WithMyScore), bw, WriteInt);
+            Write(MaskBit(5, Silent) | MaskBit(6, Background) | MaskBit(8, WithMyScore) | MaskBit(9, Grouped), bw, WriteInt);
             Write(FromPeer, bw, WriteSerializable);
             Write(Id, bw, WriteVector<int>(WriteInt));
             Write(RandomId, bw, WriteVector<long>(WriteLong));

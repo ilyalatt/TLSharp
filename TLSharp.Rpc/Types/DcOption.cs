@@ -11,37 +11,43 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x05d8c6cc;
+            internal const uint TypeNumber = 0x18b7a10d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Ipv6;
             public readonly bool MediaOnly;
             public readonly bool TcpoOnly;
             public readonly bool Cdn;
+            public readonly bool Static;
             public readonly int Id;
             public readonly string IpAddress;
             public readonly int Port;
+            public readonly Option<Arr<byte>> Secret;
             
             public Tag(
                 bool ipv6,
                 bool mediaOnly,
                 bool tcpoOnly,
                 bool cdn,
+                bool @static,
                 int id,
                 Some<string> ipAddress,
-                int port
+                int port,
+                Option<Arr<byte>> secret
             ) {
                 Ipv6 = ipv6;
                 MediaOnly = mediaOnly;
                 TcpoOnly = tcpoOnly;
                 Cdn = cdn;
+                Static = @static;
                 Id = id;
                 IpAddress = ipAddress;
                 Port = port;
+                Secret = secret;
             }
             
-            (bool, bool, bool, bool, int, string, int) CmpTuple =>
-                (Ipv6, MediaOnly, TcpoOnly, Cdn, Id, IpAddress, Port);
+            (bool, bool, bool, bool, bool, int, string, int, Option<Arr<byte>>) CmpTuple =>
+                (Ipv6, MediaOnly, TcpoOnly, Cdn, Static, Id, IpAddress, Port, Secret);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -57,15 +63,16 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Ipv6: {Ipv6}, MediaOnly: {MediaOnly}, TcpoOnly: {TcpoOnly}, Cdn: {Cdn}, Id: {Id}, IpAddress: {IpAddress}, Port: {Port})";
+            public override string ToString() => $"(Ipv6: {Ipv6}, MediaOnly: {MediaOnly}, TcpoOnly: {TcpoOnly}, Cdn: {Cdn}, Static: {Static}, Id: {Id}, IpAddress: {IpAddress}, Port: {Port}, Secret: {Secret})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, Ipv6) | MaskBit(1, MediaOnly) | MaskBit(2, TcpoOnly) | MaskBit(3, Cdn), bw, WriteInt);
+                Write(MaskBit(0, Ipv6) | MaskBit(1, MediaOnly) | MaskBit(2, TcpoOnly) | MaskBit(3, Cdn) | MaskBit(4, Static) | MaskBit(10, Secret), bw, WriteInt);
                 Write(Id, bw, WriteInt);
                 Write(IpAddress, bw, WriteString);
                 Write(Port, bw, WriteInt);
+                Write(Secret, bw, WriteOption<Arr<byte>>(WriteBytes));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
@@ -75,10 +82,12 @@ namespace TLSharp.Rpc.Types
                 var mediaOnly = Read(br, ReadOption(flags, 1));
                 var tcpoOnly = Read(br, ReadOption(flags, 2));
                 var cdn = Read(br, ReadOption(flags, 3));
+                var @static = Read(br, ReadOption(flags, 4));
                 var id = Read(br, ReadInt);
                 var ipAddress = Read(br, ReadString);
                 var port = Read(br, ReadInt);
-                return new Tag(ipv6, mediaOnly, tcpoOnly, cdn, id, ipAddress, port);
+                var secret = Read(br, ReadOption(flags, 10, ReadBytes));
+                return new Tag(ipv6, mediaOnly, tcpoOnly, cdn, @static, id, ipAddress, port, secret);
             }
         }
 

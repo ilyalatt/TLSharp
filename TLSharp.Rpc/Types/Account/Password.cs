@@ -11,22 +11,28 @@ namespace TLSharp.Rpc.Types.Account
     {
         public sealed class NoTag : ITlTypeTag, IEquatable<NoTag>, IComparable<NoTag>, IComparable
         {
-            internal const uint TypeNumber = 0x96dabc18;
+            internal const uint TypeNumber = 0x5ea182f6;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Arr<byte> NewSalt;
+            public readonly Arr<byte> NewSecureSalt;
+            public readonly Arr<byte> SecureRandom;
             public readonly string EmailUnconfirmedPattern;
             
             public NoTag(
                 Some<Arr<byte>> newSalt,
+                Some<Arr<byte>> newSecureSalt,
+                Some<Arr<byte>> secureRandom,
                 Some<string> emailUnconfirmedPattern
             ) {
                 NewSalt = newSalt;
+                NewSecureSalt = newSecureSalt;
+                SecureRandom = secureRandom;
                 EmailUnconfirmedPattern = emailUnconfirmedPattern;
             }
             
-            (Arr<byte>, string) CmpTuple =>
-                (NewSalt, EmailUnconfirmedPattern);
+            (Arr<byte>, Arr<byte>, Arr<byte>, string) CmpTuple =>
+                (NewSalt, NewSecureSalt, SecureRandom, EmailUnconfirmedPattern);
 
             public bool Equals(NoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is NoTag x && Equals(x);
@@ -42,50 +48,63 @@ namespace TLSharp.Rpc.Types.Account
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(NewSalt: {NewSalt}, EmailUnconfirmedPattern: {EmailUnconfirmedPattern})";
+            public override string ToString() => $"(NewSalt: {NewSalt}, NewSecureSalt: {NewSecureSalt}, SecureRandom: {SecureRandom}, EmailUnconfirmedPattern: {EmailUnconfirmedPattern})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(NewSalt, bw, WriteBytes);
+                Write(NewSecureSalt, bw, WriteBytes);
+                Write(SecureRandom, bw, WriteBytes);
                 Write(EmailUnconfirmedPattern, bw, WriteString);
             }
             
             internal static NoTag DeserializeTag(BinaryReader br)
             {
                 var newSalt = Read(br, ReadBytes);
+                var newSecureSalt = Read(br, ReadBytes);
+                var secureRandom = Read(br, ReadBytes);
                 var emailUnconfirmedPattern = Read(br, ReadString);
-                return new NoTag(newSalt, emailUnconfirmedPattern);
+                return new NoTag(newSalt, newSecureSalt, secureRandom, emailUnconfirmedPattern);
             }
         }
 
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x7c18141c;
+            internal const uint TypeNumber = 0xca39b447;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
+            public readonly bool HasRecovery;
+            public readonly bool HasSecureValues;
             public readonly Arr<byte> CurrentSalt;
             public readonly Arr<byte> NewSalt;
+            public readonly Arr<byte> NewSecureSalt;
+            public readonly Arr<byte> SecureRandom;
             public readonly string Hint;
-            public readonly bool HasRecovery;
             public readonly string EmailUnconfirmedPattern;
             
             public Tag(
+                bool hasRecovery,
+                bool hasSecureValues,
                 Some<Arr<byte>> currentSalt,
                 Some<Arr<byte>> newSalt,
+                Some<Arr<byte>> newSecureSalt,
+                Some<Arr<byte>> secureRandom,
                 Some<string> hint,
-                bool hasRecovery,
                 Some<string> emailUnconfirmedPattern
             ) {
+                HasRecovery = hasRecovery;
+                HasSecureValues = hasSecureValues;
                 CurrentSalt = currentSalt;
                 NewSalt = newSalt;
+                NewSecureSalt = newSecureSalt;
+                SecureRandom = secureRandom;
                 Hint = hint;
-                HasRecovery = hasRecovery;
                 EmailUnconfirmedPattern = emailUnconfirmedPattern;
             }
             
-            (Arr<byte>, Arr<byte>, string, bool, string) CmpTuple =>
-                (CurrentSalt, NewSalt, Hint, HasRecovery, EmailUnconfirmedPattern);
+            (bool, bool, Arr<byte>, Arr<byte>, Arr<byte>, Arr<byte>, string, string) CmpTuple =>
+                (HasRecovery, HasSecureValues, CurrentSalt, NewSalt, NewSecureSalt, SecureRandom, Hint, EmailUnconfirmedPattern);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -101,26 +120,32 @@ namespace TLSharp.Rpc.Types.Account
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(CurrentSalt: {CurrentSalt}, NewSalt: {NewSalt}, Hint: {Hint}, HasRecovery: {HasRecovery}, EmailUnconfirmedPattern: {EmailUnconfirmedPattern})";
+            public override string ToString() => $"(HasRecovery: {HasRecovery}, HasSecureValues: {HasSecureValues}, CurrentSalt: {CurrentSalt}, NewSalt: {NewSalt}, NewSecureSalt: {NewSecureSalt}, SecureRandom: {SecureRandom}, Hint: {Hint}, EmailUnconfirmedPattern: {EmailUnconfirmedPattern})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
+                Write(MaskBit(0, HasRecovery) | MaskBit(1, HasSecureValues), bw, WriteInt);
                 Write(CurrentSalt, bw, WriteBytes);
                 Write(NewSalt, bw, WriteBytes);
+                Write(NewSecureSalt, bw, WriteBytes);
+                Write(SecureRandom, bw, WriteBytes);
                 Write(Hint, bw, WriteString);
-                Write(HasRecovery, bw, WriteBool);
                 Write(EmailUnconfirmedPattern, bw, WriteString);
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
+                var flags = Read(br, ReadInt);
+                var hasRecovery = Read(br, ReadOption(flags, 0));
+                var hasSecureValues = Read(br, ReadOption(flags, 1));
                 var currentSalt = Read(br, ReadBytes);
                 var newSalt = Read(br, ReadBytes);
+                var newSecureSalt = Read(br, ReadBytes);
+                var secureRandom = Read(br, ReadBytes);
                 var hint = Read(br, ReadString);
-                var hasRecovery = Read(br, ReadBool);
                 var emailUnconfirmedPattern = Read(br, ReadString);
-                return new Tag(currentSalt, newSalt, hint, hasRecovery, emailUnconfirmedPattern);
+                return new Tag(hasRecovery, hasSecureValues, currentSalt, newSalt, newSecureSalt, secureRandom, hint, emailUnconfirmedPattern);
             }
         }
 

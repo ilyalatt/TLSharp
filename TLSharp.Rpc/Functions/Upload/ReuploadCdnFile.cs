@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Upload
 {
-    public sealed class ReuploadCdnFile : ITlFunc<bool>, IEquatable<ReuploadCdnFile>, IComparable<ReuploadCdnFile>, IComparable
+    public sealed class ReuploadCdnFile : ITlFunc<Arr<T.FileHash>>, IEquatable<ReuploadCdnFile>, IComparable<ReuploadCdnFile>, IComparable
     {
         public Arr<byte> FileToken { get; }
         public Arr<byte> RequestToken { get; }
@@ -42,12 +42,12 @@ namespace TLSharp.Rpc.Functions.Upload
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x2e7a2020);
+            WriteUint(bw, 0x9b2754a8);
             Write(FileToken, bw, WriteBytes);
             Write(RequestToken, bw, WriteBytes);
         }
         
-        bool ITlFunc<bool>.DeserializeResult(BinaryReader br) =>
-            Read(br, ReadBool);
+        Arr<T.FileHash> ITlFunc<Arr<T.FileHash>>.DeserializeResult(BinaryReader br) =>
+            Read(br, ReadVector(T.FileHash.Deserialize));
     }
 }

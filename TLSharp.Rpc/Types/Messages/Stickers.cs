@@ -56,21 +56,21 @@ namespace TLSharp.Rpc.Types.Messages
 
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x8a8ecd32;
+            internal const uint TypeNumber = 0xe4599bbd;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly string Hash;
+            public readonly int Hash;
             public readonly Arr<T.Document> Stickers;
             
             public Tag(
-                Some<string> hash,
+                int hash,
                 Some<Arr<T.Document>> stickers
             ) {
                 Hash = hash;
                 Stickers = stickers;
             }
             
-            (string, Arr<T.Document>) CmpTuple =>
+            (int, Arr<T.Document>) CmpTuple =>
                 (Hash, Stickers);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -92,13 +92,13 @@ namespace TLSharp.Rpc.Types.Messages
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(Hash, bw, WriteString);
+                Write(Hash, bw, WriteInt);
                 Write(Stickers, bw, WriteVector<T.Document>(WriteSerializable));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
-                var hash = Read(br, ReadString);
+                var hash = Read(br, ReadInt);
                 var stickers = Read(br, ReadVector(T.Document.Deserialize));
                 return new Tag(hash, stickers);
             }

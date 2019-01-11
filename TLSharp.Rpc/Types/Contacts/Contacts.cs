@@ -56,22 +56,25 @@ namespace TLSharp.Rpc.Types.Contacts
 
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x6f8b8cb2;
+            internal const uint TypeNumber = 0xeae87e42;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Arr<T.Contact> Contacts;
+            public readonly int SavedCount;
             public readonly Arr<T.User> Users;
             
             public Tag(
                 Some<Arr<T.Contact>> contacts,
+                int savedCount,
                 Some<Arr<T.User>> users
             ) {
                 Contacts = contacts;
+                SavedCount = savedCount;
                 Users = users;
             }
             
-            (Arr<T.Contact>, Arr<T.User>) CmpTuple =>
-                (Contacts, Users);
+            (Arr<T.Contact>, int, Arr<T.User>) CmpTuple =>
+                (Contacts, SavedCount, Users);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -87,20 +90,22 @@ namespace TLSharp.Rpc.Types.Contacts
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Contacts: {Contacts}, Users: {Users})";
+            public override string ToString() => $"(Contacts: {Contacts}, SavedCount: {SavedCount}, Users: {Users})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Contacts, bw, WriteVector<T.Contact>(WriteSerializable));
+                Write(SavedCount, bw, WriteInt);
                 Write(Users, bw, WriteVector<T.User>(WriteSerializable));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var contacts = Read(br, ReadVector(T.Contact.Deserialize));
+                var savedCount = Read(br, ReadInt);
                 var users = Read(br, ReadVector(T.User.Deserialize));
-                return new Tag(contacts, users);
+                return new Tag(contacts, savedCount, users);
             }
         }
 

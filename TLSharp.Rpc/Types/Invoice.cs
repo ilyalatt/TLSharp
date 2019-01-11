@@ -20,6 +20,8 @@ namespace TLSharp.Rpc.Types
             public readonly bool EmailRequested;
             public readonly bool ShippingAddressRequested;
             public readonly bool Flexible;
+            public readonly bool PhoneToProvider;
+            public readonly bool EmailToProvider;
             public readonly string Currency;
             public readonly Arr<T.LabeledPrice> Prices;
             
@@ -30,6 +32,8 @@ namespace TLSharp.Rpc.Types
                 bool emailRequested,
                 bool shippingAddressRequested,
                 bool flexible,
+                bool phoneToProvider,
+                bool emailToProvider,
                 Some<string> currency,
                 Some<Arr<T.LabeledPrice>> prices
             ) {
@@ -39,12 +43,14 @@ namespace TLSharp.Rpc.Types
                 EmailRequested = emailRequested;
                 ShippingAddressRequested = shippingAddressRequested;
                 Flexible = flexible;
+                PhoneToProvider = phoneToProvider;
+                EmailToProvider = emailToProvider;
                 Currency = currency;
                 Prices = prices;
             }
             
-            (bool, bool, bool, bool, bool, bool, string, Arr<T.LabeledPrice>) CmpTuple =>
-                (Test, NameRequested, PhoneRequested, EmailRequested, ShippingAddressRequested, Flexible, Currency, Prices);
+            (bool, bool, bool, bool, bool, bool, bool, bool, string, Arr<T.LabeledPrice>) CmpTuple =>
+                (Test, NameRequested, PhoneRequested, EmailRequested, ShippingAddressRequested, Flexible, PhoneToProvider, EmailToProvider, Currency, Prices);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -60,12 +66,12 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Test: {Test}, NameRequested: {NameRequested}, PhoneRequested: {PhoneRequested}, EmailRequested: {EmailRequested}, ShippingAddressRequested: {ShippingAddressRequested}, Flexible: {Flexible}, Currency: {Currency}, Prices: {Prices})";
+            public override string ToString() => $"(Test: {Test}, NameRequested: {NameRequested}, PhoneRequested: {PhoneRequested}, EmailRequested: {EmailRequested}, ShippingAddressRequested: {ShippingAddressRequested}, Flexible: {Flexible}, PhoneToProvider: {PhoneToProvider}, EmailToProvider: {EmailToProvider}, Currency: {Currency}, Prices: {Prices})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, Test) | MaskBit(1, NameRequested) | MaskBit(2, PhoneRequested) | MaskBit(3, EmailRequested) | MaskBit(4, ShippingAddressRequested) | MaskBit(5, Flexible), bw, WriteInt);
+                Write(MaskBit(0, Test) | MaskBit(1, NameRequested) | MaskBit(2, PhoneRequested) | MaskBit(3, EmailRequested) | MaskBit(4, ShippingAddressRequested) | MaskBit(5, Flexible) | MaskBit(6, PhoneToProvider) | MaskBit(7, EmailToProvider), bw, WriteInt);
                 Write(Currency, bw, WriteString);
                 Write(Prices, bw, WriteVector<T.LabeledPrice>(WriteSerializable));
             }
@@ -79,9 +85,11 @@ namespace TLSharp.Rpc.Types
                 var emailRequested = Read(br, ReadOption(flags, 3));
                 var shippingAddressRequested = Read(br, ReadOption(flags, 4));
                 var flexible = Read(br, ReadOption(flags, 5));
+                var phoneToProvider = Read(br, ReadOption(flags, 6));
+                var emailToProvider = Read(br, ReadOption(flags, 7));
                 var currency = Read(br, ReadString);
                 var prices = Read(br, ReadVector(T.LabeledPrice.Deserialize));
-                return new Tag(test, nameRequested, phoneRequested, emailRequested, shippingAddressRequested, flexible, currency, prices);
+                return new Tag(test, nameRequested, phoneRequested, emailRequested, shippingAddressRequested, flexible, phoneToProvider, emailToProvider, currency, prices);
             }
         }
 

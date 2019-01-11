@@ -56,7 +56,7 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xc09be45f;
+            internal const uint TypeNumber = 0x44f9b43d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Out;
@@ -77,6 +77,8 @@ namespace TLSharp.Rpc.Types
             public readonly Option<Arr<T.MessageEntity>> Entities;
             public readonly Option<int> Views;
             public readonly Option<int> EditDate;
+            public readonly Option<string> PostAuthor;
+            public readonly Option<long> GroupedId;
             
             public Tag(
                 bool @out,
@@ -96,7 +98,9 @@ namespace TLSharp.Rpc.Types
                 Option<T.ReplyMarkup> replyMarkup,
                 Option<Arr<T.MessageEntity>> entities,
                 Option<int> views,
-                Option<int> editDate
+                Option<int> editDate,
+                Option<string> postAuthor,
+                Option<long> groupedId
             ) {
                 Out = @out;
                 Mentioned = mentioned;
@@ -116,10 +120,12 @@ namespace TLSharp.Rpc.Types
                 Entities = entities;
                 Views = views;
                 EditDate = editDate;
+                PostAuthor = postAuthor;
+                GroupedId = groupedId;
             }
             
-            (bool, bool, bool, bool, bool, int, Option<int>, T.Peer, Option<T.MessageFwdHeader>, Option<int>, Option<int>, int, string, Option<T.MessageMedia>, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>, Option<int>, Option<int>) CmpTuple =>
-                (Out, Mentioned, MediaUnread, Silent, Post, Id, FromId, ToId, FwdFrom, ViaBotId, ReplyToMsgId, Date, Message, Media, ReplyMarkup, Entities, Views, EditDate);
+            (bool, bool, bool, bool, bool, int, Option<int>, T.Peer, Option<T.MessageFwdHeader>, Option<int>, Option<int>, int, string, Option<T.MessageMedia>, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>, Option<int>, Option<int>, Option<string>, Option<long>) CmpTuple =>
+                (Out, Mentioned, MediaUnread, Silent, Post, Id, FromId, ToId, FwdFrom, ViaBotId, ReplyToMsgId, Date, Message, Media, ReplyMarkup, Entities, Views, EditDate, PostAuthor, GroupedId);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -135,12 +141,12 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Out: {Out}, Mentioned: {Mentioned}, MediaUnread: {MediaUnread}, Silent: {Silent}, Post: {Post}, Id: {Id}, FromId: {FromId}, ToId: {ToId}, FwdFrom: {FwdFrom}, ViaBotId: {ViaBotId}, ReplyToMsgId: {ReplyToMsgId}, Date: {Date}, Message: {Message}, Media: {Media}, ReplyMarkup: {ReplyMarkup}, Entities: {Entities}, Views: {Views}, EditDate: {EditDate})";
+            public override string ToString() => $"(Out: {Out}, Mentioned: {Mentioned}, MediaUnread: {MediaUnread}, Silent: {Silent}, Post: {Post}, Id: {Id}, FromId: {FromId}, ToId: {ToId}, FwdFrom: {FwdFrom}, ViaBotId: {ViaBotId}, ReplyToMsgId: {ReplyToMsgId}, Date: {Date}, Message: {Message}, Media: {Media}, ReplyMarkup: {ReplyMarkup}, Entities: {Entities}, Views: {Views}, EditDate: {EditDate}, PostAuthor: {PostAuthor}, GroupedId: {GroupedId})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(1, Out) | MaskBit(4, Mentioned) | MaskBit(5, MediaUnread) | MaskBit(13, Silent) | MaskBit(14, Post) | MaskBit(8, FromId) | MaskBit(2, FwdFrom) | MaskBit(11, ViaBotId) | MaskBit(3, ReplyToMsgId) | MaskBit(9, Media) | MaskBit(6, ReplyMarkup) | MaskBit(7, Entities) | MaskBit(10, Views) | MaskBit(15, EditDate), bw, WriteInt);
+                Write(MaskBit(1, Out) | MaskBit(4, Mentioned) | MaskBit(5, MediaUnread) | MaskBit(13, Silent) | MaskBit(14, Post) | MaskBit(8, FromId) | MaskBit(2, FwdFrom) | MaskBit(11, ViaBotId) | MaskBit(3, ReplyToMsgId) | MaskBit(9, Media) | MaskBit(6, ReplyMarkup) | MaskBit(7, Entities) | MaskBit(10, Views) | MaskBit(15, EditDate) | MaskBit(16, PostAuthor) | MaskBit(17, GroupedId), bw, WriteInt);
                 Write(Id, bw, WriteInt);
                 Write(FromId, bw, WriteOption<int>(WriteInt));
                 Write(ToId, bw, WriteSerializable);
@@ -154,6 +160,8 @@ namespace TLSharp.Rpc.Types
                 Write(Entities, bw, WriteOption<Arr<T.MessageEntity>>(WriteVector<T.MessageEntity>(WriteSerializable)));
                 Write(Views, bw, WriteOption<int>(WriteInt));
                 Write(EditDate, bw, WriteOption<int>(WriteInt));
+                Write(PostAuthor, bw, WriteOption<string>(WriteString));
+                Write(GroupedId, bw, WriteOption<long>(WriteLong));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
@@ -177,7 +185,9 @@ namespace TLSharp.Rpc.Types
                 var entities = Read(br, ReadOption(flags, 7, ReadVector(T.MessageEntity.Deserialize)));
                 var views = Read(br, ReadOption(flags, 10, ReadInt));
                 var editDate = Read(br, ReadOption(flags, 15, ReadInt));
-                return new Tag(@out, mentioned, mediaUnread, silent, post, id, fromId, toId, fwdFrom, viaBotId, replyToMsgId, date, message, media, replyMarkup, entities, views, editDate);
+                var postAuthor = Read(br, ReadOption(flags, 16, ReadString));
+                var groupedId = Read(br, ReadOption(flags, 17, ReadLong));
+                return new Tag(@out, mentioned, mediaUnread, silent, post, id, fromId, toId, fwdFrom, viaBotId, replyToMsgId, date, message, media, replyMarkup, entities, views, editDate, postAuthor, groupedId);
             }
         }
 

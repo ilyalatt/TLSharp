@@ -11,19 +11,28 @@ namespace TLSharp.Rpc.Types.Account
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xb7b72ab3;
+            internal const uint TypeNumber = 0x7bd9c3f1;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly string Email;
+            public readonly Arr<byte> SecureSalt;
+            public readonly Arr<byte> SecureSecret;
+            public readonly long SecureSecretId;
             
             public Tag(
-                Some<string> email
+                Some<string> email,
+                Some<Arr<byte>> secureSalt,
+                Some<Arr<byte>> secureSecret,
+                long secureSecretId
             ) {
                 Email = email;
+                SecureSalt = secureSalt;
+                SecureSecret = secureSecret;
+                SecureSecretId = secureSecretId;
             }
             
-            string CmpTuple =>
-                Email;
+            (string, Arr<byte>, Arr<byte>, long) CmpTuple =>
+                (Email, SecureSalt, SecureSecret, SecureSecretId);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -39,18 +48,24 @@ namespace TLSharp.Rpc.Types.Account
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Email: {Email})";
+            public override string ToString() => $"(Email: {Email}, SecureSalt: {SecureSalt}, SecureSecret: {SecureSecret}, SecureSecretId: {SecureSecretId})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Email, bw, WriteString);
+                Write(SecureSalt, bw, WriteBytes);
+                Write(SecureSecret, bw, WriteBytes);
+                Write(SecureSecretId, bw, WriteLong);
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var email = Read(br, ReadString);
-                return new Tag(email);
+                var secureSalt = Read(br, ReadBytes);
+                var secureSecret = Read(br, ReadBytes);
+                var secureSecretId = Read(br, ReadLong);
+                return new Tag(email, secureSalt, secureSecret, secureSecretId);
             }
         }
 

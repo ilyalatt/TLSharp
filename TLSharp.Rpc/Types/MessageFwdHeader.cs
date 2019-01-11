@@ -11,28 +11,37 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xc786ddcb;
+            internal const uint TypeNumber = 0x559ebe6d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly Option<int> FromId;
             public readonly int Date;
             public readonly Option<int> ChannelId;
             public readonly Option<int> ChannelPost;
+            public readonly Option<string> PostAuthor;
+            public readonly Option<T.Peer> SavedFromPeer;
+            public readonly Option<int> SavedFromMsgId;
             
             public Tag(
                 Option<int> fromId,
                 int date,
                 Option<int> channelId,
-                Option<int> channelPost
+                Option<int> channelPost,
+                Option<string> postAuthor,
+                Option<T.Peer> savedFromPeer,
+                Option<int> savedFromMsgId
             ) {
                 FromId = fromId;
                 Date = date;
                 ChannelId = channelId;
                 ChannelPost = channelPost;
+                PostAuthor = postAuthor;
+                SavedFromPeer = savedFromPeer;
+                SavedFromMsgId = savedFromMsgId;
             }
             
-            (Option<int>, int, Option<int>, Option<int>) CmpTuple =>
-                (FromId, Date, ChannelId, ChannelPost);
+            (Option<int>, int, Option<int>, Option<int>, Option<string>, Option<T.Peer>, Option<int>) CmpTuple =>
+                (FromId, Date, ChannelId, ChannelPost, PostAuthor, SavedFromPeer, SavedFromMsgId);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -48,16 +57,19 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(FromId: {FromId}, Date: {Date}, ChannelId: {ChannelId}, ChannelPost: {ChannelPost})";
+            public override string ToString() => $"(FromId: {FromId}, Date: {Date}, ChannelId: {ChannelId}, ChannelPost: {ChannelPost}, PostAuthor: {PostAuthor}, SavedFromPeer: {SavedFromPeer}, SavedFromMsgId: {SavedFromMsgId})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, FromId) | MaskBit(1, ChannelId) | MaskBit(2, ChannelPost), bw, WriteInt);
+                Write(MaskBit(0, FromId) | MaskBit(1, ChannelId) | MaskBit(2, ChannelPost) | MaskBit(3, PostAuthor) | MaskBit(4, SavedFromPeer) | MaskBit(4, SavedFromMsgId), bw, WriteInt);
                 Write(FromId, bw, WriteOption<int>(WriteInt));
                 Write(Date, bw, WriteInt);
                 Write(ChannelId, bw, WriteOption<int>(WriteInt));
                 Write(ChannelPost, bw, WriteOption<int>(WriteInt));
+                Write(PostAuthor, bw, WriteOption<string>(WriteString));
+                Write(SavedFromPeer, bw, WriteOption<T.Peer>(WriteSerializable));
+                Write(SavedFromMsgId, bw, WriteOption<int>(WriteInt));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
@@ -67,7 +79,10 @@ namespace TLSharp.Rpc.Types
                 var date = Read(br, ReadInt);
                 var channelId = Read(br, ReadOption(flags, 1, ReadInt));
                 var channelPost = Read(br, ReadOption(flags, 2, ReadInt));
-                return new Tag(fromId, date, channelId, channelPost);
+                var postAuthor = Read(br, ReadOption(flags, 3, ReadString));
+                var savedFromPeer = Read(br, ReadOption(flags, 4, T.Peer.Deserialize));
+                var savedFromMsgId = Read(br, ReadOption(flags, 4, ReadInt));
+                return new Tag(fromId, date, channelId, channelPost, postAuthor, savedFromPeer, savedFromMsgId);
             }
         }
 

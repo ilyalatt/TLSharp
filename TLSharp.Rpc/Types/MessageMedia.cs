@@ -56,22 +56,22 @@ namespace TLSharp.Rpc.Types
 
         public sealed class PhotoTag : ITlTypeTag, IEquatable<PhotoTag>, IComparable<PhotoTag>, IComparable
         {
-            internal const uint TypeNumber = 0x3d8ce53d;
+            internal const uint TypeNumber = 0x695150d7;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly T.Photo Photo;
-            public readonly string Caption;
+            public readonly Option<T.Photo> Photo;
+            public readonly Option<int> TtlSeconds;
             
             public PhotoTag(
-                Some<T.Photo> photo,
-                Some<string> caption
+                Option<T.Photo> photo,
+                Option<int> ttlSeconds
             ) {
                 Photo = photo;
-                Caption = caption;
+                TtlSeconds = ttlSeconds;
             }
             
-            (T.Photo, string) CmpTuple =>
-                (Photo, Caption);
+            (Option<T.Photo>, Option<int>) CmpTuple =>
+                (Photo, TtlSeconds);
 
             public bool Equals(PhotoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is PhotoTag x && Equals(x);
@@ -87,20 +87,22 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Photo: {Photo}, Caption: {Caption})";
+            public override string ToString() => $"(Photo: {Photo}, TtlSeconds: {TtlSeconds})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(Photo, bw, WriteSerializable);
-                Write(Caption, bw, WriteString);
+                Write(MaskBit(0, Photo) | MaskBit(2, TtlSeconds), bw, WriteInt);
+                Write(Photo, bw, WriteOption<T.Photo>(WriteSerializable));
+                Write(TtlSeconds, bw, WriteOption<int>(WriteInt));
             }
             
             internal static PhotoTag DeserializeTag(BinaryReader br)
             {
-                var photo = Read(br, T.Photo.Deserialize);
-                var caption = Read(br, ReadString);
-                return new PhotoTag(photo, caption);
+                var flags = Read(br, ReadInt);
+                var photo = Read(br, ReadOption(flags, 0, T.Photo.Deserialize));
+                var ttlSeconds = Read(br, ReadOption(flags, 2, ReadInt));
+                return new PhotoTag(photo, ttlSeconds);
             }
         }
 
@@ -151,28 +153,31 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ContactTag : ITlTypeTag, IEquatable<ContactTag>, IComparable<ContactTag>, IComparable
         {
-            internal const uint TypeNumber = 0x5e7d2f39;
+            internal const uint TypeNumber = 0xcbf24940;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly string PhoneNumber;
             public readonly string FirstName;
             public readonly string LastName;
+            public readonly string Vcard;
             public readonly int UserId;
             
             public ContactTag(
                 Some<string> phoneNumber,
                 Some<string> firstName,
                 Some<string> lastName,
+                Some<string> vcard,
                 int userId
             ) {
                 PhoneNumber = phoneNumber;
                 FirstName = firstName;
                 LastName = lastName;
+                Vcard = vcard;
                 UserId = userId;
             }
             
-            (string, string, string, int) CmpTuple =>
-                (PhoneNumber, FirstName, LastName, UserId);
+            (string, string, string, string, int) CmpTuple =>
+                (PhoneNumber, FirstName, LastName, Vcard, UserId);
 
             public bool Equals(ContactTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ContactTag x && Equals(x);
@@ -188,7 +193,7 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(PhoneNumber: {PhoneNumber}, FirstName: {FirstName}, LastName: {LastName}, UserId: {UserId})";
+            public override string ToString() => $"(PhoneNumber: {PhoneNumber}, FirstName: {FirstName}, LastName: {LastName}, Vcard: {Vcard}, UserId: {UserId})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -196,6 +201,7 @@ namespace TLSharp.Rpc.Types
                 Write(PhoneNumber, bw, WriteString);
                 Write(FirstName, bw, WriteString);
                 Write(LastName, bw, WriteString);
+                Write(Vcard, bw, WriteString);
                 Write(UserId, bw, WriteInt);
             }
             
@@ -204,8 +210,9 @@ namespace TLSharp.Rpc.Types
                 var phoneNumber = Read(br, ReadString);
                 var firstName = Read(br, ReadString);
                 var lastName = Read(br, ReadString);
+                var vcard = Read(br, ReadString);
                 var userId = Read(br, ReadInt);
-                return new ContactTag(phoneNumber, firstName, lastName, userId);
+                return new ContactTag(phoneNumber, firstName, lastName, vcard, userId);
             }
         }
 
@@ -256,22 +263,22 @@ namespace TLSharp.Rpc.Types
 
         public sealed class DocumentTag : ITlTypeTag, IEquatable<DocumentTag>, IComparable<DocumentTag>, IComparable
         {
-            internal const uint TypeNumber = 0xf3e02ea8;
+            internal const uint TypeNumber = 0x9cb070d7;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly T.Document Document;
-            public readonly string Caption;
+            public readonly Option<T.Document> Document;
+            public readonly Option<int> TtlSeconds;
             
             public DocumentTag(
-                Some<T.Document> document,
-                Some<string> caption
+                Option<T.Document> document,
+                Option<int> ttlSeconds
             ) {
                 Document = document;
-                Caption = caption;
+                TtlSeconds = ttlSeconds;
             }
             
-            (T.Document, string) CmpTuple =>
-                (Document, Caption);
+            (Option<T.Document>, Option<int>) CmpTuple =>
+                (Document, TtlSeconds);
 
             public bool Equals(DocumentTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is DocumentTag x && Equals(x);
@@ -287,20 +294,22 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Document: {Document}, Caption: {Caption})";
+            public override string ToString() => $"(Document: {Document}, TtlSeconds: {TtlSeconds})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(Document, bw, WriteSerializable);
-                Write(Caption, bw, WriteString);
+                Write(MaskBit(0, Document) | MaskBit(2, TtlSeconds), bw, WriteInt);
+                Write(Document, bw, WriteOption<T.Document>(WriteSerializable));
+                Write(TtlSeconds, bw, WriteOption<int>(WriteInt));
             }
             
             internal static DocumentTag DeserializeTag(BinaryReader br)
             {
-                var document = Read(br, T.Document.Deserialize);
-                var caption = Read(br, ReadString);
-                return new DocumentTag(document, caption);
+                var flags = Read(br, ReadInt);
+                var document = Read(br, ReadOption(flags, 0, T.Document.Deserialize));
+                var ttlSeconds = Read(br, ReadOption(flags, 2, ReadInt));
+                return new DocumentTag(document, ttlSeconds);
             }
         }
 
@@ -351,7 +360,7 @@ namespace TLSharp.Rpc.Types
 
         public sealed class VenueTag : ITlTypeTag, IEquatable<VenueTag>, IComparable<VenueTag>, IComparable
         {
-            internal const uint TypeNumber = 0x7912b71f;
+            internal const uint TypeNumber = 0x2ec0533f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly T.GeoPoint Geo;
@@ -359,23 +368,26 @@ namespace TLSharp.Rpc.Types
             public readonly string Address;
             public readonly string Provider;
             public readonly string VenueId;
+            public readonly string VenueType;
             
             public VenueTag(
                 Some<T.GeoPoint> geo,
                 Some<string> title,
                 Some<string> address,
                 Some<string> provider,
-                Some<string> venueId
+                Some<string> venueId,
+                Some<string> venueType
             ) {
                 Geo = geo;
                 Title = title;
                 Address = address;
                 Provider = provider;
                 VenueId = venueId;
+                VenueType = venueType;
             }
             
-            (T.GeoPoint, string, string, string, string) CmpTuple =>
-                (Geo, Title, Address, Provider, VenueId);
+            (T.GeoPoint, string, string, string, string, string) CmpTuple =>
+                (Geo, Title, Address, Provider, VenueId, VenueType);
 
             public bool Equals(VenueTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is VenueTag x && Equals(x);
@@ -391,7 +403,7 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Geo: {Geo}, Title: {Title}, Address: {Address}, Provider: {Provider}, VenueId: {VenueId})";
+            public override string ToString() => $"(Geo: {Geo}, Title: {Title}, Address: {Address}, Provider: {Provider}, VenueId: {VenueId}, VenueType: {VenueType})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -401,6 +413,7 @@ namespace TLSharp.Rpc.Types
                 Write(Address, bw, WriteString);
                 Write(Provider, bw, WriteString);
                 Write(VenueId, bw, WriteString);
+                Write(VenueType, bw, WriteString);
             }
             
             internal static VenueTag DeserializeTag(BinaryReader br)
@@ -410,7 +423,8 @@ namespace TLSharp.Rpc.Types
                 var address = Read(br, ReadString);
                 var provider = Read(br, ReadString);
                 var venueId = Read(br, ReadString);
-                return new VenueTag(geo, title, address, provider, venueId);
+                var venueType = Read(br, ReadString);
+                return new VenueTag(geo, title, address, provider, venueId, venueType);
             }
         }
 
@@ -544,6 +558,56 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class GeoLiveTag : ITlTypeTag, IEquatable<GeoLiveTag>, IComparable<GeoLiveTag>, IComparable
+        {
+            internal const uint TypeNumber = 0x7c3c2609;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly T.GeoPoint Geo;
+            public readonly int Period;
+            
+            public GeoLiveTag(
+                Some<T.GeoPoint> geo,
+                int period
+            ) {
+                Geo = geo;
+                Period = period;
+            }
+            
+            (T.GeoPoint, int) CmpTuple =>
+                (Geo, Period);
+
+            public bool Equals(GeoLiveTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is GeoLiveTag x && Equals(x);
+            public static bool operator ==(GeoLiveTag x, GeoLiveTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(GeoLiveTag x, GeoLiveTag y) => !(x == y);
+
+            public int CompareTo(GeoLiveTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is GeoLiveTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(GeoLiveTag x, GeoLiveTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(GeoLiveTag x, GeoLiveTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(GeoLiveTag x, GeoLiveTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(GeoLiveTag x, GeoLiveTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Geo: {Geo}, Period: {Period})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Geo, bw, WriteSerializable);
+                Write(Period, bw, WriteInt);
+            }
+            
+            internal static GeoLiveTag DeserializeTag(BinaryReader br)
+            {
+                var geo = Read(br, T.GeoPoint.Deserialize);
+                var period = Read(br, ReadInt);
+                return new GeoLiveTag(geo, period);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         MessageMedia(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -557,6 +621,7 @@ namespace TLSharp.Rpc.Types
         public static explicit operator MessageMedia(VenueTag tag) => new MessageMedia(tag);
         public static explicit operator MessageMedia(GameTag tag) => new MessageMedia(tag);
         public static explicit operator MessageMedia(InvoiceTag tag) => new MessageMedia(tag);
+        public static explicit operator MessageMedia(GeoLiveTag tag) => new MessageMedia(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -579,7 +644,8 @@ namespace TLSharp.Rpc.Types
                 case VenueTag.TypeNumber: return (MessageMedia) VenueTag.DeserializeTag(br);
                 case GameTag.TypeNumber: return (MessageMedia) GameTag.DeserializeTag(br);
                 case InvoiceTag.TypeNumber: return (MessageMedia) InvoiceTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, PhotoTag.TypeNumber, GeoTag.TypeNumber, ContactTag.TypeNumber, UnsupportedTag.TypeNumber, DocumentTag.TypeNumber, WebPageTag.TypeNumber, VenueTag.TypeNumber, GameTag.TypeNumber, InvoiceTag.TypeNumber });
+                case GeoLiveTag.TypeNumber: return (MessageMedia) GeoLiveTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { EmptyTag.TypeNumber, PhotoTag.TypeNumber, GeoTag.TypeNumber, ContactTag.TypeNumber, UnsupportedTag.TypeNumber, DocumentTag.TypeNumber, WebPageTag.TypeNumber, VenueTag.TypeNumber, GameTag.TypeNumber, InvoiceTag.TypeNumber, GeoLiveTag.TypeNumber });
             }
         }
 
@@ -594,7 +660,8 @@ namespace TLSharp.Rpc.Types
             Func<WebPageTag, T> webPageTag = null,
             Func<VenueTag, T> venueTag = null,
             Func<GameTag, T> gameTag = null,
-            Func<InvoiceTag, T> invoiceTag = null
+            Func<InvoiceTag, T> invoiceTag = null,
+            Func<GeoLiveTag, T> geoLiveTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -609,6 +676,7 @@ namespace TLSharp.Rpc.Types
                 case VenueTag x when venueTag != null: return venueTag(x);
                 case GameTag x when gameTag != null: return gameTag(x);
                 case InvoiceTag x when invoiceTag != null: return invoiceTag(x);
+                case GeoLiveTag x when geoLiveTag != null: return geoLiveTag(x);
                 default: return _();
             }
         }
@@ -623,7 +691,8 @@ namespace TLSharp.Rpc.Types
             Func<WebPageTag, T> webPageTag,
             Func<VenueTag, T> venueTag,
             Func<GameTag, T> gameTag,
-            Func<InvoiceTag, T> invoiceTag
+            Func<InvoiceTag, T> invoiceTag,
+            Func<GeoLiveTag, T> geoLiveTag
         ) => Match(
             () => throw new Exception("WTF"),
             emptyTag ?? throw new ArgumentNullException(nameof(emptyTag)),
@@ -635,7 +704,8 @@ namespace TLSharp.Rpc.Types
             webPageTag ?? throw new ArgumentNullException(nameof(webPageTag)),
             venueTag ?? throw new ArgumentNullException(nameof(venueTag)),
             gameTag ?? throw new ArgumentNullException(nameof(gameTag)),
-            invoiceTag ?? throw new ArgumentNullException(nameof(invoiceTag))
+            invoiceTag ?? throw new ArgumentNullException(nameof(invoiceTag)),
+            geoLiveTag ?? throw new ArgumentNullException(nameof(geoLiveTag))
         );
 
         int GetTagOrder()
@@ -652,6 +722,7 @@ namespace TLSharp.Rpc.Types
                 case VenueTag _: return 7;
                 case GameTag _: return 8;
                 case InvoiceTag _: return 9;
+                case GeoLiveTag _: return 10;
                 default: throw new Exception("WTF");
             }
         }

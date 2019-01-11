@@ -10,18 +10,18 @@ namespace TLSharp.Rpc.Functions.Messages
     public sealed class ToggleDialogPin : ITlFunc<bool>, IEquatable<ToggleDialogPin>, IComparable<ToggleDialogPin>, IComparable
     {
         public bool Pinned { get; }
-        public T.InputPeer Peer { get; }
+        public T.InputDialogPeer Peer { get; }
         
         public ToggleDialogPin(
             bool pinned,
-            Some<T.InputPeer> peer
+            Some<T.InputDialogPeer> peer
         ) {
             Pinned = pinned;
             Peer = peer;
         }
         
         
-        (bool, T.InputPeer) CmpTuple =>
+        (bool, T.InputDialogPeer) CmpTuple =>
             (Pinned, Peer);
 
         public bool Equals(ToggleDialogPin other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -42,7 +42,7 @@ namespace TLSharp.Rpc.Functions.Messages
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x3289be6a);
+            WriteUint(bw, 0xa731e257);
             Write(MaskBit(0, Pinned), bw, WriteInt);
             Write(Peer, bw, WriteSerializable);
         }

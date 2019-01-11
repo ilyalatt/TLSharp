@@ -66,28 +66,31 @@ namespace TLSharp.Rpc.Types.Upload
 
         public sealed class CdnRedirectTag : ITlTypeTag, IEquatable<CdnRedirectTag>, IComparable<CdnRedirectTag>, IComparable
         {
-            internal const uint TypeNumber = 0x1508485a;
+            internal const uint TypeNumber = 0xf18cda44;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly int DcId;
             public readonly Arr<byte> FileToken;
             public readonly Arr<byte> EncryptionKey;
             public readonly Arr<byte> EncryptionIv;
+            public readonly Arr<T.FileHash> FileHashes;
             
             public CdnRedirectTag(
                 int dcId,
                 Some<Arr<byte>> fileToken,
                 Some<Arr<byte>> encryptionKey,
-                Some<Arr<byte>> encryptionIv
+                Some<Arr<byte>> encryptionIv,
+                Some<Arr<T.FileHash>> fileHashes
             ) {
                 DcId = dcId;
                 FileToken = fileToken;
                 EncryptionKey = encryptionKey;
                 EncryptionIv = encryptionIv;
+                FileHashes = fileHashes;
             }
             
-            (int, Arr<byte>, Arr<byte>, Arr<byte>) CmpTuple =>
-                (DcId, FileToken, EncryptionKey, EncryptionIv);
+            (int, Arr<byte>, Arr<byte>, Arr<byte>, Arr<T.FileHash>) CmpTuple =>
+                (DcId, FileToken, EncryptionKey, EncryptionIv, FileHashes);
 
             public bool Equals(CdnRedirectTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is CdnRedirectTag x && Equals(x);
@@ -103,7 +106,7 @@ namespace TLSharp.Rpc.Types.Upload
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(DcId: {DcId}, FileToken: {FileToken}, EncryptionKey: {EncryptionKey}, EncryptionIv: {EncryptionIv})";
+            public override string ToString() => $"(DcId: {DcId}, FileToken: {FileToken}, EncryptionKey: {EncryptionKey}, EncryptionIv: {EncryptionIv}, FileHashes: {FileHashes})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -112,6 +115,7 @@ namespace TLSharp.Rpc.Types.Upload
                 Write(FileToken, bw, WriteBytes);
                 Write(EncryptionKey, bw, WriteBytes);
                 Write(EncryptionIv, bw, WriteBytes);
+                Write(FileHashes, bw, WriteVector<T.FileHash>(WriteSerializable));
             }
             
             internal static CdnRedirectTag DeserializeTag(BinaryReader br)
@@ -120,7 +124,8 @@ namespace TLSharp.Rpc.Types.Upload
                 var fileToken = Read(br, ReadBytes);
                 var encryptionKey = Read(br, ReadBytes);
                 var encryptionIv = Read(br, ReadBytes);
-                return new CdnRedirectTag(dcId, fileToken, encryptionKey, encryptionIv);
+                var fileHashes = Read(br, ReadVector(T.FileHash.Deserialize));
+                return new CdnRedirectTag(dcId, fileToken, encryptionKey, encryptionIv, fileHashes);
             }
         }
 

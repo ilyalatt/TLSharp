@@ -11,19 +11,19 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class EmptyTag : ITlTypeTag, IEquatable<EmptyTag>, IComparable<EmptyTag>, IComparable
         {
-            internal const uint TypeNumber = 0xba4baec5;
+            internal const uint TypeNumber = 0x1b0c841a;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-
+            public readonly Option<int> Date;
             
             public EmptyTag(
-
+                Option<int> date
             ) {
-
+                Date = date;
             }
             
-            Unit CmpTuple =>
-                Unit.Default;
+            Option<int> CmpTuple =>
+                Date;
 
             public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is EmptyTag x && Equals(x);
@@ -39,18 +39,20 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"()";
+            public override string ToString() => $"(Date: {Date})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-
+                Write(MaskBit(0, Date), bw, WriteInt);
+                Write(Date, bw, WriteOption<int>(WriteInt));
             }
             
             internal static EmptyTag DeserializeTag(BinaryReader br)
             {
-
-                return new EmptyTag();
+                var flags = Read(br, ReadInt);
+                var date = Read(br, ReadOption(flags, 0, ReadInt));
+                return new EmptyTag(date);
             }
         }
 

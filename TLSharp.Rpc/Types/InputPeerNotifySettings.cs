@@ -11,19 +11,19 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x38935eb2;
+            internal const uint TypeNumber = 0x9c3d198e;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
-            public readonly bool ShowPreviews;
-            public readonly bool Silent;
-            public readonly int MuteUntil;
-            public readonly string Sound;
+            public readonly Option<bool> ShowPreviews;
+            public readonly Option<bool> Silent;
+            public readonly Option<int> MuteUntil;
+            public readonly Option<string> Sound;
             
             public Tag(
-                bool showPreviews,
-                bool silent,
-                int muteUntil,
-                Some<string> sound
+                Option<bool> showPreviews,
+                Option<bool> silent,
+                Option<int> muteUntil,
+                Option<string> sound
             ) {
                 ShowPreviews = showPreviews;
                 Silent = silent;
@@ -31,7 +31,7 @@ namespace TLSharp.Rpc.Types
                 Sound = sound;
             }
             
-            (bool, bool, int, string) CmpTuple =>
+            (Option<bool>, Option<bool>, Option<int>, Option<string>) CmpTuple =>
                 (ShowPreviews, Silent, MuteUntil, Sound);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
@@ -53,18 +53,20 @@ namespace TLSharp.Rpc.Types
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, ShowPreviews) | MaskBit(1, Silent), bw, WriteInt);
-                Write(MuteUntil, bw, WriteInt);
-                Write(Sound, bw, WriteString);
+                Write(MaskBit(0, ShowPreviews) | MaskBit(1, Silent) | MaskBit(2, MuteUntil) | MaskBit(3, Sound), bw, WriteInt);
+                Write(ShowPreviews, bw, WriteOption<bool>(WriteBool));
+                Write(Silent, bw, WriteOption<bool>(WriteBool));
+                Write(MuteUntil, bw, WriteOption<int>(WriteInt));
+                Write(Sound, bw, WriteOption<string>(WriteString));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
-                var showPreviews = Read(br, ReadOption(flags, 0));
-                var silent = Read(br, ReadOption(flags, 1));
-                var muteUntil = Read(br, ReadInt);
-                var sound = Read(br, ReadString);
+                var showPreviews = Read(br, ReadOption(flags, 0, ReadBool));
+                var silent = Read(br, ReadOption(flags, 1, ReadBool));
+                var muteUntil = Read(br, ReadOption(flags, 2, ReadInt));
+                var sound = Read(br, ReadOption(flags, 3, ReadString));
                 return new Tag(showPreviews, silent, muteUntil, sound);
             }
         }

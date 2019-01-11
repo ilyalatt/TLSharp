@@ -16,6 +16,7 @@ namespace TLSharp.Rpc.Functions.Messages
         public int Limit { get; }
         public int MaxId { get; }
         public int MinId { get; }
+        public int Hash { get; }
         
         public GetHistory(
             Some<T.InputPeer> peer,
@@ -24,7 +25,8 @@ namespace TLSharp.Rpc.Functions.Messages
             int addOffset,
             int limit,
             int maxId,
-            int minId
+            int minId,
+            int hash
         ) {
             Peer = peer;
             OffsetId = offsetId;
@@ -33,11 +35,12 @@ namespace TLSharp.Rpc.Functions.Messages
             Limit = limit;
             MaxId = maxId;
             MinId = minId;
+            Hash = hash;
         }
         
         
-        (T.InputPeer, int, int, int, int, int, int) CmpTuple =>
-            (Peer, OffsetId, OffsetDate, AddOffset, Limit, MaxId, MinId);
+        (T.InputPeer, int, int, int, int, int, int, int) CmpTuple =>
+            (Peer, OffsetId, OffsetDate, AddOffset, Limit, MaxId, MinId, Hash);
 
         public bool Equals(GetHistory other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetHistory x && Equals(x);
@@ -53,11 +56,11 @@ namespace TLSharp.Rpc.Functions.Messages
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Peer: {Peer}, OffsetId: {OffsetId}, OffsetDate: {OffsetDate}, AddOffset: {AddOffset}, Limit: {Limit}, MaxId: {MaxId}, MinId: {MinId})";
+        public override string ToString() => $"(Peer: {Peer}, OffsetId: {OffsetId}, OffsetDate: {OffsetDate}, AddOffset: {AddOffset}, Limit: {Limit}, MaxId: {MaxId}, MinId: {MinId}, Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0xafa92846);
+            WriteUint(bw, 0xdcbb8260);
             Write(Peer, bw, WriteSerializable);
             Write(OffsetId, bw, WriteInt);
             Write(OffsetDate, bw, WriteInt);
@@ -65,6 +68,7 @@ namespace TLSharp.Rpc.Functions.Messages
             Write(Limit, bw, WriteInt);
             Write(MaxId, bw, WriteInt);
             Write(MinId, bw, WriteInt);
+            Write(Hash, bw, WriteInt);
         }
         
         T.Messages.Messages ITlFunc<T.Messages.Messages>.DeserializeResult(BinaryReader br) =>

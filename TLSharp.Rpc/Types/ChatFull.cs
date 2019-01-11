@@ -81,16 +81,19 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTag : ITlTypeTag, IEquatable<ChannelTag>, IComparable<ChannelTag>, IComparable
         {
-            internal const uint TypeNumber = 0xc3d5512f;
+            internal const uint TypeNumber = 0x76af5481;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool CanViewParticipants;
             public readonly bool CanSetUsername;
+            public readonly bool CanSetStickers;
+            public readonly bool HiddenPrehistory;
             public readonly int Id;
             public readonly string About;
             public readonly Option<int> ParticipantsCount;
             public readonly Option<int> AdminsCount;
             public readonly Option<int> KickedCount;
+            public readonly Option<int> BannedCount;
             public readonly int ReadInboxMaxId;
             public readonly int ReadOutboxMaxId;
             public readonly int UnreadCount;
@@ -101,15 +104,20 @@ namespace TLSharp.Rpc.Types
             public readonly Option<int> MigratedFromChatId;
             public readonly Option<int> MigratedFromMaxId;
             public readonly Option<int> PinnedMsgId;
+            public readonly Option<T.StickerSet> Stickerset;
+            public readonly Option<int> AvailableMinId;
             
             public ChannelTag(
                 bool canViewParticipants,
                 bool canSetUsername,
+                bool canSetStickers,
+                bool hiddenPrehistory,
                 int id,
                 Some<string> about,
                 Option<int> participantsCount,
                 Option<int> adminsCount,
                 Option<int> kickedCount,
+                Option<int> bannedCount,
                 int readInboxMaxId,
                 int readOutboxMaxId,
                 int unreadCount,
@@ -119,15 +127,20 @@ namespace TLSharp.Rpc.Types
                 Some<Arr<T.BotInfo>> botInfo,
                 Option<int> migratedFromChatId,
                 Option<int> migratedFromMaxId,
-                Option<int> pinnedMsgId
+                Option<int> pinnedMsgId,
+                Option<T.StickerSet> stickerset,
+                Option<int> availableMinId
             ) {
                 CanViewParticipants = canViewParticipants;
                 CanSetUsername = canSetUsername;
+                CanSetStickers = canSetStickers;
+                HiddenPrehistory = hiddenPrehistory;
                 Id = id;
                 About = about;
                 ParticipantsCount = participantsCount;
                 AdminsCount = adminsCount;
                 KickedCount = kickedCount;
+                BannedCount = bannedCount;
                 ReadInboxMaxId = readInboxMaxId;
                 ReadOutboxMaxId = readOutboxMaxId;
                 UnreadCount = unreadCount;
@@ -138,10 +151,12 @@ namespace TLSharp.Rpc.Types
                 MigratedFromChatId = migratedFromChatId;
                 MigratedFromMaxId = migratedFromMaxId;
                 PinnedMsgId = pinnedMsgId;
+                Stickerset = stickerset;
+                AvailableMinId = availableMinId;
             }
             
-            (bool, bool, int, string, Option<int>, Option<int>, Option<int>, int, int, int, T.Photo, T.PeerNotifySettings, T.ExportedChatInvite, Arr<T.BotInfo>, Option<int>, Option<int>, Option<int>) CmpTuple =>
-                (CanViewParticipants, CanSetUsername, Id, About, ParticipantsCount, AdminsCount, KickedCount, ReadInboxMaxId, ReadOutboxMaxId, UnreadCount, ChatPhoto, NotifySettings, ExportedInvite, BotInfo, MigratedFromChatId, MigratedFromMaxId, PinnedMsgId);
+            (bool, bool, bool, bool, int, string, Option<int>, Option<int>, Option<int>, Option<int>, int, int, int, T.Photo, T.PeerNotifySettings, T.ExportedChatInvite, Arr<T.BotInfo>, Option<int>, Option<int>, Option<int>, Option<T.StickerSet>, Option<int>) CmpTuple =>
+                (CanViewParticipants, CanSetUsername, CanSetStickers, HiddenPrehistory, Id, About, ParticipantsCount, AdminsCount, KickedCount, BannedCount, ReadInboxMaxId, ReadOutboxMaxId, UnreadCount, ChatPhoto, NotifySettings, ExportedInvite, BotInfo, MigratedFromChatId, MigratedFromMaxId, PinnedMsgId, Stickerset, AvailableMinId);
 
             public bool Equals(ChannelTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChannelTag x && Equals(x);
@@ -157,17 +172,18 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(CanViewParticipants: {CanViewParticipants}, CanSetUsername: {CanSetUsername}, Id: {Id}, About: {About}, ParticipantsCount: {ParticipantsCount}, AdminsCount: {AdminsCount}, KickedCount: {KickedCount}, ReadInboxMaxId: {ReadInboxMaxId}, ReadOutboxMaxId: {ReadOutboxMaxId}, UnreadCount: {UnreadCount}, ChatPhoto: {ChatPhoto}, NotifySettings: {NotifySettings}, ExportedInvite: {ExportedInvite}, BotInfo: {BotInfo}, MigratedFromChatId: {MigratedFromChatId}, MigratedFromMaxId: {MigratedFromMaxId}, PinnedMsgId: {PinnedMsgId})";
+            public override string ToString() => $"(CanViewParticipants: {CanViewParticipants}, CanSetUsername: {CanSetUsername}, CanSetStickers: {CanSetStickers}, HiddenPrehistory: {HiddenPrehistory}, Id: {Id}, About: {About}, ParticipantsCount: {ParticipantsCount}, AdminsCount: {AdminsCount}, KickedCount: {KickedCount}, BannedCount: {BannedCount}, ReadInboxMaxId: {ReadInboxMaxId}, ReadOutboxMaxId: {ReadOutboxMaxId}, UnreadCount: {UnreadCount}, ChatPhoto: {ChatPhoto}, NotifySettings: {NotifySettings}, ExportedInvite: {ExportedInvite}, BotInfo: {BotInfo}, MigratedFromChatId: {MigratedFromChatId}, MigratedFromMaxId: {MigratedFromMaxId}, PinnedMsgId: {PinnedMsgId}, Stickerset: {Stickerset}, AvailableMinId: {AvailableMinId})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(3, CanViewParticipants) | MaskBit(6, CanSetUsername) | MaskBit(0, ParticipantsCount) | MaskBit(1, AdminsCount) | MaskBit(2, KickedCount) | MaskBit(4, MigratedFromChatId) | MaskBit(4, MigratedFromMaxId) | MaskBit(5, PinnedMsgId), bw, WriteInt);
+                Write(MaskBit(3, CanViewParticipants) | MaskBit(6, CanSetUsername) | MaskBit(7, CanSetStickers) | MaskBit(10, HiddenPrehistory) | MaskBit(0, ParticipantsCount) | MaskBit(1, AdminsCount) | MaskBit(2, KickedCount) | MaskBit(2, BannedCount) | MaskBit(4, MigratedFromChatId) | MaskBit(4, MigratedFromMaxId) | MaskBit(5, PinnedMsgId) | MaskBit(8, Stickerset) | MaskBit(9, AvailableMinId), bw, WriteInt);
                 Write(Id, bw, WriteInt);
                 Write(About, bw, WriteString);
                 Write(ParticipantsCount, bw, WriteOption<int>(WriteInt));
                 Write(AdminsCount, bw, WriteOption<int>(WriteInt));
                 Write(KickedCount, bw, WriteOption<int>(WriteInt));
+                Write(BannedCount, bw, WriteOption<int>(WriteInt));
                 Write(ReadInboxMaxId, bw, WriteInt);
                 Write(ReadOutboxMaxId, bw, WriteInt);
                 Write(UnreadCount, bw, WriteInt);
@@ -178,6 +194,8 @@ namespace TLSharp.Rpc.Types
                 Write(MigratedFromChatId, bw, WriteOption<int>(WriteInt));
                 Write(MigratedFromMaxId, bw, WriteOption<int>(WriteInt));
                 Write(PinnedMsgId, bw, WriteOption<int>(WriteInt));
+                Write(Stickerset, bw, WriteOption<T.StickerSet>(WriteSerializable));
+                Write(AvailableMinId, bw, WriteOption<int>(WriteInt));
             }
             
             internal static ChannelTag DeserializeTag(BinaryReader br)
@@ -185,11 +203,14 @@ namespace TLSharp.Rpc.Types
                 var flags = Read(br, ReadInt);
                 var canViewParticipants = Read(br, ReadOption(flags, 3));
                 var canSetUsername = Read(br, ReadOption(flags, 6));
+                var canSetStickers = Read(br, ReadOption(flags, 7));
+                var hiddenPrehistory = Read(br, ReadOption(flags, 10));
                 var id = Read(br, ReadInt);
                 var about = Read(br, ReadString);
                 var participantsCount = Read(br, ReadOption(flags, 0, ReadInt));
                 var adminsCount = Read(br, ReadOption(flags, 1, ReadInt));
                 var kickedCount = Read(br, ReadOption(flags, 2, ReadInt));
+                var bannedCount = Read(br, ReadOption(flags, 2, ReadInt));
                 var readInboxMaxId = Read(br, ReadInt);
                 var readOutboxMaxId = Read(br, ReadInt);
                 var unreadCount = Read(br, ReadInt);
@@ -200,7 +221,9 @@ namespace TLSharp.Rpc.Types
                 var migratedFromChatId = Read(br, ReadOption(flags, 4, ReadInt));
                 var migratedFromMaxId = Read(br, ReadOption(flags, 4, ReadInt));
                 var pinnedMsgId = Read(br, ReadOption(flags, 5, ReadInt));
-                return new ChannelTag(canViewParticipants, canSetUsername, id, about, participantsCount, adminsCount, kickedCount, readInboxMaxId, readOutboxMaxId, unreadCount, chatPhoto, notifySettings, exportedInvite, botInfo, migratedFromChatId, migratedFromMaxId, pinnedMsgId);
+                var stickerset = Read(br, ReadOption(flags, 8, T.StickerSet.Deserialize));
+                var availableMinId = Read(br, ReadOption(flags, 9, ReadInt));
+                return new ChannelTag(canViewParticipants, canSetUsername, canSetStickers, hiddenPrehistory, id, about, participantsCount, adminsCount, kickedCount, bannedCount, readInboxMaxId, readOutboxMaxId, unreadCount, chatPhoto, notifySettings, exportedInvite, botInfo, migratedFromChatId, migratedFromMaxId, pinnedMsgId, stickerset, availableMinId);
             }
         }
 

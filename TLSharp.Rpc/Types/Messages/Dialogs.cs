@@ -134,11 +134,57 @@ namespace TLSharp.Rpc.Types.Messages
             }
         }
 
+        public sealed class NotModifiedTag : ITlTypeTag, IEquatable<NotModifiedTag>, IComparable<NotModifiedTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xf0e3e596;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+            public readonly int Count;
+            
+            public NotModifiedTag(
+                int count
+            ) {
+                Count = count;
+            }
+            
+            int CmpTuple =>
+                Count;
+
+            public bool Equals(NotModifiedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is NotModifiedTag x && Equals(x);
+            public static bool operator ==(NotModifiedTag x, NotModifiedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(NotModifiedTag x, NotModifiedTag y) => !(x == y);
+
+            public int CompareTo(NotModifiedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is NotModifiedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Count: {Count})";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+                Write(Count, bw, WriteInt);
+            }
+            
+            internal static NotModifiedTag DeserializeTag(BinaryReader br)
+            {
+                var count = Read(br, ReadInt);
+                return new NotModifiedTag(count);
+            }
+        }
+
         readonly ITlTypeTag _tag;
         Dialogs(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
         public static explicit operator Dialogs(Tag tag) => new Dialogs(tag);
         public static explicit operator Dialogs(SliceTag tag) => new Dialogs(tag);
+        public static explicit operator Dialogs(NotModifiedTag tag) => new Dialogs(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -153,31 +199,36 @@ namespace TLSharp.Rpc.Types.Messages
             {
                 case Tag.TypeNumber: return (Dialogs) Tag.DeserializeTag(br);
                 case SliceTag.TypeNumber: return (Dialogs) SliceTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, SliceTag.TypeNumber });
+                case NotModifiedTag.TypeNumber: return (Dialogs) NotModifiedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, SliceTag.TypeNumber, NotModifiedTag.TypeNumber });
             }
         }
 
         public T Match<T>(
             Func<T> _,
             Func<Tag, T> tag = null,
-            Func<SliceTag, T> sliceTag = null
+            Func<SliceTag, T> sliceTag = null,
+            Func<NotModifiedTag, T> notModifiedTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
             {
                 case Tag x when tag != null: return tag(x);
                 case SliceTag x when sliceTag != null: return sliceTag(x);
+                case NotModifiedTag x when notModifiedTag != null: return notModifiedTag(x);
                 default: return _();
             }
         }
 
         public T Match<T>(
             Func<Tag, T> tag,
-            Func<SliceTag, T> sliceTag
+            Func<SliceTag, T> sliceTag,
+            Func<NotModifiedTag, T> notModifiedTag
         ) => Match(
             () => throw new Exception("WTF"),
             tag ?? throw new ArgumentNullException(nameof(tag)),
-            sliceTag ?? throw new ArgumentNullException(nameof(sliceTag))
+            sliceTag ?? throw new ArgumentNullException(nameof(sliceTag)),
+            notModifiedTag ?? throw new ArgumentNullException(nameof(notModifiedTag))
         );
 
         int GetTagOrder()
@@ -186,6 +237,7 @@ namespace TLSharp.Rpc.Types.Messages
             {
                 case Tag _: return 0;
                 case SliceTag _: return 1;
+                case NotModifiedTag _: return 2;
                 default: throw new Exception("WTF");
             }
         }

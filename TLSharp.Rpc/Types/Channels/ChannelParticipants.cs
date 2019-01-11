@@ -64,10 +64,56 @@ namespace TLSharp.Rpc.Types.Channels
             }
         }
 
+        public sealed class NotModifiedTag : ITlTypeTag, IEquatable<NotModifiedTag>, IComparable<NotModifiedTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xf0173fe9;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public NotModifiedTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(NotModifiedTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is NotModifiedTag x && Equals(x);
+            public static bool operator ==(NotModifiedTag x, NotModifiedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(NotModifiedTag x, NotModifiedTag y) => !(x == y);
+
+            public int CompareTo(NotModifiedTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is NotModifiedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(NotModifiedTag x, NotModifiedTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static NotModifiedTag DeserializeTag(BinaryReader br)
+            {
+
+                return new NotModifiedTag();
+            }
+        }
+
         readonly ITlTypeTag _tag;
         ChannelParticipants(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
         public static explicit operator ChannelParticipants(Tag tag) => new ChannelParticipants(tag);
+        public static explicit operator ChannelParticipants(NotModifiedTag tag) => new ChannelParticipants(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -81,27 +127,32 @@ namespace TLSharp.Rpc.Types.Channels
             switch (typeNumber)
             {
                 case Tag.TypeNumber: return (ChannelParticipants) Tag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber });
+                case NotModifiedTag.TypeNumber: return (ChannelParticipants) NotModifiedTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { Tag.TypeNumber, NotModifiedTag.TypeNumber });
             }
         }
 
-        T Match<T>(
+        public T Match<T>(
             Func<T> _,
-            Func<Tag, T> tag = null
+            Func<Tag, T> tag = null,
+            Func<NotModifiedTag, T> notModifiedTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
             {
                 case Tag x when tag != null: return tag(x);
+                case NotModifiedTag x when notModifiedTag != null: return notModifiedTag(x);
                 default: return _();
             }
         }
 
         public T Match<T>(
-            Func<Tag, T> tag
+            Func<Tag, T> tag,
+            Func<NotModifiedTag, T> notModifiedTag
         ) => Match(
             () => throw new Exception("WTF"),
-            tag ?? throw new ArgumentNullException(nameof(tag))
+            tag ?? throw new ArgumentNullException(nameof(tag)),
+            notModifiedTag ?? throw new ArgumentNullException(nameof(notModifiedTag))
         );
 
         int GetTagOrder()
@@ -109,6 +160,7 @@ namespace TLSharp.Rpc.Types.Channels
             switch (_tag)
             {
                 case Tag _: return 0;
+                case NotModifiedTag _: return 1;
                 default: throw new Exception("WTF");
             }
         }

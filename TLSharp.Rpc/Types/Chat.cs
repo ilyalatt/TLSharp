@@ -207,14 +207,12 @@ namespace TLSharp.Rpc.Types
 
         public sealed class ChannelTag : ITlTypeTag, IEquatable<ChannelTag>, IComparable<ChannelTag>, IComparable
         {
-            internal const uint TypeNumber = 0xa14dca52;
+            internal const uint TypeNumber = 0xc88974ac;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Creator;
-            public readonly bool Kicked;
             public readonly bool Left;
             public readonly bool Editor;
-            public readonly bool Moderator;
             public readonly bool Broadcast;
             public readonly bool Verified;
             public readonly bool Megagroup;
@@ -230,13 +228,14 @@ namespace TLSharp.Rpc.Types
             public readonly int Date;
             public readonly int Version;
             public readonly Option<string> RestrictionReason;
+            public readonly Option<T.ChannelAdminRights> AdminRights;
+            public readonly Option<T.ChannelBannedRights> BannedRights;
+            public readonly Option<int> ParticipantsCount;
             
             public ChannelTag(
                 bool creator,
-                bool kicked,
                 bool left,
                 bool editor,
-                bool moderator,
                 bool broadcast,
                 bool verified,
                 bool megagroup,
@@ -251,13 +250,14 @@ namespace TLSharp.Rpc.Types
                 Some<T.ChatPhoto> photo,
                 int date,
                 int version,
-                Option<string> restrictionReason
+                Option<string> restrictionReason,
+                Option<T.ChannelAdminRights> adminRights,
+                Option<T.ChannelBannedRights> bannedRights,
+                Option<int> participantsCount
             ) {
                 Creator = creator;
-                Kicked = kicked;
                 Left = left;
                 Editor = editor;
-                Moderator = moderator;
                 Broadcast = broadcast;
                 Verified = verified;
                 Megagroup = megagroup;
@@ -273,10 +273,13 @@ namespace TLSharp.Rpc.Types
                 Date = date;
                 Version = version;
                 RestrictionReason = restrictionReason;
+                AdminRights = adminRights;
+                BannedRights = bannedRights;
+                ParticipantsCount = participantsCount;
             }
             
-            (bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, int, Option<long>, string, Option<string>, T.ChatPhoto, int, int, Option<string>) CmpTuple =>
-                (Creator, Kicked, Left, Editor, Moderator, Broadcast, Verified, Megagroup, Restricted, Democracy, Signatures, Min, Id, AccessHash, Title, Username, Photo, Date, Version, RestrictionReason);
+            (bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, int, Option<long>, string, Option<string>, T.ChatPhoto, int, int, Option<string>, Option<T.ChannelAdminRights>, Option<T.ChannelBannedRights>, Option<int>) CmpTuple =>
+                (Creator, Left, Editor, Broadcast, Verified, Megagroup, Restricted, Democracy, Signatures, Min, Id, AccessHash, Title, Username, Photo, Date, Version, RestrictionReason, AdminRights, BannedRights, ParticipantsCount);
 
             public bool Equals(ChannelTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChannelTag x && Equals(x);
@@ -292,12 +295,12 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Creator: {Creator}, Kicked: {Kicked}, Left: {Left}, Editor: {Editor}, Moderator: {Moderator}, Broadcast: {Broadcast}, Verified: {Verified}, Megagroup: {Megagroup}, Restricted: {Restricted}, Democracy: {Democracy}, Signatures: {Signatures}, Min: {Min}, Id: {Id}, AccessHash: {AccessHash}, Title: {Title}, Username: {Username}, Photo: {Photo}, Date: {Date}, Version: {Version}, RestrictionReason: {RestrictionReason})";
+            public override string ToString() => $"(Creator: {Creator}, Left: {Left}, Editor: {Editor}, Broadcast: {Broadcast}, Verified: {Verified}, Megagroup: {Megagroup}, Restricted: {Restricted}, Democracy: {Democracy}, Signatures: {Signatures}, Min: {Min}, Id: {Id}, AccessHash: {AccessHash}, Title: {Title}, Username: {Username}, Photo: {Photo}, Date: {Date}, Version: {Version}, RestrictionReason: {RestrictionReason}, AdminRights: {AdminRights}, BannedRights: {BannedRights}, ParticipantsCount: {ParticipantsCount})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, Creator) | MaskBit(1, Kicked) | MaskBit(2, Left) | MaskBit(3, Editor) | MaskBit(4, Moderator) | MaskBit(5, Broadcast) | MaskBit(7, Verified) | MaskBit(8, Megagroup) | MaskBit(9, Restricted) | MaskBit(10, Democracy) | MaskBit(11, Signatures) | MaskBit(12, Min) | MaskBit(13, AccessHash) | MaskBit(6, Username) | MaskBit(9, RestrictionReason), bw, WriteInt);
+                Write(MaskBit(0, Creator) | MaskBit(2, Left) | MaskBit(3, Editor) | MaskBit(5, Broadcast) | MaskBit(7, Verified) | MaskBit(8, Megagroup) | MaskBit(9, Restricted) | MaskBit(10, Democracy) | MaskBit(11, Signatures) | MaskBit(12, Min) | MaskBit(13, AccessHash) | MaskBit(6, Username) | MaskBit(9, RestrictionReason) | MaskBit(14, AdminRights) | MaskBit(15, BannedRights) | MaskBit(17, ParticipantsCount), bw, WriteInt);
                 Write(Id, bw, WriteInt);
                 Write(AccessHash, bw, WriteOption<long>(WriteLong));
                 Write(Title, bw, WriteString);
@@ -306,16 +309,17 @@ namespace TLSharp.Rpc.Types
                 Write(Date, bw, WriteInt);
                 Write(Version, bw, WriteInt);
                 Write(RestrictionReason, bw, WriteOption<string>(WriteString));
+                Write(AdminRights, bw, WriteOption<T.ChannelAdminRights>(WriteSerializable));
+                Write(BannedRights, bw, WriteOption<T.ChannelBannedRights>(WriteSerializable));
+                Write(ParticipantsCount, bw, WriteOption<int>(WriteInt));
             }
             
             internal static ChannelTag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
                 var creator = Read(br, ReadOption(flags, 0));
-                var kicked = Read(br, ReadOption(flags, 1));
                 var left = Read(br, ReadOption(flags, 2));
                 var editor = Read(br, ReadOption(flags, 3));
-                var moderator = Read(br, ReadOption(flags, 4));
                 var broadcast = Read(br, ReadOption(flags, 5));
                 var verified = Read(br, ReadOption(flags, 7));
                 var megagroup = Read(br, ReadOption(flags, 8));
@@ -331,13 +335,16 @@ namespace TLSharp.Rpc.Types
                 var date = Read(br, ReadInt);
                 var version = Read(br, ReadInt);
                 var restrictionReason = Read(br, ReadOption(flags, 9, ReadString));
-                return new ChannelTag(creator, kicked, left, editor, moderator, broadcast, verified, megagroup, restricted, democracy, signatures, min, id, accessHash, title, username, photo, date, version, restrictionReason);
+                var adminRights = Read(br, ReadOption(flags, 14, T.ChannelAdminRights.Deserialize));
+                var bannedRights = Read(br, ReadOption(flags, 15, T.ChannelBannedRights.Deserialize));
+                var participantsCount = Read(br, ReadOption(flags, 17, ReadInt));
+                return new ChannelTag(creator, left, editor, broadcast, verified, megagroup, restricted, democracy, signatures, min, id, accessHash, title, username, photo, date, version, restrictionReason, adminRights, bannedRights, participantsCount);
             }
         }
 
         public sealed class ChannelForbiddenTag : ITlTypeTag, IEquatable<ChannelForbiddenTag>, IComparable<ChannelForbiddenTag>, IComparable
         {
-            internal const uint TypeNumber = 0x8537784f;
+            internal const uint TypeNumber = 0x289da732;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Broadcast;
@@ -345,23 +352,26 @@ namespace TLSharp.Rpc.Types
             public readonly int Id;
             public readonly long AccessHash;
             public readonly string Title;
+            public readonly Option<int> UntilDate;
             
             public ChannelForbiddenTag(
                 bool broadcast,
                 bool megagroup,
                 int id,
                 long accessHash,
-                Some<string> title
+                Some<string> title,
+                Option<int> untilDate
             ) {
                 Broadcast = broadcast;
                 Megagroup = megagroup;
                 Id = id;
                 AccessHash = accessHash;
                 Title = title;
+                UntilDate = untilDate;
             }
             
-            (bool, bool, int, long, string) CmpTuple =>
-                (Broadcast, Megagroup, Id, AccessHash, Title);
+            (bool, bool, int, long, string, Option<int>) CmpTuple =>
+                (Broadcast, Megagroup, Id, AccessHash, Title, UntilDate);
 
             public bool Equals(ChannelForbiddenTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is ChannelForbiddenTag x && Equals(x);
@@ -377,15 +387,16 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Broadcast: {Broadcast}, Megagroup: {Megagroup}, Id: {Id}, AccessHash: {AccessHash}, Title: {Title})";
+            public override string ToString() => $"(Broadcast: {Broadcast}, Megagroup: {Megagroup}, Id: {Id}, AccessHash: {AccessHash}, Title: {Title}, UntilDate: {UntilDate})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(5, Broadcast) | MaskBit(8, Megagroup), bw, WriteInt);
+                Write(MaskBit(5, Broadcast) | MaskBit(8, Megagroup) | MaskBit(16, UntilDate), bw, WriteInt);
                 Write(Id, bw, WriteInt);
                 Write(AccessHash, bw, WriteLong);
                 Write(Title, bw, WriteString);
+                Write(UntilDate, bw, WriteOption<int>(WriteInt));
             }
             
             internal static ChannelForbiddenTag DeserializeTag(BinaryReader br)
@@ -396,7 +407,8 @@ namespace TLSharp.Rpc.Types
                 var id = Read(br, ReadInt);
                 var accessHash = Read(br, ReadLong);
                 var title = Read(br, ReadString);
-                return new ChannelForbiddenTag(broadcast, megagroup, id, accessHash, title);
+                var untilDate = Read(br, ReadOption(flags, 16, ReadInt));
+                return new ChannelForbiddenTag(broadcast, megagroup, id, accessHash, title, untilDate);
             }
         }
 

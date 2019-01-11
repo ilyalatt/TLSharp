@@ -17,7 +17,7 @@ namespace TLSharp.Rpc.Generator
         const string SchemeUrl = "https://raw.githubusercontent.com/telegramdesktop/tdesktop/dev/Telegram/Resources/scheme.tl";
         static string DownloadLatestTlScheme()
         {
-            return File.ReadAllText("scheme_66.tl");
+            return File.ReadAllText("scheme_82.tl");
             // return new WebClient().DownloadString(SchemeUrl);
         }
 

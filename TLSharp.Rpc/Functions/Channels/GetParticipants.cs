@@ -13,22 +13,25 @@ namespace TLSharp.Rpc.Functions.Channels
         public T.ChannelParticipantsFilter Filter { get; }
         public int Offset { get; }
         public int Limit { get; }
+        public int Hash { get; }
         
         public GetParticipants(
             Some<T.InputChannel> channel,
             Some<T.ChannelParticipantsFilter> filter,
             int offset,
-            int limit
+            int limit,
+            int hash
         ) {
             Channel = channel;
             Filter = filter;
             Offset = offset;
             Limit = limit;
+            Hash = hash;
         }
         
         
-        (T.InputChannel, T.ChannelParticipantsFilter, int, int) CmpTuple =>
-            (Channel, Filter, Offset, Limit);
+        (T.InputChannel, T.ChannelParticipantsFilter, int, int, int) CmpTuple =>
+            (Channel, Filter, Offset, Limit, Hash);
 
         public bool Equals(GetParticipants other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetParticipants x && Equals(x);
@@ -44,15 +47,16 @@ namespace TLSharp.Rpc.Functions.Channels
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Channel: {Channel}, Filter: {Filter}, Offset: {Offset}, Limit: {Limit})";
+        public override string ToString() => $"(Channel: {Channel}, Filter: {Filter}, Offset: {Offset}, Limit: {Limit}, Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x24d98f92);
+            WriteUint(bw, 0x123e05e9);
             Write(Channel, bw, WriteSerializable);
             Write(Filter, bw, WriteSerializable);
             Write(Offset, bw, WriteInt);
             Write(Limit, bw, WriteInt);
+            Write(Hash, bw, WriteInt);
         }
         
         T.Channels.ChannelParticipants ITlFunc<T.Channels.ChannelParticipants>.DeserializeResult(BinaryReader br) =>

@@ -189,51 +189,6 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class InputPhotoVideoDocumentsTag : ITlTypeTag, IEquatable<InputPhotoVideoDocumentsTag>, IComparable<InputPhotoVideoDocumentsTag>, IComparable
-        {
-            internal const uint TypeNumber = 0xd95e73bb;
-            uint ITlTypeTag.TypeNumber => TypeNumber;
-            
-
-            
-            public InputPhotoVideoDocumentsTag(
-
-            ) {
-
-            }
-            
-            Unit CmpTuple =>
-                Unit.Default;
-
-            public bool Equals(InputPhotoVideoDocumentsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
-            public override bool Equals(object other) => other is InputPhotoVideoDocumentsTag x && Equals(x);
-            public static bool operator ==(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
-            public static bool operator !=(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => !(x == y);
-
-            public int CompareTo(InputPhotoVideoDocumentsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
-            int IComparable.CompareTo(object other) => other is InputPhotoVideoDocumentsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-            public static bool operator <=(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x.CompareTo(y) <= 0;
-            public static bool operator <(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x.CompareTo(y) < 0;
-            public static bool operator >(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x.CompareTo(y) > 0;
-            public static bool operator >=(InputPhotoVideoDocumentsTag x, InputPhotoVideoDocumentsTag y) => x.CompareTo(y) >= 0;
-
-            public override int GetHashCode() => CmpTuple.GetHashCode();
-
-            public override string ToString() => $"()";
-            
-            
-            void ITlSerializable.Serialize(BinaryWriter bw)
-            {
-
-            }
-            
-            internal static InputPhotoVideoDocumentsTag DeserializeTag(BinaryReader br)
-            {
-
-                return new InputPhotoVideoDocumentsTag();
-            }
-        }
-
         public sealed class InputDocumentTag : ITlTypeTag, IEquatable<InputDocumentTag>, IComparable<InputDocumentTag>, IComparable
         {
             internal const uint TypeNumber = 0x9eddf188;
@@ -640,6 +595,141 @@ namespace TLSharp.Rpc.Types
             }
         }
 
+        public sealed class InputMyMentionsTag : ITlTypeTag, IEquatable<InputMyMentionsTag>, IComparable<InputMyMentionsTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xc1f8e69a;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public InputMyMentionsTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(InputMyMentionsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is InputMyMentionsTag x && Equals(x);
+            public static bool operator ==(InputMyMentionsTag x, InputMyMentionsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(InputMyMentionsTag x, InputMyMentionsTag y) => !(x == y);
+
+            public int CompareTo(InputMyMentionsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is InputMyMentionsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(InputMyMentionsTag x, InputMyMentionsTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(InputMyMentionsTag x, InputMyMentionsTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(InputMyMentionsTag x, InputMyMentionsTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(InputMyMentionsTag x, InputMyMentionsTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static InputMyMentionsTag DeserializeTag(BinaryReader br)
+            {
+
+                return new InputMyMentionsTag();
+            }
+        }
+
+        public sealed class InputGeoTag : ITlTypeTag, IEquatable<InputGeoTag>, IComparable<InputGeoTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xe7026d0d;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public InputGeoTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(InputGeoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is InputGeoTag x && Equals(x);
+            public static bool operator ==(InputGeoTag x, InputGeoTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(InputGeoTag x, InputGeoTag y) => !(x == y);
+
+            public int CompareTo(InputGeoTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is InputGeoTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(InputGeoTag x, InputGeoTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(InputGeoTag x, InputGeoTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(InputGeoTag x, InputGeoTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(InputGeoTag x, InputGeoTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static InputGeoTag DeserializeTag(BinaryReader br)
+            {
+
+                return new InputGeoTag();
+            }
+        }
+
+        public sealed class InputContactsTag : ITlTypeTag, IEquatable<InputContactsTag>, IComparable<InputContactsTag>, IComparable
+        {
+            internal const uint TypeNumber = 0xe062db83;
+            uint ITlTypeTag.TypeNumber => TypeNumber;
+            
+
+            
+            public InputContactsTag(
+
+            ) {
+
+            }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(InputContactsTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
+            public override bool Equals(object other) => other is InputContactsTag x && Equals(x);
+            public static bool operator ==(InputContactsTag x, InputContactsTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(InputContactsTag x, InputContactsTag y) => !(x == y);
+
+            public int CompareTo(InputContactsTag other) => ReferenceEquals(other, null) ? throw new ArgumentNullException(nameof(other)) : ReferenceEquals(this, other) ? 0 : CmpTuple.CompareTo(other.CmpTuple);
+            int IComparable.CompareTo(object other) => other is InputContactsTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(InputContactsTag x, InputContactsTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(InputContactsTag x, InputContactsTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(InputContactsTag x, InputContactsTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(InputContactsTag x, InputContactsTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
+            
+            void ITlSerializable.Serialize(BinaryWriter bw)
+            {
+
+            }
+            
+            internal static InputContactsTag DeserializeTag(BinaryReader br)
+            {
+
+                return new InputContactsTag();
+            }
+        }
+
         readonly ITlTypeTag _tag;
         MessagesFilter(ITlTypeTag tag) => _tag = tag ?? throw new ArgumentNullException(nameof(tag));
 
@@ -647,7 +737,6 @@ namespace TLSharp.Rpc.Types
         public static explicit operator MessagesFilter(InputPhotosTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputVideoTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputPhotoVideoTag tag) => new MessagesFilter(tag);
-        public static explicit operator MessagesFilter(InputPhotoVideoDocumentsTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputDocumentTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputUrlTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputGifTag tag) => new MessagesFilter(tag);
@@ -657,6 +746,9 @@ namespace TLSharp.Rpc.Types
         public static explicit operator MessagesFilter(InputPhoneCallsTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputRoundVoiceTag tag) => new MessagesFilter(tag);
         public static explicit operator MessagesFilter(InputRoundVideoTag tag) => new MessagesFilter(tag);
+        public static explicit operator MessagesFilter(InputMyMentionsTag tag) => new MessagesFilter(tag);
+        public static explicit operator MessagesFilter(InputGeoTag tag) => new MessagesFilter(tag);
+        public static explicit operator MessagesFilter(InputContactsTag tag) => new MessagesFilter(tag);
 
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
@@ -673,7 +765,6 @@ namespace TLSharp.Rpc.Types
                 case InputPhotosTag.TypeNumber: return (MessagesFilter) InputPhotosTag.DeserializeTag(br);
                 case InputVideoTag.TypeNumber: return (MessagesFilter) InputVideoTag.DeserializeTag(br);
                 case InputPhotoVideoTag.TypeNumber: return (MessagesFilter) InputPhotoVideoTag.DeserializeTag(br);
-                case InputPhotoVideoDocumentsTag.TypeNumber: return (MessagesFilter) InputPhotoVideoDocumentsTag.DeserializeTag(br);
                 case InputDocumentTag.TypeNumber: return (MessagesFilter) InputDocumentTag.DeserializeTag(br);
                 case InputUrlTag.TypeNumber: return (MessagesFilter) InputUrlTag.DeserializeTag(br);
                 case InputGifTag.TypeNumber: return (MessagesFilter) InputGifTag.DeserializeTag(br);
@@ -683,7 +774,10 @@ namespace TLSharp.Rpc.Types
                 case InputPhoneCallsTag.TypeNumber: return (MessagesFilter) InputPhoneCallsTag.DeserializeTag(br);
                 case InputRoundVoiceTag.TypeNumber: return (MessagesFilter) InputRoundVoiceTag.DeserializeTag(br);
                 case InputRoundVideoTag.TypeNumber: return (MessagesFilter) InputRoundVideoTag.DeserializeTag(br);
-                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { InputEmptyTag.TypeNumber, InputPhotosTag.TypeNumber, InputVideoTag.TypeNumber, InputPhotoVideoTag.TypeNumber, InputPhotoVideoDocumentsTag.TypeNumber, InputDocumentTag.TypeNumber, InputUrlTag.TypeNumber, InputGifTag.TypeNumber, InputVoiceTag.TypeNumber, InputMusicTag.TypeNumber, InputChatPhotosTag.TypeNumber, InputPhoneCallsTag.TypeNumber, InputRoundVoiceTag.TypeNumber, InputRoundVideoTag.TypeNumber });
+                case InputMyMentionsTag.TypeNumber: return (MessagesFilter) InputMyMentionsTag.DeserializeTag(br);
+                case InputGeoTag.TypeNumber: return (MessagesFilter) InputGeoTag.DeserializeTag(br);
+                case InputContactsTag.TypeNumber: return (MessagesFilter) InputContactsTag.DeserializeTag(br);
+                default: throw TlRpcDeserializeException.UnexpectedTypeNumber(actual: typeNumber, expected: new[] { InputEmptyTag.TypeNumber, InputPhotosTag.TypeNumber, InputVideoTag.TypeNumber, InputPhotoVideoTag.TypeNumber, InputDocumentTag.TypeNumber, InputUrlTag.TypeNumber, InputGifTag.TypeNumber, InputVoiceTag.TypeNumber, InputMusicTag.TypeNumber, InputChatPhotosTag.TypeNumber, InputPhoneCallsTag.TypeNumber, InputRoundVoiceTag.TypeNumber, InputRoundVideoTag.TypeNumber, InputMyMentionsTag.TypeNumber, InputGeoTag.TypeNumber, InputContactsTag.TypeNumber });
             }
         }
 
@@ -693,7 +787,6 @@ namespace TLSharp.Rpc.Types
             Func<InputPhotosTag, T> inputPhotosTag = null,
             Func<InputVideoTag, T> inputVideoTag = null,
             Func<InputPhotoVideoTag, T> inputPhotoVideoTag = null,
-            Func<InputPhotoVideoDocumentsTag, T> inputPhotoVideoDocumentsTag = null,
             Func<InputDocumentTag, T> inputDocumentTag = null,
             Func<InputUrlTag, T> inputUrlTag = null,
             Func<InputGifTag, T> inputGifTag = null,
@@ -702,7 +795,10 @@ namespace TLSharp.Rpc.Types
             Func<InputChatPhotosTag, T> inputChatPhotosTag = null,
             Func<InputPhoneCallsTag, T> inputPhoneCallsTag = null,
             Func<InputRoundVoiceTag, T> inputRoundVoiceTag = null,
-            Func<InputRoundVideoTag, T> inputRoundVideoTag = null
+            Func<InputRoundVideoTag, T> inputRoundVideoTag = null,
+            Func<InputMyMentionsTag, T> inputMyMentionsTag = null,
+            Func<InputGeoTag, T> inputGeoTag = null,
+            Func<InputContactsTag, T> inputContactsTag = null
         ) {
             if (_ == null) throw new ArgumentNullException(nameof(_));
             switch (_tag)
@@ -711,7 +807,6 @@ namespace TLSharp.Rpc.Types
                 case InputPhotosTag x when inputPhotosTag != null: return inputPhotosTag(x);
                 case InputVideoTag x when inputVideoTag != null: return inputVideoTag(x);
                 case InputPhotoVideoTag x when inputPhotoVideoTag != null: return inputPhotoVideoTag(x);
-                case InputPhotoVideoDocumentsTag x when inputPhotoVideoDocumentsTag != null: return inputPhotoVideoDocumentsTag(x);
                 case InputDocumentTag x when inputDocumentTag != null: return inputDocumentTag(x);
                 case InputUrlTag x when inputUrlTag != null: return inputUrlTag(x);
                 case InputGifTag x when inputGifTag != null: return inputGifTag(x);
@@ -721,6 +816,9 @@ namespace TLSharp.Rpc.Types
                 case InputPhoneCallsTag x when inputPhoneCallsTag != null: return inputPhoneCallsTag(x);
                 case InputRoundVoiceTag x when inputRoundVoiceTag != null: return inputRoundVoiceTag(x);
                 case InputRoundVideoTag x when inputRoundVideoTag != null: return inputRoundVideoTag(x);
+                case InputMyMentionsTag x when inputMyMentionsTag != null: return inputMyMentionsTag(x);
+                case InputGeoTag x when inputGeoTag != null: return inputGeoTag(x);
+                case InputContactsTag x when inputContactsTag != null: return inputContactsTag(x);
                 default: return _();
             }
         }
@@ -730,7 +828,6 @@ namespace TLSharp.Rpc.Types
             Func<InputPhotosTag, T> inputPhotosTag,
             Func<InputVideoTag, T> inputVideoTag,
             Func<InputPhotoVideoTag, T> inputPhotoVideoTag,
-            Func<InputPhotoVideoDocumentsTag, T> inputPhotoVideoDocumentsTag,
             Func<InputDocumentTag, T> inputDocumentTag,
             Func<InputUrlTag, T> inputUrlTag,
             Func<InputGifTag, T> inputGifTag,
@@ -739,14 +836,16 @@ namespace TLSharp.Rpc.Types
             Func<InputChatPhotosTag, T> inputChatPhotosTag,
             Func<InputPhoneCallsTag, T> inputPhoneCallsTag,
             Func<InputRoundVoiceTag, T> inputRoundVoiceTag,
-            Func<InputRoundVideoTag, T> inputRoundVideoTag
+            Func<InputRoundVideoTag, T> inputRoundVideoTag,
+            Func<InputMyMentionsTag, T> inputMyMentionsTag,
+            Func<InputGeoTag, T> inputGeoTag,
+            Func<InputContactsTag, T> inputContactsTag
         ) => Match(
             () => throw new Exception("WTF"),
             inputEmptyTag ?? throw new ArgumentNullException(nameof(inputEmptyTag)),
             inputPhotosTag ?? throw new ArgumentNullException(nameof(inputPhotosTag)),
             inputVideoTag ?? throw new ArgumentNullException(nameof(inputVideoTag)),
             inputPhotoVideoTag ?? throw new ArgumentNullException(nameof(inputPhotoVideoTag)),
-            inputPhotoVideoDocumentsTag ?? throw new ArgumentNullException(nameof(inputPhotoVideoDocumentsTag)),
             inputDocumentTag ?? throw new ArgumentNullException(nameof(inputDocumentTag)),
             inputUrlTag ?? throw new ArgumentNullException(nameof(inputUrlTag)),
             inputGifTag ?? throw new ArgumentNullException(nameof(inputGifTag)),
@@ -755,7 +854,10 @@ namespace TLSharp.Rpc.Types
             inputChatPhotosTag ?? throw new ArgumentNullException(nameof(inputChatPhotosTag)),
             inputPhoneCallsTag ?? throw new ArgumentNullException(nameof(inputPhoneCallsTag)),
             inputRoundVoiceTag ?? throw new ArgumentNullException(nameof(inputRoundVoiceTag)),
-            inputRoundVideoTag ?? throw new ArgumentNullException(nameof(inputRoundVideoTag))
+            inputRoundVideoTag ?? throw new ArgumentNullException(nameof(inputRoundVideoTag)),
+            inputMyMentionsTag ?? throw new ArgumentNullException(nameof(inputMyMentionsTag)),
+            inputGeoTag ?? throw new ArgumentNullException(nameof(inputGeoTag)),
+            inputContactsTag ?? throw new ArgumentNullException(nameof(inputContactsTag))
         );
 
         int GetTagOrder()
@@ -766,16 +868,18 @@ namespace TLSharp.Rpc.Types
                 case InputPhotosTag _: return 1;
                 case InputVideoTag _: return 2;
                 case InputPhotoVideoTag _: return 3;
-                case InputPhotoVideoDocumentsTag _: return 4;
-                case InputDocumentTag _: return 5;
-                case InputUrlTag _: return 6;
-                case InputGifTag _: return 7;
-                case InputVoiceTag _: return 8;
-                case InputMusicTag _: return 9;
-                case InputChatPhotosTag _: return 10;
-                case InputPhoneCallsTag _: return 11;
-                case InputRoundVoiceTag _: return 12;
-                case InputRoundVideoTag _: return 13;
+                case InputDocumentTag _: return 4;
+                case InputUrlTag _: return 5;
+                case InputGifTag _: return 6;
+                case InputVoiceTag _: return 7;
+                case InputMusicTag _: return 8;
+                case InputChatPhotosTag _: return 9;
+                case InputPhoneCallsTag _: return 10;
+                case InputRoundVoiceTag _: return 11;
+                case InputRoundVideoTag _: return 12;
+                case InputMyMentionsTag _: return 13;
+                case InputGeoTag _: return 14;
+                case InputContactsTag _: return 15;
                 default: throw new Exception("WTF");
             }
         }

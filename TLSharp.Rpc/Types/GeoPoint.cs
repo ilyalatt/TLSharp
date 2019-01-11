@@ -56,22 +56,25 @@ namespace TLSharp.Rpc.Types
 
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x2049d70c;
+            internal const uint TypeNumber = 0x0296f104;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly double Long;
             public readonly double Lat;
+            public readonly long AccessHash;
             
             public Tag(
                 double @long,
-                double lat
+                double lat,
+                long accessHash
             ) {
                 Long = @long;
                 Lat = lat;
+                AccessHash = accessHash;
             }
             
-            (double, double) CmpTuple =>
-                (Long, Lat);
+            (double, double, long) CmpTuple =>
+                (Long, Lat, AccessHash);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -87,20 +90,22 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Long: {Long}, Lat: {Lat})";
+            public override string ToString() => $"(Long: {Long}, Lat: {Lat}, AccessHash: {AccessHash})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Long, bw, WriteDouble);
                 Write(Lat, bw, WriteDouble);
+                Write(AccessHash, bw, WriteLong);
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var @long = Read(br, ReadDouble);
                 var lat = Read(br, ReadDouble);
-                return new Tag(@long, lat);
+                var accessHash = Read(br, ReadLong);
+                return new Tag(@long, lat, accessHash);
             }
         }
 

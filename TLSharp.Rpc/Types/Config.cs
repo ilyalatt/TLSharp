@@ -11,15 +11,21 @@ namespace TLSharp.Rpc.Types
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xcb601684;
+            internal const uint TypeNumber = 0x3213dbba;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool PhonecallsEnabled;
+            public readonly bool DefaultP2pContacts;
+            public readonly bool PreloadFeaturedStickers;
+            public readonly bool IgnorePhoneEntities;
+            public readonly bool RevokePmInbox;
+            public readonly bool BlockedMode;
             public readonly int Date;
             public readonly int Expires;
             public readonly bool TestMode;
             public readonly int ThisDc;
             public readonly Arr<T.DcOption> DcOptions;
+            public readonly string DcTxtDomainName;
             public readonly int ChatSizeMax;
             public readonly int MegagroupSizeMax;
             public readonly int ForwardedCountMax;
@@ -29,13 +35,16 @@ namespace TLSharp.Rpc.Types
             public readonly int OnlineCloudTimeoutMs;
             public readonly int NotifyCloudDelayMs;
             public readonly int NotifyDefaultDelayMs;
-            public readonly int ChatBigSize;
             public readonly int PushChatPeriodMs;
             public readonly int PushChatLimit;
             public readonly int SavedGifsLimit;
             public readonly int EditTimeLimit;
+            public readonly int RevokeTimeLimit;
+            public readonly int RevokePmTimeLimit;
             public readonly int RatingEDecay;
             public readonly int StickersRecentLimit;
+            public readonly int StickersFavedLimit;
+            public readonly int ChannelsReadMediaPeriod;
             public readonly Option<int> TmpSessions;
             public readonly int PinnedDialogsCountMax;
             public readonly int CallReceiveTimeoutMs;
@@ -43,15 +52,30 @@ namespace TLSharp.Rpc.Types
             public readonly int CallConnectTimeoutMs;
             public readonly int CallPacketTimeoutMs;
             public readonly string MeUrlPrefix;
-            public readonly Arr<T.DisabledFeature> DisabledFeatures;
+            public readonly Option<string> AutoupdateUrlPrefix;
+            public readonly Option<string> GifSearchUsername;
+            public readonly Option<string> VenueSearchUsername;
+            public readonly Option<string> ImgSearchUsername;
+            public readonly Option<string> StaticMapsProvider;
+            public readonly int CaptionLengthMax;
+            public readonly int MessageLengthMax;
+            public readonly int WebfileDcId;
+            public readonly Option<string> SuggestedLangCode;
+            public readonly Option<int> LangPackVersion;
             
             public Tag(
                 bool phonecallsEnabled,
+                bool defaultP2pContacts,
+                bool preloadFeaturedStickers,
+                bool ignorePhoneEntities,
+                bool revokePmInbox,
+                bool blockedMode,
                 int date,
                 int expires,
                 bool testMode,
                 int thisDc,
                 Some<Arr<T.DcOption>> dcOptions,
+                Some<string> dcTxtDomainName,
                 int chatSizeMax,
                 int megagroupSizeMax,
                 int forwardedCountMax,
@@ -61,13 +85,16 @@ namespace TLSharp.Rpc.Types
                 int onlineCloudTimeoutMs,
                 int notifyCloudDelayMs,
                 int notifyDefaultDelayMs,
-                int chatBigSize,
                 int pushChatPeriodMs,
                 int pushChatLimit,
                 int savedGifsLimit,
                 int editTimeLimit,
+                int revokeTimeLimit,
+                int revokePmTimeLimit,
                 int ratingEDecay,
                 int stickersRecentLimit,
+                int stickersFavedLimit,
+                int channelsReadMediaPeriod,
                 Option<int> tmpSessions,
                 int pinnedDialogsCountMax,
                 int callReceiveTimeoutMs,
@@ -75,14 +102,29 @@ namespace TLSharp.Rpc.Types
                 int callConnectTimeoutMs,
                 int callPacketTimeoutMs,
                 Some<string> meUrlPrefix,
-                Some<Arr<T.DisabledFeature>> disabledFeatures
+                Option<string> autoupdateUrlPrefix,
+                Option<string> gifSearchUsername,
+                Option<string> venueSearchUsername,
+                Option<string> imgSearchUsername,
+                Option<string> staticMapsProvider,
+                int captionLengthMax,
+                int messageLengthMax,
+                int webfileDcId,
+                Option<string> suggestedLangCode,
+                Option<int> langPackVersion
             ) {
                 PhonecallsEnabled = phonecallsEnabled;
+                DefaultP2pContacts = defaultP2pContacts;
+                PreloadFeaturedStickers = preloadFeaturedStickers;
+                IgnorePhoneEntities = ignorePhoneEntities;
+                RevokePmInbox = revokePmInbox;
+                BlockedMode = blockedMode;
                 Date = date;
                 Expires = expires;
                 TestMode = testMode;
                 ThisDc = thisDc;
                 DcOptions = dcOptions;
+                DcTxtDomainName = dcTxtDomainName;
                 ChatSizeMax = chatSizeMax;
                 MegagroupSizeMax = megagroupSizeMax;
                 ForwardedCountMax = forwardedCountMax;
@@ -92,13 +134,16 @@ namespace TLSharp.Rpc.Types
                 OnlineCloudTimeoutMs = onlineCloudTimeoutMs;
                 NotifyCloudDelayMs = notifyCloudDelayMs;
                 NotifyDefaultDelayMs = notifyDefaultDelayMs;
-                ChatBigSize = chatBigSize;
                 PushChatPeriodMs = pushChatPeriodMs;
                 PushChatLimit = pushChatLimit;
                 SavedGifsLimit = savedGifsLimit;
                 EditTimeLimit = editTimeLimit;
+                RevokeTimeLimit = revokeTimeLimit;
+                RevokePmTimeLimit = revokePmTimeLimit;
                 RatingEDecay = ratingEDecay;
                 StickersRecentLimit = stickersRecentLimit;
+                StickersFavedLimit = stickersFavedLimit;
+                ChannelsReadMediaPeriod = channelsReadMediaPeriod;
                 TmpSessions = tmpSessions;
                 PinnedDialogsCountMax = pinnedDialogsCountMax;
                 CallReceiveTimeoutMs = callReceiveTimeoutMs;
@@ -106,11 +151,20 @@ namespace TLSharp.Rpc.Types
                 CallConnectTimeoutMs = callConnectTimeoutMs;
                 CallPacketTimeoutMs = callPacketTimeoutMs;
                 MeUrlPrefix = meUrlPrefix;
-                DisabledFeatures = disabledFeatures;
+                AutoupdateUrlPrefix = autoupdateUrlPrefix;
+                GifSearchUsername = gifSearchUsername;
+                VenueSearchUsername = venueSearchUsername;
+                ImgSearchUsername = imgSearchUsername;
+                StaticMapsProvider = staticMapsProvider;
+                CaptionLengthMax = captionLengthMax;
+                MessageLengthMax = messageLengthMax;
+                WebfileDcId = webfileDcId;
+                SuggestedLangCode = suggestedLangCode;
+                LangPackVersion = langPackVersion;
             }
             
-            (bool, int, int, bool, int, Arr<T.DcOption>, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, Option<int>, int, int, int, int, int, string, Arr<T.DisabledFeature>) CmpTuple =>
-                (PhonecallsEnabled, Date, Expires, TestMode, ThisDc, DcOptions, ChatSizeMax, MegagroupSizeMax, ForwardedCountMax, OnlineUpdatePeriodMs, OfflineBlurTimeoutMs, OfflineIdleTimeoutMs, OnlineCloudTimeoutMs, NotifyCloudDelayMs, NotifyDefaultDelayMs, ChatBigSize, PushChatPeriodMs, PushChatLimit, SavedGifsLimit, EditTimeLimit, RatingEDecay, StickersRecentLimit, TmpSessions, PinnedDialogsCountMax, CallReceiveTimeoutMs, CallRingTimeoutMs, CallConnectTimeoutMs, CallPacketTimeoutMs, MeUrlPrefix, DisabledFeatures);
+            (bool, bool, bool, bool, bool, bool, int, int, bool, int, Arr<T.DcOption>, string, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, Option<int>, int, int, int, int, int, string, Option<string>, Option<string>, Option<string>, Option<string>, Option<string>, int, int, int, Option<string>, Option<int>) CmpTuple =>
+                (PhonecallsEnabled, DefaultP2pContacts, PreloadFeaturedStickers, IgnorePhoneEntities, RevokePmInbox, BlockedMode, Date, Expires, TestMode, ThisDc, DcOptions, DcTxtDomainName, ChatSizeMax, MegagroupSizeMax, ForwardedCountMax, OnlineUpdatePeriodMs, OfflineBlurTimeoutMs, OfflineIdleTimeoutMs, OnlineCloudTimeoutMs, NotifyCloudDelayMs, NotifyDefaultDelayMs, PushChatPeriodMs, PushChatLimit, SavedGifsLimit, EditTimeLimit, RevokeTimeLimit, RevokePmTimeLimit, RatingEDecay, StickersRecentLimit, StickersFavedLimit, ChannelsReadMediaPeriod, TmpSessions, PinnedDialogsCountMax, CallReceiveTimeoutMs, CallRingTimeoutMs, CallConnectTimeoutMs, CallPacketTimeoutMs, MeUrlPrefix, AutoupdateUrlPrefix, GifSearchUsername, VenueSearchUsername, ImgSearchUsername, StaticMapsProvider, CaptionLengthMax, MessageLengthMax, WebfileDcId, SuggestedLangCode, LangPackVersion);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -126,17 +180,18 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(PhonecallsEnabled: {PhonecallsEnabled}, Date: {Date}, Expires: {Expires}, TestMode: {TestMode}, ThisDc: {ThisDc}, DcOptions: {DcOptions}, ChatSizeMax: {ChatSizeMax}, MegagroupSizeMax: {MegagroupSizeMax}, ForwardedCountMax: {ForwardedCountMax}, OnlineUpdatePeriodMs: {OnlineUpdatePeriodMs}, OfflineBlurTimeoutMs: {OfflineBlurTimeoutMs}, OfflineIdleTimeoutMs: {OfflineIdleTimeoutMs}, OnlineCloudTimeoutMs: {OnlineCloudTimeoutMs}, NotifyCloudDelayMs: {NotifyCloudDelayMs}, NotifyDefaultDelayMs: {NotifyDefaultDelayMs}, ChatBigSize: {ChatBigSize}, PushChatPeriodMs: {PushChatPeriodMs}, PushChatLimit: {PushChatLimit}, SavedGifsLimit: {SavedGifsLimit}, EditTimeLimit: {EditTimeLimit}, RatingEDecay: {RatingEDecay}, StickersRecentLimit: {StickersRecentLimit}, TmpSessions: {TmpSessions}, PinnedDialogsCountMax: {PinnedDialogsCountMax}, CallReceiveTimeoutMs: {CallReceiveTimeoutMs}, CallRingTimeoutMs: {CallRingTimeoutMs}, CallConnectTimeoutMs: {CallConnectTimeoutMs}, CallPacketTimeoutMs: {CallPacketTimeoutMs}, MeUrlPrefix: {MeUrlPrefix}, DisabledFeatures: {DisabledFeatures})";
+            public override string ToString() => $"(PhonecallsEnabled: {PhonecallsEnabled}, DefaultP2pContacts: {DefaultP2pContacts}, PreloadFeaturedStickers: {PreloadFeaturedStickers}, IgnorePhoneEntities: {IgnorePhoneEntities}, RevokePmInbox: {RevokePmInbox}, BlockedMode: {BlockedMode}, Date: {Date}, Expires: {Expires}, TestMode: {TestMode}, ThisDc: {ThisDc}, DcOptions: {DcOptions}, DcTxtDomainName: {DcTxtDomainName}, ChatSizeMax: {ChatSizeMax}, MegagroupSizeMax: {MegagroupSizeMax}, ForwardedCountMax: {ForwardedCountMax}, OnlineUpdatePeriodMs: {OnlineUpdatePeriodMs}, OfflineBlurTimeoutMs: {OfflineBlurTimeoutMs}, OfflineIdleTimeoutMs: {OfflineIdleTimeoutMs}, OnlineCloudTimeoutMs: {OnlineCloudTimeoutMs}, NotifyCloudDelayMs: {NotifyCloudDelayMs}, NotifyDefaultDelayMs: {NotifyDefaultDelayMs}, PushChatPeriodMs: {PushChatPeriodMs}, PushChatLimit: {PushChatLimit}, SavedGifsLimit: {SavedGifsLimit}, EditTimeLimit: {EditTimeLimit}, RevokeTimeLimit: {RevokeTimeLimit}, RevokePmTimeLimit: {RevokePmTimeLimit}, RatingEDecay: {RatingEDecay}, StickersRecentLimit: {StickersRecentLimit}, StickersFavedLimit: {StickersFavedLimit}, ChannelsReadMediaPeriod: {ChannelsReadMediaPeriod}, TmpSessions: {TmpSessions}, PinnedDialogsCountMax: {PinnedDialogsCountMax}, CallReceiveTimeoutMs: {CallReceiveTimeoutMs}, CallRingTimeoutMs: {CallRingTimeoutMs}, CallConnectTimeoutMs: {CallConnectTimeoutMs}, CallPacketTimeoutMs: {CallPacketTimeoutMs}, MeUrlPrefix: {MeUrlPrefix}, AutoupdateUrlPrefix: {AutoupdateUrlPrefix}, GifSearchUsername: {GifSearchUsername}, VenueSearchUsername: {VenueSearchUsername}, ImgSearchUsername: {ImgSearchUsername}, StaticMapsProvider: {StaticMapsProvider}, CaptionLengthMax: {CaptionLengthMax}, MessageLengthMax: {MessageLengthMax}, WebfileDcId: {WebfileDcId}, SuggestedLangCode: {SuggestedLangCode}, LangPackVersion: {LangPackVersion})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(1, PhonecallsEnabled) | MaskBit(0, TmpSessions), bw, WriteInt);
+                Write(MaskBit(1, PhonecallsEnabled) | MaskBit(3, DefaultP2pContacts) | MaskBit(4, PreloadFeaturedStickers) | MaskBit(5, IgnorePhoneEntities) | MaskBit(6, RevokePmInbox) | MaskBit(8, BlockedMode) | MaskBit(0, TmpSessions) | MaskBit(7, AutoupdateUrlPrefix) | MaskBit(9, GifSearchUsername) | MaskBit(10, VenueSearchUsername) | MaskBit(11, ImgSearchUsername) | MaskBit(12, StaticMapsProvider) | MaskBit(2, SuggestedLangCode) | MaskBit(2, LangPackVersion), bw, WriteInt);
                 Write(Date, bw, WriteInt);
                 Write(Expires, bw, WriteInt);
                 Write(TestMode, bw, WriteBool);
                 Write(ThisDc, bw, WriteInt);
                 Write(DcOptions, bw, WriteVector<T.DcOption>(WriteSerializable));
+                Write(DcTxtDomainName, bw, WriteString);
                 Write(ChatSizeMax, bw, WriteInt);
                 Write(MegagroupSizeMax, bw, WriteInt);
                 Write(ForwardedCountMax, bw, WriteInt);
@@ -146,13 +201,16 @@ namespace TLSharp.Rpc.Types
                 Write(OnlineCloudTimeoutMs, bw, WriteInt);
                 Write(NotifyCloudDelayMs, bw, WriteInt);
                 Write(NotifyDefaultDelayMs, bw, WriteInt);
-                Write(ChatBigSize, bw, WriteInt);
                 Write(PushChatPeriodMs, bw, WriteInt);
                 Write(PushChatLimit, bw, WriteInt);
                 Write(SavedGifsLimit, bw, WriteInt);
                 Write(EditTimeLimit, bw, WriteInt);
+                Write(RevokeTimeLimit, bw, WriteInt);
+                Write(RevokePmTimeLimit, bw, WriteInt);
                 Write(RatingEDecay, bw, WriteInt);
                 Write(StickersRecentLimit, bw, WriteInt);
+                Write(StickersFavedLimit, bw, WriteInt);
+                Write(ChannelsReadMediaPeriod, bw, WriteInt);
                 Write(TmpSessions, bw, WriteOption<int>(WriteInt));
                 Write(PinnedDialogsCountMax, bw, WriteInt);
                 Write(CallReceiveTimeoutMs, bw, WriteInt);
@@ -160,18 +218,33 @@ namespace TLSharp.Rpc.Types
                 Write(CallConnectTimeoutMs, bw, WriteInt);
                 Write(CallPacketTimeoutMs, bw, WriteInt);
                 Write(MeUrlPrefix, bw, WriteString);
-                Write(DisabledFeatures, bw, WriteVector<T.DisabledFeature>(WriteSerializable));
+                Write(AutoupdateUrlPrefix, bw, WriteOption<string>(WriteString));
+                Write(GifSearchUsername, bw, WriteOption<string>(WriteString));
+                Write(VenueSearchUsername, bw, WriteOption<string>(WriteString));
+                Write(ImgSearchUsername, bw, WriteOption<string>(WriteString));
+                Write(StaticMapsProvider, bw, WriteOption<string>(WriteString));
+                Write(CaptionLengthMax, bw, WriteInt);
+                Write(MessageLengthMax, bw, WriteInt);
+                Write(WebfileDcId, bw, WriteInt);
+                Write(SuggestedLangCode, bw, WriteOption<string>(WriteString));
+                Write(LangPackVersion, bw, WriteOption<int>(WriteInt));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var flags = Read(br, ReadInt);
                 var phonecallsEnabled = Read(br, ReadOption(flags, 1));
+                var defaultP2pContacts = Read(br, ReadOption(flags, 3));
+                var preloadFeaturedStickers = Read(br, ReadOption(flags, 4));
+                var ignorePhoneEntities = Read(br, ReadOption(flags, 5));
+                var revokePmInbox = Read(br, ReadOption(flags, 6));
+                var blockedMode = Read(br, ReadOption(flags, 8));
                 var date = Read(br, ReadInt);
                 var expires = Read(br, ReadInt);
                 var testMode = Read(br, ReadBool);
                 var thisDc = Read(br, ReadInt);
                 var dcOptions = Read(br, ReadVector(T.DcOption.Deserialize));
+                var dcTxtDomainName = Read(br, ReadString);
                 var chatSizeMax = Read(br, ReadInt);
                 var megagroupSizeMax = Read(br, ReadInt);
                 var forwardedCountMax = Read(br, ReadInt);
@@ -181,13 +254,16 @@ namespace TLSharp.Rpc.Types
                 var onlineCloudTimeoutMs = Read(br, ReadInt);
                 var notifyCloudDelayMs = Read(br, ReadInt);
                 var notifyDefaultDelayMs = Read(br, ReadInt);
-                var chatBigSize = Read(br, ReadInt);
                 var pushChatPeriodMs = Read(br, ReadInt);
                 var pushChatLimit = Read(br, ReadInt);
                 var savedGifsLimit = Read(br, ReadInt);
                 var editTimeLimit = Read(br, ReadInt);
+                var revokeTimeLimit = Read(br, ReadInt);
+                var revokePmTimeLimit = Read(br, ReadInt);
                 var ratingEDecay = Read(br, ReadInt);
                 var stickersRecentLimit = Read(br, ReadInt);
+                var stickersFavedLimit = Read(br, ReadInt);
+                var channelsReadMediaPeriod = Read(br, ReadInt);
                 var tmpSessions = Read(br, ReadOption(flags, 0, ReadInt));
                 var pinnedDialogsCountMax = Read(br, ReadInt);
                 var callReceiveTimeoutMs = Read(br, ReadInt);
@@ -195,8 +271,17 @@ namespace TLSharp.Rpc.Types
                 var callConnectTimeoutMs = Read(br, ReadInt);
                 var callPacketTimeoutMs = Read(br, ReadInt);
                 var meUrlPrefix = Read(br, ReadString);
-                var disabledFeatures = Read(br, ReadVector(T.DisabledFeature.Deserialize));
-                return new Tag(phonecallsEnabled, date, expires, testMode, thisDc, dcOptions, chatSizeMax, megagroupSizeMax, forwardedCountMax, onlineUpdatePeriodMs, offlineBlurTimeoutMs, offlineIdleTimeoutMs, onlineCloudTimeoutMs, notifyCloudDelayMs, notifyDefaultDelayMs, chatBigSize, pushChatPeriodMs, pushChatLimit, savedGifsLimit, editTimeLimit, ratingEDecay, stickersRecentLimit, tmpSessions, pinnedDialogsCountMax, callReceiveTimeoutMs, callRingTimeoutMs, callConnectTimeoutMs, callPacketTimeoutMs, meUrlPrefix, disabledFeatures);
+                var autoupdateUrlPrefix = Read(br, ReadOption(flags, 7, ReadString));
+                var gifSearchUsername = Read(br, ReadOption(flags, 9, ReadString));
+                var venueSearchUsername = Read(br, ReadOption(flags, 10, ReadString));
+                var imgSearchUsername = Read(br, ReadOption(flags, 11, ReadString));
+                var staticMapsProvider = Read(br, ReadOption(flags, 12, ReadString));
+                var captionLengthMax = Read(br, ReadInt);
+                var messageLengthMax = Read(br, ReadInt);
+                var webfileDcId = Read(br, ReadInt);
+                var suggestedLangCode = Read(br, ReadOption(flags, 2, ReadString));
+                var langPackVersion = Read(br, ReadOption(flags, 2, ReadInt));
+                return new Tag(phonecallsEnabled, defaultP2pContacts, preloadFeaturedStickers, ignorePhoneEntities, revokePmInbox, blockedMode, date, expires, testMode, thisDc, dcOptions, dcTxtDomainName, chatSizeMax, megagroupSizeMax, forwardedCountMax, onlineUpdatePeriodMs, offlineBlurTimeoutMs, offlineIdleTimeoutMs, onlineCloudTimeoutMs, notifyCloudDelayMs, notifyDefaultDelayMs, pushChatPeriodMs, pushChatLimit, savedGifsLimit, editTimeLimit, revokeTimeLimit, revokePmTimeLimit, ratingEDecay, stickersRecentLimit, stickersFavedLimit, channelsReadMediaPeriod, tmpSessions, pinnedDialogsCountMax, callReceiveTimeoutMs, callRingTimeoutMs, callConnectTimeoutMs, callPacketTimeoutMs, meUrlPrefix, autoupdateUrlPrefix, gifSearchUsername, venueSearchUsername, imgSearchUsername, staticMapsProvider, captionLengthMax, messageLengthMax, webfileDcId, suggestedLangCode, langPackVersion);
             }
         }
 

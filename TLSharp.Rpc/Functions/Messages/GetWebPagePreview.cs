@@ -10,16 +10,19 @@ namespace TLSharp.Rpc.Functions.Messages
     public sealed class GetWebPagePreview : ITlFunc<T.MessageMedia>, IEquatable<GetWebPagePreview>, IComparable<GetWebPagePreview>, IComparable
     {
         public string Message { get; }
+        public Option<Arr<T.MessageEntity>> Entities { get; }
         
         public GetWebPagePreview(
-            Some<string> message
+            Some<string> message,
+            Option<Arr<T.MessageEntity>> entities
         ) {
             Message = message;
+            Entities = entities;
         }
         
         
-        string CmpTuple =>
-            Message;
+        (string, Option<Arr<T.MessageEntity>>) CmpTuple =>
+            (Message, Entities);
 
         public bool Equals(GetWebPagePreview other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is GetWebPagePreview x && Equals(x);
@@ -35,12 +38,14 @@ namespace TLSharp.Rpc.Functions.Messages
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Message: {Message})";
+        public override string ToString() => $"(Message: {Message}, Entities: {Entities})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0x25223e24);
+            WriteUint(bw, 0x8b68b0cc);
+            Write(MaskBit(3, Entities), bw, WriteInt);
             Write(Message, bw, WriteString);
+            Write(Entities, bw, WriteOption<Arr<T.MessageEntity>>(WriteVector<T.MessageEntity>(WriteSerializable)));
         }
         
         T.MessageMedia ITlFunc<T.MessageMedia>.DeserializeResult(BinaryReader br) =>

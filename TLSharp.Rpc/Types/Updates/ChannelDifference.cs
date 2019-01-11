@@ -67,7 +67,7 @@ namespace TLSharp.Rpc.Types.Updates
 
         public sealed class TooLongTag : ITlTypeTag, IEquatable<TooLongTag>, IComparable<TooLongTag>, IComparable
         {
-            internal const uint TypeNumber = 0x410dee07;
+            internal const uint TypeNumber = 0x6a9d7b35;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Final;
@@ -77,6 +77,7 @@ namespace TLSharp.Rpc.Types.Updates
             public readonly int ReadInboxMaxId;
             public readonly int ReadOutboxMaxId;
             public readonly int UnreadCount;
+            public readonly int UnreadMentionsCount;
             public readonly Arr<T.Message> Messages;
             public readonly Arr<T.Chat> Chats;
             public readonly Arr<T.User> Users;
@@ -89,6 +90,7 @@ namespace TLSharp.Rpc.Types.Updates
                 int readInboxMaxId,
                 int readOutboxMaxId,
                 int unreadCount,
+                int unreadMentionsCount,
                 Some<Arr<T.Message>> messages,
                 Some<Arr<T.Chat>> chats,
                 Some<Arr<T.User>> users
@@ -100,13 +102,14 @@ namespace TLSharp.Rpc.Types.Updates
                 ReadInboxMaxId = readInboxMaxId;
                 ReadOutboxMaxId = readOutboxMaxId;
                 UnreadCount = unreadCount;
+                UnreadMentionsCount = unreadMentionsCount;
                 Messages = messages;
                 Chats = chats;
                 Users = users;
             }
             
-            (bool, int, Option<int>, int, int, int, int, Arr<T.Message>, Arr<T.Chat>, Arr<T.User>) CmpTuple =>
-                (Final, Pts, Timeout, TopMessage, ReadInboxMaxId, ReadOutboxMaxId, UnreadCount, Messages, Chats, Users);
+            (bool, int, Option<int>, int, int, int, int, int, Arr<T.Message>, Arr<T.Chat>, Arr<T.User>) CmpTuple =>
+                (Final, Pts, Timeout, TopMessage, ReadInboxMaxId, ReadOutboxMaxId, UnreadCount, UnreadMentionsCount, Messages, Chats, Users);
 
             public bool Equals(TooLongTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is TooLongTag x && Equals(x);
@@ -122,7 +125,7 @@ namespace TLSharp.Rpc.Types.Updates
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Final: {Final}, Pts: {Pts}, Timeout: {Timeout}, TopMessage: {TopMessage}, ReadInboxMaxId: {ReadInboxMaxId}, ReadOutboxMaxId: {ReadOutboxMaxId}, UnreadCount: {UnreadCount}, Messages: {Messages}, Chats: {Chats}, Users: {Users})";
+            public override string ToString() => $"(Final: {Final}, Pts: {Pts}, Timeout: {Timeout}, TopMessage: {TopMessage}, ReadInboxMaxId: {ReadInboxMaxId}, ReadOutboxMaxId: {ReadOutboxMaxId}, UnreadCount: {UnreadCount}, UnreadMentionsCount: {UnreadMentionsCount}, Messages: {Messages}, Chats: {Chats}, Users: {Users})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -134,6 +137,7 @@ namespace TLSharp.Rpc.Types.Updates
                 Write(ReadInboxMaxId, bw, WriteInt);
                 Write(ReadOutboxMaxId, bw, WriteInt);
                 Write(UnreadCount, bw, WriteInt);
+                Write(UnreadMentionsCount, bw, WriteInt);
                 Write(Messages, bw, WriteVector<T.Message>(WriteSerializable));
                 Write(Chats, bw, WriteVector<T.Chat>(WriteSerializable));
                 Write(Users, bw, WriteVector<T.User>(WriteSerializable));
@@ -149,10 +153,11 @@ namespace TLSharp.Rpc.Types.Updates
                 var readInboxMaxId = Read(br, ReadInt);
                 var readOutboxMaxId = Read(br, ReadInt);
                 var unreadCount = Read(br, ReadInt);
+                var unreadMentionsCount = Read(br, ReadInt);
                 var messages = Read(br, ReadVector(T.Message.Deserialize));
                 var chats = Read(br, ReadVector(T.Chat.Deserialize));
                 var users = Read(br, ReadVector(T.User.Deserialize));
-                return new TooLongTag(final, pts, timeout, topMessage, readInboxMaxId, readOutboxMaxId, unreadCount, messages, chats, users);
+                return new TooLongTag(final, pts, timeout, topMessage, readInboxMaxId, readOutboxMaxId, unreadCount, unreadMentionsCount, messages, chats, users);
             }
         }
 

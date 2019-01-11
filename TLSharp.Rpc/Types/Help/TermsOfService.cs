@@ -11,19 +11,31 @@ namespace TLSharp.Rpc.Types.Help
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xf1ee3e90;
+            internal const uint TypeNumber = 0x780a0310;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
+            public readonly bool Popup;
+            public readonly T.DataJson Id;
             public readonly string Text;
+            public readonly Arr<T.MessageEntity> Entities;
+            public readonly Option<int> MinAgeConfirm;
             
             public Tag(
-                Some<string> text
+                bool popup,
+                Some<T.DataJson> id,
+                Some<string> text,
+                Some<Arr<T.MessageEntity>> entities,
+                Option<int> minAgeConfirm
             ) {
+                Popup = popup;
+                Id = id;
                 Text = text;
+                Entities = entities;
+                MinAgeConfirm = minAgeConfirm;
             }
             
-            string CmpTuple =>
-                Text;
+            (bool, T.DataJson, string, Arr<T.MessageEntity>, Option<int>) CmpTuple =>
+                (Popup, Id, Text, Entities, MinAgeConfirm);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -39,18 +51,27 @@ namespace TLSharp.Rpc.Types.Help
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Text: {Text})";
+            public override string ToString() => $"(Popup: {Popup}, Id: {Id}, Text: {Text}, Entities: {Entities}, MinAgeConfirm: {MinAgeConfirm})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
+                Write(MaskBit(0, Popup) | MaskBit(1, MinAgeConfirm), bw, WriteInt);
+                Write(Id, bw, WriteSerializable);
                 Write(Text, bw, WriteString);
+                Write(Entities, bw, WriteVector<T.MessageEntity>(WriteSerializable));
+                Write(MinAgeConfirm, bw, WriteOption<int>(WriteInt));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
+                var flags = Read(br, ReadInt);
+                var popup = Read(br, ReadOption(flags, 0));
+                var id = Read(br, T.DataJson.Deserialize);
                 var text = Read(br, ReadString);
-                return new Tag(text);
+                var entities = Read(br, ReadVector(T.MessageEntity.Deserialize));
+                var minAgeConfirm = Read(br, ReadOption(flags, 1, ReadInt));
+                return new Tag(popup, id, text, entities, minAgeConfirm);
             }
         }
 

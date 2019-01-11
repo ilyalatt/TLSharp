@@ -11,7 +11,7 @@ namespace TLSharp.Rpc.Types.Messages
     {
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0xccd3563d;
+            internal const uint TypeNumber = 0x947ca848;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool Gallery;
@@ -20,6 +20,7 @@ namespace TLSharp.Rpc.Types.Messages
             public readonly Option<T.InlineBotSwitchPm> SwitchPm;
             public readonly Arr<T.BotInlineResult> Results;
             public readonly int CacheTime;
+            public readonly Arr<T.User> Users;
             
             public Tag(
                 bool gallery,
@@ -27,7 +28,8 @@ namespace TLSharp.Rpc.Types.Messages
                 Option<string> nextOffset,
                 Option<T.InlineBotSwitchPm> switchPm,
                 Some<Arr<T.BotInlineResult>> results,
-                int cacheTime
+                int cacheTime,
+                Some<Arr<T.User>> users
             ) {
                 Gallery = gallery;
                 QueryId = queryId;
@@ -35,10 +37,11 @@ namespace TLSharp.Rpc.Types.Messages
                 SwitchPm = switchPm;
                 Results = results;
                 CacheTime = cacheTime;
+                Users = users;
             }
             
-            (bool, long, Option<string>, Option<T.InlineBotSwitchPm>, Arr<T.BotInlineResult>, int) CmpTuple =>
-                (Gallery, QueryId, NextOffset, SwitchPm, Results, CacheTime);
+            (bool, long, Option<string>, Option<T.InlineBotSwitchPm>, Arr<T.BotInlineResult>, int, Arr<T.User>) CmpTuple =>
+                (Gallery, QueryId, NextOffset, SwitchPm, Results, CacheTime, Users);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -54,7 +57,7 @@ namespace TLSharp.Rpc.Types.Messages
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Gallery: {Gallery}, QueryId: {QueryId}, NextOffset: {NextOffset}, SwitchPm: {SwitchPm}, Results: {Results}, CacheTime: {CacheTime})";
+            public override string ToString() => $"(Gallery: {Gallery}, QueryId: {QueryId}, NextOffset: {NextOffset}, SwitchPm: {SwitchPm}, Results: {Results}, CacheTime: {CacheTime}, Users: {Users})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
@@ -65,6 +68,7 @@ namespace TLSharp.Rpc.Types.Messages
                 Write(SwitchPm, bw, WriteOption<T.InlineBotSwitchPm>(WriteSerializable));
                 Write(Results, bw, WriteVector<T.BotInlineResult>(WriteSerializable));
                 Write(CacheTime, bw, WriteInt);
+                Write(Users, bw, WriteVector<T.User>(WriteSerializable));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
@@ -76,7 +80,8 @@ namespace TLSharp.Rpc.Types.Messages
                 var switchPm = Read(br, ReadOption(flags, 2, T.InlineBotSwitchPm.Deserialize));
                 var results = Read(br, ReadVector(T.BotInlineResult.Deserialize));
                 var cacheTime = Read(br, ReadInt);
-                return new Tag(gallery, queryId, nextOffset, switchPm, results, cacheTime);
+                var users = Read(br, ReadVector(T.User.Deserialize));
+                return new Tag(gallery, queryId, nextOffset, switchPm, results, cacheTime, users);
             }
         }
 

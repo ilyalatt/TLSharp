@@ -15,8 +15,10 @@ namespace TLSharp.Rpc.Functions.Messages
         public T.InputPeer Peer { get; }
         public Option<int> ReplyToMsgId { get; }
         public T.InputMedia Media { get; }
+        public string Message { get; }
         public long RandomId { get; }
         public Option<T.ReplyMarkup> ReplyMarkup { get; }
+        public Option<Arr<T.MessageEntity>> Entities { get; }
         
         public SendMedia(
             bool silent,
@@ -25,8 +27,10 @@ namespace TLSharp.Rpc.Functions.Messages
             Some<T.InputPeer> peer,
             Option<int> replyToMsgId,
             Some<T.InputMedia> media,
+            Some<string> message,
             long randomId,
-            Option<T.ReplyMarkup> replyMarkup
+            Option<T.ReplyMarkup> replyMarkup,
+            Option<Arr<T.MessageEntity>> entities
         ) {
             Silent = silent;
             Background = background;
@@ -34,13 +38,15 @@ namespace TLSharp.Rpc.Functions.Messages
             Peer = peer;
             ReplyToMsgId = replyToMsgId;
             Media = media;
+            Message = message;
             RandomId = randomId;
             ReplyMarkup = replyMarkup;
+            Entities = entities;
         }
         
         
-        (bool, bool, bool, T.InputPeer, Option<int>, T.InputMedia, long, Option<T.ReplyMarkup>) CmpTuple =>
-            (Silent, Background, ClearDraft, Peer, ReplyToMsgId, Media, RandomId, ReplyMarkup);
+        (bool, bool, bool, T.InputPeer, Option<int>, T.InputMedia, string, long, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>) CmpTuple =>
+            (Silent, Background, ClearDraft, Peer, ReplyToMsgId, Media, Message, RandomId, ReplyMarkup, Entities);
 
         public bool Equals(SendMedia other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is SendMedia x && Equals(x);
@@ -56,17 +62,19 @@ namespace TLSharp.Rpc.Functions.Messages
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, ClearDraft: {ClearDraft}, Peer: {Peer}, ReplyToMsgId: {ReplyToMsgId}, Media: {Media}, RandomId: {RandomId}, ReplyMarkup: {ReplyMarkup})";
+        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, ClearDraft: {ClearDraft}, Peer: {Peer}, ReplyToMsgId: {ReplyToMsgId}, Media: {Media}, Message: {Message}, RandomId: {RandomId}, ReplyMarkup: {ReplyMarkup}, Entities: {Entities})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0xc8f16791);
-            Write(MaskBit(5, Silent) | MaskBit(6, Background) | MaskBit(7, ClearDraft) | MaskBit(0, ReplyToMsgId) | MaskBit(2, ReplyMarkup), bw, WriteInt);
+            WriteUint(bw, 0xb8d1262b);
+            Write(MaskBit(5, Silent) | MaskBit(6, Background) | MaskBit(7, ClearDraft) | MaskBit(0, ReplyToMsgId) | MaskBit(2, ReplyMarkup) | MaskBit(3, Entities), bw, WriteInt);
             Write(Peer, bw, WriteSerializable);
             Write(ReplyToMsgId, bw, WriteOption<int>(WriteInt));
             Write(Media, bw, WriteSerializable);
+            Write(Message, bw, WriteString);
             Write(RandomId, bw, WriteLong);
             Write(ReplyMarkup, bw, WriteOption<T.ReplyMarkup>(WriteSerializable));
+            Write(Entities, bw, WriteOption<Arr<T.MessageEntity>>(WriteVector<T.MessageEntity>(WriteSerializable)));
         }
         
         T.UpdatesType ITlFunc<T.UpdatesType>.DeserializeResult(BinaryReader br) =>

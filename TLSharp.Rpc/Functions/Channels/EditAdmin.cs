@@ -11,21 +11,21 @@ namespace TLSharp.Rpc.Functions.Channels
     {
         public T.InputChannel Channel { get; }
         public T.InputUser UserId { get; }
-        public T.ChannelParticipantRole Role { get; }
+        public T.ChannelAdminRights AdminRights { get; }
         
         public EditAdmin(
             Some<T.InputChannel> channel,
             Some<T.InputUser> userId,
-            Some<T.ChannelParticipantRole> role
+            Some<T.ChannelAdminRights> adminRights
         ) {
             Channel = channel;
             UserId = userId;
-            Role = role;
+            AdminRights = adminRights;
         }
         
         
-        (T.InputChannel, T.InputUser, T.ChannelParticipantRole) CmpTuple =>
-            (Channel, UserId, Role);
+        (T.InputChannel, T.InputUser, T.ChannelAdminRights) CmpTuple =>
+            (Channel, UserId, AdminRights);
 
         public bool Equals(EditAdmin other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
         public override bool Equals(object other) => other is EditAdmin x && Equals(x);
@@ -41,14 +41,14 @@ namespace TLSharp.Rpc.Functions.Channels
 
         public override int GetHashCode() => CmpTuple.GetHashCode();
 
-        public override string ToString() => $"(Channel: {Channel}, UserId: {UserId}, Role: {Role})";
+        public override string ToString() => $"(Channel: {Channel}, UserId: {UserId}, AdminRights: {AdminRights})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
-            WriteUint(bw, 0xeb7611d0);
+            WriteUint(bw, 0x20b88214);
             Write(Channel, bw, WriteSerializable);
             Write(UserId, bw, WriteSerializable);
-            Write(Role, bw, WriteSerializable);
+            Write(AdminRights, bw, WriteSerializable);
         }
         
         T.UpdatesType ITlFunc<T.UpdatesType>.DeserializeResult(BinaryReader br) =>

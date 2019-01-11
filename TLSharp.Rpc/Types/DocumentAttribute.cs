@@ -171,24 +171,27 @@ namespace TLSharp.Rpc.Types
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly bool RoundMessage;
+            public readonly bool SupportsStreaming;
             public readonly int Duration;
             public readonly int W;
             public readonly int H;
             
             public VideoTag(
                 bool roundMessage,
+                bool supportsStreaming,
                 int duration,
                 int w,
                 int h
             ) {
                 RoundMessage = roundMessage;
+                SupportsStreaming = supportsStreaming;
                 Duration = duration;
                 W = w;
                 H = h;
             }
             
-            (bool, int, int, int) CmpTuple =>
-                (RoundMessage, Duration, W, H);
+            (bool, bool, int, int, int) CmpTuple =>
+                (RoundMessage, SupportsStreaming, Duration, W, H);
 
             public bool Equals(VideoTag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is VideoTag x && Equals(x);
@@ -204,12 +207,12 @@ namespace TLSharp.Rpc.Types
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(RoundMessage: {RoundMessage}, Duration: {Duration}, W: {W}, H: {H})";
+            public override string ToString() => $"(RoundMessage: {RoundMessage}, SupportsStreaming: {SupportsStreaming}, Duration: {Duration}, W: {W}, H: {H})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
-                Write(MaskBit(0, RoundMessage), bw, WriteInt);
+                Write(MaskBit(0, RoundMessage) | MaskBit(1, SupportsStreaming), bw, WriteInt);
                 Write(Duration, bw, WriteInt);
                 Write(W, bw, WriteInt);
                 Write(H, bw, WriteInt);
@@ -219,10 +222,11 @@ namespace TLSharp.Rpc.Types
             {
                 var flags = Read(br, ReadInt);
                 var roundMessage = Read(br, ReadOption(flags, 0));
+                var supportsStreaming = Read(br, ReadOption(flags, 1));
                 var duration = Read(br, ReadInt);
                 var w = Read(br, ReadInt);
                 var h = Read(br, ReadInt);
-                return new VideoTag(roundMessage, duration, w, h);
+                return new VideoTag(roundMessage, supportsStreaming, duration, w, h);
             }
         }
 

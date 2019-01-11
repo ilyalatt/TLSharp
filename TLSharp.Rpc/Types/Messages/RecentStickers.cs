@@ -56,22 +56,28 @@ namespace TLSharp.Rpc.Types.Messages
 
         public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
-            internal const uint TypeNumber = 0x5ce20970;
+            internal const uint TypeNumber = 0x22f3afb3;
             uint ITlTypeTag.TypeNumber => TypeNumber;
             
             public readonly int Hash;
+            public readonly Arr<T.StickerPack> Packs;
             public readonly Arr<T.Document> Stickers;
+            public readonly Arr<int> Dates;
             
             public Tag(
                 int hash,
-                Some<Arr<T.Document>> stickers
+                Some<Arr<T.StickerPack>> packs,
+                Some<Arr<T.Document>> stickers,
+                Some<Arr<int>> dates
             ) {
                 Hash = hash;
+                Packs = packs;
                 Stickers = stickers;
+                Dates = dates;
             }
             
-            (int, Arr<T.Document>) CmpTuple =>
-                (Hash, Stickers);
+            (int, Arr<T.StickerPack>, Arr<T.Document>, Arr<int>) CmpTuple =>
+                (Hash, Packs, Stickers, Dates);
 
             public bool Equals(Tag other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || CmpTuple == other.CmpTuple);
             public override bool Equals(object other) => other is Tag x && Equals(x);
@@ -87,20 +93,24 @@ namespace TLSharp.Rpc.Types.Messages
 
             public override int GetHashCode() => CmpTuple.GetHashCode();
 
-            public override string ToString() => $"(Hash: {Hash}, Stickers: {Stickers})";
+            public override string ToString() => $"(Hash: {Hash}, Packs: {Packs}, Stickers: {Stickers}, Dates: {Dates})";
             
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Hash, bw, WriteInt);
+                Write(Packs, bw, WriteVector<T.StickerPack>(WriteSerializable));
                 Write(Stickers, bw, WriteVector<T.Document>(WriteSerializable));
+                Write(Dates, bw, WriteVector<int>(WriteInt));
             }
             
             internal static Tag DeserializeTag(BinaryReader br)
             {
                 var hash = Read(br, ReadInt);
+                var packs = Read(br, ReadVector(T.StickerPack.Deserialize));
                 var stickers = Read(br, ReadVector(T.Document.Deserialize));
-                return new Tag(hash, stickers);
+                var dates = Read(br, ReadVector(ReadInt));
+                return new Tag(hash, packs, stickers, dates);
             }
         }
 
