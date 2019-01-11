@@ -1,7 +1,9 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using BigMath;
 using BigMath.Utils;
+using LanguageExt;
 using TLSharp.Rpc;
 
 namespace TLSharp.Utils
@@ -24,13 +26,14 @@ namespace TLSharp.Utils
             return bts.ToInt256();
         }
 
-        public static byte[] UsingMemBinWriter(Action<BinaryWriter> serializer)
-        {
-            var ms = new MemoryStream();
-            var bw = new BinaryWriter(ms);
-            serializer(bw);
-            return ms.ToArray();
-        }
+        public static byte[] WithMemStream(Action<MemoryStream> writer) =>
+            new MemoryStream().With(writer).ToArray();
+
+        public static Task<byte[]> WithMemStream(Func<MemoryStream, Task> writer) =>
+            new MemoryStream().With(writer).Map(ms => ms.ToArray());
+
+        public static byte[] UsingMemBinWriter(Action<BinaryWriter> serializer) =>
+            WithMemStream(ms => serializer(new BinaryWriter(ms)));
 
         public static byte[] Serialize(ITlType dto) =>
             UsingMemBinWriter(dto.Serialize);
