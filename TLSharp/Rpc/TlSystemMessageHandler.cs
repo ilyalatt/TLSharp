@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Ionic.Zlib;
 using LanguageExt;
+using TLSharp.Internal;
 using TLSharp.Rpc.Types;
 using TLSharp.Utils;
 using static LanguageExt.Prelude;
@@ -133,7 +134,7 @@ namespace TLSharp.Rpc
 
             session.Salt = newSession.ServerSalt;
 
-            Console.WriteLine("NewSession: " + newSession);
+            TlTrace.Trace("NewSession: " + newSession);
         }
 
         public static Func<Message, IEnumerable<RpcResult>> Handle(Session session) => message =>
@@ -166,7 +167,7 @@ namespace TLSharp.Rpc
                 case MsgsAck.Tag.TypeNumber:
                     // var msg = br.Apply(MsgsAck.Deserialize);
                     // var ids = msg.Match(identity).MsgIds.Apply(xs => string.Join(", ", xs));
-                    // Console.WriteLine("Ack: " + ids);
+                    // TlTrace.Trace("Ack: " + ids);
                     break;
                 //case FutureSalts.Tag.TypeNumber:
                 //case MsgDetailedInfo.Tag.TypeNumber:
@@ -175,7 +176,7 @@ namespace TLSharp.Rpc
                 // TODO: throw on updatesTooLong
 
                 default:
-                    Console.WriteLine("TlSystemMessageHandler: Unhandled msg " + code.ToString("x8"));
+                    TlTrace.Trace("TlSystemMessageHandler: Unhandled msg " + code.ToString("x8"));
                     break;
             }
 

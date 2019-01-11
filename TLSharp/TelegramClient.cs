@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LanguageExt;
 using TLSharp.Auth;
+using TLSharp.Internal;
 using TLSharp.Rpc;
 using TLSharp.Rpc.Functions;
 using TLSharp.Rpc.Functions.Account;
@@ -95,7 +96,6 @@ namespace TLSharp
                 _session.TimeOffset = result.TimeOffset;
             }
 
-            Console.WriteLine("AuthKey: " + _session.AuthKey);
             var mtCipherTransport = new MtProtoCipherTransport(tcpTransport, _session, _sessionSessionStore);
             _transport = new TlTransport(mtCipherTransport, _session, _sessionSessionStore);
 
@@ -148,7 +148,7 @@ namespace TLSharp
 
         async Task SetAuthorized(User user)
         {
-            Console.WriteLine("Authorized: " + user);
+            TlTrace.Trace("Authorized: " + user);
             _session.IsAuthenticated = true;
             await _sessionSessionStore.Save(_session);
         }

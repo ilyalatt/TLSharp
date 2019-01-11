@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LanguageExt;
+using TLSharp.Internal;
 using TLSharp.Rpc.Types;
 using TLSharp.Utils;
 using static LanguageExt.Prelude;
@@ -37,7 +38,7 @@ namespace TLSharp.Rpc
                 await _sessionStore.Save(_session);
                 callResults.Iter(res => CaptureFlow(res.Id).Match(
                     flow => flow.SetResult(res),
-                    () => Console.WriteLine("Unexpected RPC result, the message id is " + res.Id)
+                    () => TlTrace.Trace("Unexpected RPC result, the message id is " + res.Id)
                 ));
             }
         }

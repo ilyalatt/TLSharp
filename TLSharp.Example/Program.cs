@@ -51,6 +51,8 @@ namespace TLSharp.Example
 
         static async Task Main()
         {
+            Internal.TlTrace.IsEnabled = true;
+
             var cfg = await File.ReadAllTextAsync("config.json").Map(JsonConvert.DeserializeObject<Config>);
             using (var tg = await TelegramClient.Connect(cfg.ApiId, cfg.ApiHash))
             {
