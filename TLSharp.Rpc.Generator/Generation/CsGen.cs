@@ -80,8 +80,8 @@ namespace TLSharp.Rpc.Generator.Generation
             var equality = Concat(
                 "public bool Equals(",
                 typeName,
-                " other) => !ReferenceEquals(other, null) && ",
-                cmpBy, " == other.", cmpBy, ";"
+                " other) => !ReferenceEquals(other, null) && (ReferenceEquals(this, other) || ",
+                cmpBy, " == other.", cmpBy, ");"
             ).Apply(Line);
             var equalityLegacy = Concat(
                 "public override bool Equals(object other) => other is ",
@@ -100,8 +100,11 @@ namespace TLSharp.Rpc.Generator.Generation
             var cmp = Concat(
                 "public int CompareTo(",
                 typeName,
-                " other) => !ReferenceEquals(other, null) ? ", cmpBy, ".CompareTo(other.", cmpBy, ")",
-                " : throw new ArgumentNullException(nameof(other));"
+                " other) => ReferenceEquals(other, null)",
+                " ? throw new ArgumentNullException(nameof(other))",
+                " : ReferenceEquals(this, other)",
+                " ? 0",
+                " : ", cmpBy, ".CompareTo(other.", cmpBy, ")", ";"
             ).Apply(Line);
             var cmpLegacy = Concat(
                 "int IComparable.CompareTo(object other) => other is ",
@@ -293,7 +296,7 @@ namespace TLSharp.Rpc.Generator.Generation
                         Line("uint ITlTypeTag.TypeNumber => TypeNumber;"),
                         Line("")
                     ),
-                    tagArgs.Map(arg => Line($"public {arg.type} {arg.name} {{ get; }}")).Scope(),
+                    tagArgs.Map(arg => Line($"public readonly {arg.type} {arg.name};")).Scope(),
                     Line(""),
                     Scope(
                         Line($"public {tagName}("),
