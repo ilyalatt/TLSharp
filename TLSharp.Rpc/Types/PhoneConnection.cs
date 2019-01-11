@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class PhoneConnection : ITlType, IEquatable<PhoneConnection>, IComparable<PhoneConnection>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0x9d4c17c0;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -33,6 +33,26 @@ namespace TLSharp.Rpc.Types
                 Port = port;
                 PeerTag = peerTag;
             }
+            
+            (long, string, string, int, Arr<byte>) CmpTuple =>
+                (Id, Ip, Ipv6, Port, PeerTag);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Ip: {Ip}, Ipv6: {Ipv6}, Port: {Port}, PeerTag: {PeerTag})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -94,11 +114,6 @@ namespace TLSharp.Rpc.Types
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(PhoneConnection other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is PhoneConnection x && Equals(x);
-        public static bool operator ==(PhoneConnection a, PhoneConnection b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(PhoneConnection a, PhoneConnection b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -109,13 +124,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(PhoneConnection other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is PhoneConnection x && Equals(x);
+        public static bool operator ==(PhoneConnection x, PhoneConnection y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(PhoneConnection x, PhoneConnection y) => !(x == y);
+
         public int CompareTo(PhoneConnection other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is PhoneConnection x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(PhoneConnection a, PhoneConnection b) => a.CompareTo(b) <= 0;
-        public static bool operator <(PhoneConnection a, PhoneConnection b) => a.CompareTo(b) < 0;
-        public static bool operator >(PhoneConnection a, PhoneConnection b) => a.CompareTo(b) > 0;
-        public static bool operator >=(PhoneConnection a, PhoneConnection b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(PhoneConnection x, PhoneConnection y) => x.CompareTo(y) <= 0;
+        public static bool operator <(PhoneConnection x, PhoneConnection y) => x.CompareTo(y) < 0;
+        public static bool operator >(PhoneConnection x, PhoneConnection y) => x.CompareTo(y) > 0;
+        public static bool operator >=(PhoneConnection x, PhoneConnection y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"PhoneConnection.{_tag.GetType().Name}{_tag}";
     }
 }

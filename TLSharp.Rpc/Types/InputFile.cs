@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class InputFile : ITlType, IEquatable<InputFile>, IComparable<InputFile>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xf52ff27f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -31,6 +31,26 @@ namespace TLSharp.Rpc.Types
                 Md5Checksum = md5Checksum;
             }
             
+            (long, int, string, string) CmpTuple =>
+                (Id, Parts, Name, Md5Checksum);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Parts: {Parts}, Name: {Name}, Md5Checksum: {Md5Checksum})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Id, bw, WriteLong);
@@ -49,7 +69,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class BigTag : Record<BigTag>, ITlTypeTag
+        public sealed class BigTag : ITlTypeTag, IEquatable<BigTag>, IComparable<BigTag>, IComparable
         {
             internal const uint TypeNumber = 0xfa4f0bb5;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -67,6 +87,26 @@ namespace TLSharp.Rpc.Types
                 Parts = parts;
                 Name = name;
             }
+            
+            (long, int, string) CmpTuple =>
+                (Id, Parts, Name);
+
+            public bool Equals(BigTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is BigTag x && Equals(x);
+            public static bool operator ==(BigTag x, BigTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(BigTag x, BigTag y) => !(x == y);
+
+            public int CompareTo(BigTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is BigTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(BigTag x, BigTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(BigTag x, BigTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(BigTag x, BigTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(BigTag x, BigTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Parts: {Parts}, Name: {Name})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -130,11 +170,6 @@ namespace TLSharp.Rpc.Types
             bigTag ?? throw new ArgumentNullException(nameof(bigTag))
         );
 
-        public bool Equals(InputFile other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is InputFile x && Equals(x);
-        public static bool operator ==(InputFile a, InputFile b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(InputFile a, InputFile b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -146,13 +181,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(InputFile other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is InputFile x && Equals(x);
+        public static bool operator ==(InputFile x, InputFile y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(InputFile x, InputFile y) => !(x == y);
+
         public int CompareTo(InputFile other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is InputFile x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(InputFile a, InputFile b) => a.CompareTo(b) <= 0;
-        public static bool operator <(InputFile a, InputFile b) => a.CompareTo(b) < 0;
-        public static bool operator >(InputFile a, InputFile b) => a.CompareTo(b) > 0;
-        public static bool operator >=(InputFile a, InputFile b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(InputFile x, InputFile y) => x.CompareTo(y) <= 0;
+        public static bool operator <(InputFile x, InputFile y) => x.CompareTo(y) < 0;
+        public static bool operator >(InputFile x, InputFile y) => x.CompareTo(y) > 0;
+        public static bool operator >=(InputFile x, InputFile y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"InputFile.{_tag.GetType().Name}{_tag}";
     }
 }

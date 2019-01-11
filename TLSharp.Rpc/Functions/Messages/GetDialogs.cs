@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetDialogs : Record<GetDialogs>, ITlFunc<T.Messages.Dialogs>
+    public sealed class GetDialogs : ITlFunc<T.Messages.Dialogs>, IEquatable<GetDialogs>, IComparable<GetDialogs>, IComparable
     {
         public bool ExcludePinned { get; }
         public int OffsetDate { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Messages
             OffsetPeer = offsetPeer;
             Limit = limit;
         }
+        
+        
+        (bool, int, int, T.InputPeer, int) CmpTuple =>
+            (ExcludePinned, OffsetDate, OffsetId, OffsetPeer, Limit);
+
+        public bool Equals(GetDialogs other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetDialogs x && Equals(x);
+        public static bool operator ==(GetDialogs x, GetDialogs y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetDialogs x, GetDialogs y) => !(x == y);
+
+        public int CompareTo(GetDialogs other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetDialogs x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetDialogs x, GetDialogs y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetDialogs x, GetDialogs y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetDialogs x, GetDialogs y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetDialogs x, GetDialogs y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(ExcludePinned: {ExcludePinned}, OffsetDate: {OffsetDate}, OffsetId: {OffsetId}, OffsetPeer: {OffsetPeer}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

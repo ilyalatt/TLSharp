@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SetTyping : Record<SetTyping>, ITlFunc<bool>
+    public sealed class SetTyping : ITlFunc<bool>, IEquatable<SetTyping>, IComparable<SetTyping>, IComparable
     {
         public T.InputPeer Peer { get; }
         public T.SendMessageAction Action { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Peer = peer;
             Action = action;
         }
+        
+        
+        (T.InputPeer, T.SendMessageAction) CmpTuple =>
+            (Peer, Action);
+
+        public bool Equals(SetTyping other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SetTyping x && Equals(x);
+        public static bool operator ==(SetTyping x, SetTyping y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SetTyping x, SetTyping y) => !(x == y);
+
+        public int CompareTo(SetTyping other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SetTyping x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SetTyping x, SetTyping y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SetTyping x, SetTyping y) => x.CompareTo(y) < 0;
+        public static bool operator >(SetTyping x, SetTyping y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SetTyping x, SetTyping y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, Action: {Action})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

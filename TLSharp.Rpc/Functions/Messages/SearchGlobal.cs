@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SearchGlobal : Record<SearchGlobal>, ITlFunc<T.Messages.Messages>
+    public sealed class SearchGlobal : ITlFunc<T.Messages.Messages>, IEquatable<SearchGlobal>, IComparable<SearchGlobal>, IComparable
     {
         public string Q { get; }
         public int OffsetDate { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Messages
             OffsetId = offsetId;
             Limit = limit;
         }
+        
+        
+        (string, int, T.InputPeer, int, int) CmpTuple =>
+            (Q, OffsetDate, OffsetPeer, OffsetId, Limit);
+
+        public bool Equals(SearchGlobal other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SearchGlobal x && Equals(x);
+        public static bool operator ==(SearchGlobal x, SearchGlobal y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SearchGlobal x, SearchGlobal y) => !(x == y);
+
+        public int CompareTo(SearchGlobal other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SearchGlobal x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SearchGlobal x, SearchGlobal y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SearchGlobal x, SearchGlobal y) => x.CompareTo(y) < 0;
+        public static bool operator >(SearchGlobal x, SearchGlobal y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SearchGlobal x, SearchGlobal y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Q: {Q}, OffsetDate: {OffsetDate}, OffsetPeer: {OffsetPeer}, OffsetId: {OffsetId}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Upload
 {
     public sealed class File : ITlType, IEquatable<File>, IComparable<File>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0x096a18d5;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Types.Upload
                 Bytes = bytes;
             }
             
+            (T.Storage.FileType, int, Arr<byte>) CmpTuple =>
+                (Type, Mtime, Bytes);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Type: {Type}, Mtime: {Mtime}, Bytes: {Bytes})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Type, bw, WriteSerializable);
@@ -44,7 +64,7 @@ namespace TLSharp.Rpc.Types.Upload
             }
         }
 
-        public sealed class CdnRedirectTag : Record<CdnRedirectTag>, ITlTypeTag
+        public sealed class CdnRedirectTag : ITlTypeTag, IEquatable<CdnRedirectTag>, IComparable<CdnRedirectTag>, IComparable
         {
             internal const uint TypeNumber = 0x1508485a;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -65,6 +85,26 @@ namespace TLSharp.Rpc.Types.Upload
                 EncryptionKey = encryptionKey;
                 EncryptionIv = encryptionIv;
             }
+            
+            (int, Arr<byte>, Arr<byte>, Arr<byte>) CmpTuple =>
+                (DcId, FileToken, EncryptionKey, EncryptionIv);
+
+            public bool Equals(CdnRedirectTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is CdnRedirectTag x && Equals(x);
+            public static bool operator ==(CdnRedirectTag x, CdnRedirectTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(CdnRedirectTag x, CdnRedirectTag y) => !(x == y);
+
+            public int CompareTo(CdnRedirectTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is CdnRedirectTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(CdnRedirectTag x, CdnRedirectTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(CdnRedirectTag x, CdnRedirectTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(CdnRedirectTag x, CdnRedirectTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(CdnRedirectTag x, CdnRedirectTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(DcId: {DcId}, FileToken: {FileToken}, EncryptionKey: {EncryptionKey}, EncryptionIv: {EncryptionIv})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -130,11 +170,6 @@ namespace TLSharp.Rpc.Types.Upload
             cdnRedirectTag ?? throw new ArgumentNullException(nameof(cdnRedirectTag))
         );
 
-        public bool Equals(File other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is File x && Equals(x);
-        public static bool operator ==(File a, File b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(File a, File b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -146,13 +181,20 @@ namespace TLSharp.Rpc.Types.Upload
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(File other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is File x && Equals(x);
+        public static bool operator ==(File x, File y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(File x, File y) => !(x == y);
+
         public int CompareTo(File other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is File x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(File a, File b) => a.CompareTo(b) <= 0;
-        public static bool operator <(File a, File b) => a.CompareTo(b) < 0;
-        public static bool operator >(File a, File b) => a.CompareTo(b) > 0;
-        public static bool operator >=(File a, File b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(File x, File y) => x.CompareTo(y) <= 0;
+        public static bool operator <(File x, File y) => x.CompareTo(y) < 0;
+        public static bool operator >(File x, File y) => x.CompareTo(y) > 0;
+        public static bool operator >=(File x, File y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"File.{_tag.GetType().Name}{_tag}";
     }
 }

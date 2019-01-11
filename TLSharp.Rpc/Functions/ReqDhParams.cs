@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions
 {
-    public sealed class ReqDhParams : Record<ReqDhParams>, ITlFunc<T.ServerDhParams>
+    public sealed class ReqDhParams : ITlFunc<T.ServerDhParams>, IEquatable<ReqDhParams>, IComparable<ReqDhParams>, IComparable
     {
         public Int128 Nonce { get; }
         public Int128 ServerNonce { get; }
@@ -31,6 +31,26 @@ namespace TLSharp.Rpc.Functions
             PublicKeyFingerprint = publicKeyFingerprint;
             EncryptedData = encryptedData;
         }
+        
+        
+        (Int128, Int128, Arr<byte>, Arr<byte>, long, Arr<byte>) CmpTuple =>
+            (Nonce, ServerNonce, P, Q, PublicKeyFingerprint, EncryptedData);
+
+        public bool Equals(ReqDhParams other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ReqDhParams x && Equals(x);
+        public static bool operator ==(ReqDhParams x, ReqDhParams y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ReqDhParams x, ReqDhParams y) => !(x == y);
+
+        public int CompareTo(ReqDhParams other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ReqDhParams x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ReqDhParams x, ReqDhParams y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ReqDhParams x, ReqDhParams y) => x.CompareTo(y) < 0;
+        public static bool operator >(ReqDhParams x, ReqDhParams y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ReqDhParams x, ReqDhParams y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Nonce: {Nonce}, ServerNonce: {ServerNonce}, P: {P}, Q: {Q}, PublicKeyFingerprint: {PublicKeyFingerprint}, EncryptedData: {EncryptedData})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

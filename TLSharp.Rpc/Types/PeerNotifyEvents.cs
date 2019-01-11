@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class PeerNotifyEvents : ITlType, IEquatable<PeerNotifyEvents>, IComparable<PeerNotifyEvents>, IComparable
     {
-        public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
+        public sealed class EmptyTag : ITlTypeTag, IEquatable<EmptyTag>, IComparable<EmptyTag>, IComparable
         {
             internal const uint TypeNumber = 0xadd53cb3;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is EmptyTag x && Equals(x);
+            public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
+
+            public int CompareTo(EmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(EmptyTag x, EmptyTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(EmptyTag x, EmptyTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class AllTag : Record<AllTag>, ITlTypeTag
+        public sealed class AllTag : ITlTypeTag, IEquatable<AllTag>, IComparable<AllTag>, IComparable
         {
             internal const uint TypeNumber = 0x6d1ded88;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -46,6 +66,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(AllTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is AllTag x && Equals(x);
+            public static bool operator ==(AllTag x, AllTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(AllTag x, AllTag y) => !(x == y);
+
+            public int CompareTo(AllTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is AllTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(AllTag x, AllTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(AllTag x, AllTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(AllTag x, AllTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(AllTag x, AllTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -105,11 +145,6 @@ namespace TLSharp.Rpc.Types
             allTag ?? throw new ArgumentNullException(nameof(allTag))
         );
 
-        public bool Equals(PeerNotifyEvents other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is PeerNotifyEvents x && Equals(x);
-        public static bool operator ==(PeerNotifyEvents a, PeerNotifyEvents b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(PeerNotifyEvents a, PeerNotifyEvents b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -121,13 +156,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(PeerNotifyEvents other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is PeerNotifyEvents x && Equals(x);
+        public static bool operator ==(PeerNotifyEvents x, PeerNotifyEvents y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(PeerNotifyEvents x, PeerNotifyEvents y) => !(x == y);
+
         public int CompareTo(PeerNotifyEvents other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is PeerNotifyEvents x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(PeerNotifyEvents a, PeerNotifyEvents b) => a.CompareTo(b) <= 0;
-        public static bool operator <(PeerNotifyEvents a, PeerNotifyEvents b) => a.CompareTo(b) < 0;
-        public static bool operator >(PeerNotifyEvents a, PeerNotifyEvents b) => a.CompareTo(b) > 0;
-        public static bool operator >=(PeerNotifyEvents a, PeerNotifyEvents b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(PeerNotifyEvents x, PeerNotifyEvents y) => x.CompareTo(y) <= 0;
+        public static bool operator <(PeerNotifyEvents x, PeerNotifyEvents y) => x.CompareTo(y) < 0;
+        public static bool operator >(PeerNotifyEvents x, PeerNotifyEvents y) => x.CompareTo(y) > 0;
+        public static bool operator >=(PeerNotifyEvents x, PeerNotifyEvents y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"PeerNotifyEvents.{_tag.GetType().Name}{_tag}";
     }
 }

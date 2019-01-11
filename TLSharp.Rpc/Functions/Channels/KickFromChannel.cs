@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class KickFromChannel : Record<KickFromChannel>, ITlFunc<T.UpdatesType>
+    public sealed class KickFromChannel : ITlFunc<T.UpdatesType>, IEquatable<KickFromChannel>, IComparable<KickFromChannel>, IComparable
     {
         public T.InputChannel Channel { get; }
         public T.InputUser UserId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Channels
             UserId = userId;
             Kicked = kicked;
         }
+        
+        
+        (T.InputChannel, T.InputUser, bool) CmpTuple =>
+            (Channel, UserId, Kicked);
+
+        public bool Equals(KickFromChannel other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is KickFromChannel x && Equals(x);
+        public static bool operator ==(KickFromChannel x, KickFromChannel y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(KickFromChannel x, KickFromChannel y) => !(x == y);
+
+        public int CompareTo(KickFromChannel other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is KickFromChannel x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(KickFromChannel x, KickFromChannel y) => x.CompareTo(y) <= 0;
+        public static bool operator <(KickFromChannel x, KickFromChannel y) => x.CompareTo(y) < 0;
+        public static bool operator >(KickFromChannel x, KickFromChannel y) => x.CompareTo(y) > 0;
+        public static bool operator >=(KickFromChannel x, KickFromChannel y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, UserId: {UserId}, Kicked: {Kicked})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

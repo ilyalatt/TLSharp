@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Auth
 {
-    public sealed class ExportAuthorization : Record<ExportAuthorization>, ITlFunc<T.Auth.ExportedAuthorization>
+    public sealed class ExportAuthorization : ITlFunc<T.Auth.ExportedAuthorization>, IEquatable<ExportAuthorization>, IComparable<ExportAuthorization>, IComparable
     {
         public int DcId { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Auth
         ) {
             DcId = dcId;
         }
+        
+        
+        int CmpTuple =>
+            DcId;
+
+        public bool Equals(ExportAuthorization other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ExportAuthorization x && Equals(x);
+        public static bool operator ==(ExportAuthorization x, ExportAuthorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ExportAuthorization x, ExportAuthorization y) => !(x == y);
+
+        public int CompareTo(ExportAuthorization other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ExportAuthorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ExportAuthorization x, ExportAuthorization y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ExportAuthorization x, ExportAuthorization y) => x.CompareTo(y) < 0;
+        public static bool operator >(ExportAuthorization x, ExportAuthorization y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ExportAuthorization x, ExportAuthorization y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(DcId: {DcId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

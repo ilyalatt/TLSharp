@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetMessagesViews : Record<GetMessagesViews>, ITlFunc<Arr<int>>
+    public sealed class GetMessagesViews : ITlFunc<Arr<int>>, IEquatable<GetMessagesViews>, IComparable<GetMessagesViews>, IComparable
     {
         public T.InputPeer Peer { get; }
         public Arr<int> Id { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Id = id;
             Increment = increment;
         }
+        
+        
+        (T.InputPeer, Arr<int>, bool) CmpTuple =>
+            (Peer, Id, Increment);
+
+        public bool Equals(GetMessagesViews other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetMessagesViews x && Equals(x);
+        public static bool operator ==(GetMessagesViews x, GetMessagesViews y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetMessagesViews x, GetMessagesViews y) => !(x == y);
+
+        public int CompareTo(GetMessagesViews other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetMessagesViews x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetMessagesViews x, GetMessagesViews y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetMessagesViews x, GetMessagesViews y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetMessagesViews x, GetMessagesViews y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetMessagesViews x, GetMessagesViews y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, Id: {Id}, Increment: {Increment})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Payments
 {
-    public sealed class SendPaymentForm : Record<SendPaymentForm>, ITlFunc<T.Payments.PaymentResult>
+    public sealed class SendPaymentForm : ITlFunc<T.Payments.PaymentResult>, IEquatable<SendPaymentForm>, IComparable<SendPaymentForm>, IComparable
     {
         public int MsgId { get; }
         public Option<string> RequestedInfoId { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Payments
             ShippingOptionId = shippingOptionId;
             Credentials = credentials;
         }
+        
+        
+        (int, Option<string>, Option<string>, T.InputPaymentCredentials) CmpTuple =>
+            (MsgId, RequestedInfoId, ShippingOptionId, Credentials);
+
+        public bool Equals(SendPaymentForm other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendPaymentForm x && Equals(x);
+        public static bool operator ==(SendPaymentForm x, SendPaymentForm y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendPaymentForm x, SendPaymentForm y) => !(x == y);
+
+        public int CompareTo(SendPaymentForm other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendPaymentForm x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendPaymentForm x, SendPaymentForm y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendPaymentForm x, SendPaymentForm y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendPaymentForm x, SendPaymentForm y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendPaymentForm x, SendPaymentForm y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(MsgId: {MsgId}, RequestedInfoId: {RequestedInfoId}, ShippingOptionId: {ShippingOptionId}, Credentials: {Credentials})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

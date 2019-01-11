@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Payments
 {
     public sealed class PaymentResult : ITlType, IEquatable<PaymentResult>, IComparable<PaymentResult>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0x4e5f810d;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types.Payments
             ) {
                 Updates = updates;
             }
+            
+            T.UpdatesType CmpTuple =>
+                Updates;
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Updates: {Updates})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types.Payments
             }
         }
 
-        public sealed class VerficationNeededTag : Record<VerficationNeededTag>, ITlTypeTag
+        public sealed class VerficationNeededTag : ITlTypeTag, IEquatable<VerficationNeededTag>, IComparable<VerficationNeededTag>, IComparable
         {
             internal const uint TypeNumber = 0x6b56b921;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -46,6 +66,26 @@ namespace TLSharp.Rpc.Types.Payments
             ) {
                 Url = url;
             }
+            
+            string CmpTuple =>
+                Url;
+
+            public bool Equals(VerficationNeededTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is VerficationNeededTag x && Equals(x);
+            public static bool operator ==(VerficationNeededTag x, VerficationNeededTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(VerficationNeededTag x, VerficationNeededTag y) => !(x == y);
+
+            public int CompareTo(VerficationNeededTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is VerficationNeededTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(VerficationNeededTag x, VerficationNeededTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(VerficationNeededTag x, VerficationNeededTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(VerficationNeededTag x, VerficationNeededTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(VerficationNeededTag x, VerficationNeededTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Url: {Url})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -105,11 +145,6 @@ namespace TLSharp.Rpc.Types.Payments
             verficationNeededTag ?? throw new ArgumentNullException(nameof(verficationNeededTag))
         );
 
-        public bool Equals(PaymentResult other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is PaymentResult x && Equals(x);
-        public static bool operator ==(PaymentResult a, PaymentResult b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(PaymentResult a, PaymentResult b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -121,13 +156,20 @@ namespace TLSharp.Rpc.Types.Payments
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(PaymentResult other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is PaymentResult x && Equals(x);
+        public static bool operator ==(PaymentResult x, PaymentResult y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(PaymentResult x, PaymentResult y) => !(x == y);
+
         public int CompareTo(PaymentResult other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is PaymentResult x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(PaymentResult a, PaymentResult b) => a.CompareTo(b) <= 0;
-        public static bool operator <(PaymentResult a, PaymentResult b) => a.CompareTo(b) < 0;
-        public static bool operator >(PaymentResult a, PaymentResult b) => a.CompareTo(b) > 0;
-        public static bool operator >=(PaymentResult a, PaymentResult b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(PaymentResult x, PaymentResult y) => x.CompareTo(y) <= 0;
+        public static bool operator <(PaymentResult x, PaymentResult y) => x.CompareTo(y) < 0;
+        public static bool operator >(PaymentResult x, PaymentResult y) => x.CompareTo(y) > 0;
+        public static bool operator >=(PaymentResult x, PaymentResult y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"PaymentResult.{_tag.GetType().Name}{_tag}";
     }
 }

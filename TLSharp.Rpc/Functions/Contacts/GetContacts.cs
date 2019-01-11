@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class GetContacts : Record<GetContacts>, ITlFunc<T.Contacts.Contacts>
+    public sealed class GetContacts : ITlFunc<T.Contacts.Contacts>, IEquatable<GetContacts>, IComparable<GetContacts>, IComparable
     {
         public string Hash { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Contacts
         ) {
             Hash = hash;
         }
+        
+        
+        string CmpTuple =>
+            Hash;
+
+        public bool Equals(GetContacts other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetContacts x && Equals(x);
+        public static bool operator ==(GetContacts x, GetContacts y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetContacts x, GetContacts y) => !(x == y);
+
+        public int CompareTo(GetContacts other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetContacts x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetContacts x, GetContacts y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetContacts x, GetContacts y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetContacts x, GetContacts y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetContacts x, GetContacts y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

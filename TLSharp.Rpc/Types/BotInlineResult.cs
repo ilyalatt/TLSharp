@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class BotInlineResult : ITlType, IEquatable<BotInlineResult>, IComparable<BotInlineResult>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0x9bebaeb9;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -55,6 +55,26 @@ namespace TLSharp.Rpc.Types
                 SendMessage = sendMessage;
             }
             
+            (string, string, Option<string>, Option<string>, Option<string>, Option<string>, Option<string>, Option<string>, Option<int>, Option<int>, Option<int>, T.BotInlineMessage) CmpTuple =>
+                (Id, Type, Title, Description, Url, ThumbUrl, ContentUrl, ContentType, W, H, Duration, SendMessage);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Type: {Type}, Title: {Title}, Description: {Description}, Url: {Url}, ThumbUrl: {ThumbUrl}, ContentUrl: {ContentUrl}, ContentType: {ContentType}, W: {W}, H: {H}, Duration: {Duration}, SendMessage: {SendMessage})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(MaskBit(1, Title) | MaskBit(2, Description) | MaskBit(3, Url) | MaskBit(4, ThumbUrl) | MaskBit(5, ContentUrl) | MaskBit(5, ContentType) | MaskBit(6, W) | MaskBit(6, H) | MaskBit(7, Duration), bw, WriteInt);
@@ -91,7 +111,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class MediaTag : Record<MediaTag>, ITlTypeTag
+        public sealed class MediaTag : ITlTypeTag, IEquatable<MediaTag>, IComparable<MediaTag>, IComparable
         {
             internal const uint TypeNumber = 0x17db940b;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -121,6 +141,26 @@ namespace TLSharp.Rpc.Types
                 Description = description;
                 SendMessage = sendMessage;
             }
+            
+            (string, string, Option<T.Photo>, Option<T.Document>, Option<string>, Option<string>, T.BotInlineMessage) CmpTuple =>
+                (Id, Type, Photo, Document, Title, Description, SendMessage);
+
+            public bool Equals(MediaTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is MediaTag x && Equals(x);
+            public static bool operator ==(MediaTag x, MediaTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(MediaTag x, MediaTag y) => !(x == y);
+
+            public int CompareTo(MediaTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is MediaTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(MediaTag x, MediaTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(MediaTag x, MediaTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(MediaTag x, MediaTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(MediaTag x, MediaTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Type: {Type}, Photo: {Photo}, Document: {Document}, Title: {Title}, Description: {Description}, SendMessage: {SendMessage})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -194,11 +234,6 @@ namespace TLSharp.Rpc.Types
             mediaTag ?? throw new ArgumentNullException(nameof(mediaTag))
         );
 
-        public bool Equals(BotInlineResult other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is BotInlineResult x && Equals(x);
-        public static bool operator ==(BotInlineResult a, BotInlineResult b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(BotInlineResult a, BotInlineResult b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -210,13 +245,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(BotInlineResult other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is BotInlineResult x && Equals(x);
+        public static bool operator ==(BotInlineResult x, BotInlineResult y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(BotInlineResult x, BotInlineResult y) => !(x == y);
+
         public int CompareTo(BotInlineResult other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is BotInlineResult x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(BotInlineResult a, BotInlineResult b) => a.CompareTo(b) <= 0;
-        public static bool operator <(BotInlineResult a, BotInlineResult b) => a.CompareTo(b) < 0;
-        public static bool operator >(BotInlineResult a, BotInlineResult b) => a.CompareTo(b) > 0;
-        public static bool operator >=(BotInlineResult a, BotInlineResult b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(BotInlineResult x, BotInlineResult y) => x.CompareTo(y) <= 0;
+        public static bool operator <(BotInlineResult x, BotInlineResult y) => x.CompareTo(y) < 0;
+        public static bool operator >(BotInlineResult x, BotInlineResult y) => x.CompareTo(y) > 0;
+        public static bool operator >=(BotInlineResult x, BotInlineResult y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"BotInlineResult.{_tag.GetType().Name}{_tag}";
     }
 }

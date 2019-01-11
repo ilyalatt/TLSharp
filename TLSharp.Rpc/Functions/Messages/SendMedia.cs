@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SendMedia : Record<SendMedia>, ITlFunc<T.UpdatesType>
+    public sealed class SendMedia : ITlFunc<T.UpdatesType>, IEquatable<SendMedia>, IComparable<SendMedia>, IComparable
     {
         public bool Silent { get; }
         public bool Background { get; }
@@ -37,6 +37,26 @@ namespace TLSharp.Rpc.Functions.Messages
             RandomId = randomId;
             ReplyMarkup = replyMarkup;
         }
+        
+        
+        (bool, bool, bool, T.InputPeer, Option<int>, T.InputMedia, long, Option<T.ReplyMarkup>) CmpTuple =>
+            (Silent, Background, ClearDraft, Peer, ReplyToMsgId, Media, RandomId, ReplyMarkup);
+
+        public bool Equals(SendMedia other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendMedia x && Equals(x);
+        public static bool operator ==(SendMedia x, SendMedia y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendMedia x, SendMedia y) => !(x == y);
+
+        public int CompareTo(SendMedia other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendMedia x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendMedia x, SendMedia y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendMedia x, SendMedia y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendMedia x, SendMedia y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendMedia x, SendMedia y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, ClearDraft: {ClearDraft}, Peer: {Peer}, ReplyToMsgId: {ReplyToMsgId}, Media: {Media}, RandomId: {RandomId}, ReplyMarkup: {ReplyMarkup})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

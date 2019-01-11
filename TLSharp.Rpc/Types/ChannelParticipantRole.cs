@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class ChannelParticipantRole : ITlType, IEquatable<ChannelParticipantRole>, IComparable<ChannelParticipantRole>, IComparable
     {
-        public sealed class RoleEmptyTag : Record<RoleEmptyTag>, ITlTypeTag
+        public sealed class RoleEmptyTag : ITlTypeTag, IEquatable<RoleEmptyTag>, IComparable<RoleEmptyTag>, IComparable
         {
             internal const uint TypeNumber = 0xb285a0c6;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(RoleEmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is RoleEmptyTag x && Equals(x);
+            public static bool operator ==(RoleEmptyTag x, RoleEmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(RoleEmptyTag x, RoleEmptyTag y) => !(x == y);
+
+            public int CompareTo(RoleEmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is RoleEmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(RoleEmptyTag x, RoleEmptyTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(RoleEmptyTag x, RoleEmptyTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(RoleEmptyTag x, RoleEmptyTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(RoleEmptyTag x, RoleEmptyTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class RoleModeratorTag : Record<RoleModeratorTag>, ITlTypeTag
+        public sealed class RoleModeratorTag : ITlTypeTag, IEquatable<RoleModeratorTag>, IComparable<RoleModeratorTag>, IComparable
         {
             internal const uint TypeNumber = 0x9618d975;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -46,6 +66,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(RoleModeratorTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is RoleModeratorTag x && Equals(x);
+            public static bool operator ==(RoleModeratorTag x, RoleModeratorTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(RoleModeratorTag x, RoleModeratorTag y) => !(x == y);
+
+            public int CompareTo(RoleModeratorTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is RoleModeratorTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(RoleModeratorTag x, RoleModeratorTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(RoleModeratorTag x, RoleModeratorTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(RoleModeratorTag x, RoleModeratorTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(RoleModeratorTag x, RoleModeratorTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -59,7 +99,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class RoleEditorTag : Record<RoleEditorTag>, ITlTypeTag
+        public sealed class RoleEditorTag : ITlTypeTag, IEquatable<RoleEditorTag>, IComparable<RoleEditorTag>, IComparable
         {
             internal const uint TypeNumber = 0x820bfe8c;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -71,6 +111,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(RoleEditorTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is RoleEditorTag x && Equals(x);
+            public static bool operator ==(RoleEditorTag x, RoleEditorTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(RoleEditorTag x, RoleEditorTag y) => !(x == y);
+
+            public int CompareTo(RoleEditorTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is RoleEditorTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(RoleEditorTag x, RoleEditorTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(RoleEditorTag x, RoleEditorTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(RoleEditorTag x, RoleEditorTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(RoleEditorTag x, RoleEditorTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -136,11 +196,6 @@ namespace TLSharp.Rpc.Types
             roleEditorTag ?? throw new ArgumentNullException(nameof(roleEditorTag))
         );
 
-        public bool Equals(ChannelParticipantRole other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is ChannelParticipantRole x && Equals(x);
-        public static bool operator ==(ChannelParticipantRole a, ChannelParticipantRole b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(ChannelParticipantRole a, ChannelParticipantRole b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -153,13 +208,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(ChannelParticipantRole other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is ChannelParticipantRole x && Equals(x);
+        public static bool operator ==(ChannelParticipantRole x, ChannelParticipantRole y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ChannelParticipantRole x, ChannelParticipantRole y) => !(x == y);
+
         public int CompareTo(ChannelParticipantRole other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is ChannelParticipantRole x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(ChannelParticipantRole a, ChannelParticipantRole b) => a.CompareTo(b) <= 0;
-        public static bool operator <(ChannelParticipantRole a, ChannelParticipantRole b) => a.CompareTo(b) < 0;
-        public static bool operator >(ChannelParticipantRole a, ChannelParticipantRole b) => a.CompareTo(b) > 0;
-        public static bool operator >=(ChannelParticipantRole a, ChannelParticipantRole b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(ChannelParticipantRole x, ChannelParticipantRole y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ChannelParticipantRole x, ChannelParticipantRole y) => x.CompareTo(y) < 0;
+        public static bool operator >(ChannelParticipantRole x, ChannelParticipantRole y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ChannelParticipantRole x, ChannelParticipantRole y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"ChannelParticipantRole.{_tag.GetType().Name}{_tag}";
     }
 }

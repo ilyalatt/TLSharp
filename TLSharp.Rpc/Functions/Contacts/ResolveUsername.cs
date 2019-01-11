@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class ResolveUsername : Record<ResolveUsername>, ITlFunc<T.Contacts.ResolvedPeer>
+    public sealed class ResolveUsername : ITlFunc<T.Contacts.ResolvedPeer>, IEquatable<ResolveUsername>, IComparable<ResolveUsername>, IComparable
     {
         public string Username { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Contacts
         ) {
             Username = username;
         }
+        
+        
+        string CmpTuple =>
+            Username;
+
+        public bool Equals(ResolveUsername other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ResolveUsername x && Equals(x);
+        public static bool operator ==(ResolveUsername x, ResolveUsername y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ResolveUsername x, ResolveUsername y) => !(x == y);
+
+        public int CompareTo(ResolveUsername other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ResolveUsername x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ResolveUsername x, ResolveUsername y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ResolveUsername x, ResolveUsername y) => x.CompareTo(y) < 0;
+        public static bool operator >(ResolveUsername x, ResolveUsername y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ResolveUsername x, ResolveUsername y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Username: {Username})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

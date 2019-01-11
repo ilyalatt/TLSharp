@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class PhoneCallDiscardReason : ITlType, IEquatable<PhoneCallDiscardReason>, IComparable<PhoneCallDiscardReason>, IComparable
     {
-        public sealed class MissedTag : Record<MissedTag>, ITlTypeTag
+        public sealed class MissedTag : ITlTypeTag, IEquatable<MissedTag>, IComparable<MissedTag>, IComparable
         {
             internal const uint TypeNumber = 0x85e42301;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(MissedTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is MissedTag x && Equals(x);
+            public static bool operator ==(MissedTag x, MissedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(MissedTag x, MissedTag y) => !(x == y);
+
+            public int CompareTo(MissedTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is MissedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(MissedTag x, MissedTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(MissedTag x, MissedTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(MissedTag x, MissedTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(MissedTag x, MissedTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class DisconnectTag : Record<DisconnectTag>, ITlTypeTag
+        public sealed class DisconnectTag : ITlTypeTag, IEquatable<DisconnectTag>, IComparable<DisconnectTag>, IComparable
         {
             internal const uint TypeNumber = 0xe095c1a0;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -46,6 +66,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(DisconnectTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is DisconnectTag x && Equals(x);
+            public static bool operator ==(DisconnectTag x, DisconnectTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(DisconnectTag x, DisconnectTag y) => !(x == y);
+
+            public int CompareTo(DisconnectTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is DisconnectTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(DisconnectTag x, DisconnectTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(DisconnectTag x, DisconnectTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(DisconnectTag x, DisconnectTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(DisconnectTag x, DisconnectTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -59,7 +99,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class HangupTag : Record<HangupTag>, ITlTypeTag
+        public sealed class HangupTag : ITlTypeTag, IEquatable<HangupTag>, IComparable<HangupTag>, IComparable
         {
             internal const uint TypeNumber = 0x57adc690;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -71,6 +111,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(HangupTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is HangupTag x && Equals(x);
+            public static bool operator ==(HangupTag x, HangupTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(HangupTag x, HangupTag y) => !(x == y);
+
+            public int CompareTo(HangupTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is HangupTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(HangupTag x, HangupTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(HangupTag x, HangupTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(HangupTag x, HangupTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(HangupTag x, HangupTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -84,7 +144,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class BusyTag : Record<BusyTag>, ITlTypeTag
+        public sealed class BusyTag : ITlTypeTag, IEquatable<BusyTag>, IComparable<BusyTag>, IComparable
         {
             internal const uint TypeNumber = 0xfaf7e8c9;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -96,6 +156,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(BusyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is BusyTag x && Equals(x);
+            public static bool operator ==(BusyTag x, BusyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(BusyTag x, BusyTag y) => !(x == y);
+
+            public int CompareTo(BusyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is BusyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(BusyTag x, BusyTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(BusyTag x, BusyTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(BusyTag x, BusyTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(BusyTag x, BusyTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -167,11 +247,6 @@ namespace TLSharp.Rpc.Types
             busyTag ?? throw new ArgumentNullException(nameof(busyTag))
         );
 
-        public bool Equals(PhoneCallDiscardReason other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is PhoneCallDiscardReason x && Equals(x);
-        public static bool operator ==(PhoneCallDiscardReason a, PhoneCallDiscardReason b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(PhoneCallDiscardReason a, PhoneCallDiscardReason b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -185,13 +260,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(PhoneCallDiscardReason other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is PhoneCallDiscardReason x && Equals(x);
+        public static bool operator ==(PhoneCallDiscardReason x, PhoneCallDiscardReason y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(PhoneCallDiscardReason x, PhoneCallDiscardReason y) => !(x == y);
+
         public int CompareTo(PhoneCallDiscardReason other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is PhoneCallDiscardReason x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(PhoneCallDiscardReason a, PhoneCallDiscardReason b) => a.CompareTo(b) <= 0;
-        public static bool operator <(PhoneCallDiscardReason a, PhoneCallDiscardReason b) => a.CompareTo(b) < 0;
-        public static bool operator >(PhoneCallDiscardReason a, PhoneCallDiscardReason b) => a.CompareTo(b) > 0;
-        public static bool operator >=(PhoneCallDiscardReason a, PhoneCallDiscardReason b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(PhoneCallDiscardReason x, PhoneCallDiscardReason y) => x.CompareTo(y) <= 0;
+        public static bool operator <(PhoneCallDiscardReason x, PhoneCallDiscardReason y) => x.CompareTo(y) < 0;
+        public static bool operator >(PhoneCallDiscardReason x, PhoneCallDiscardReason y) => x.CompareTo(y) > 0;
+        public static bool operator >=(PhoneCallDiscardReason x, PhoneCallDiscardReason y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"PhoneCallDiscardReason.{_tag.GetType().Name}{_tag}";
     }
 }

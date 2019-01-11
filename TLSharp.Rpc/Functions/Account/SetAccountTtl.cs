@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Account
 {
-    public sealed class SetAccountTtl : Record<SetAccountTtl>, ITlFunc<bool>
+    public sealed class SetAccountTtl : ITlFunc<bool>, IEquatable<SetAccountTtl>, IComparable<SetAccountTtl>, IComparable
     {
         public T.AccountDaysTtl Ttl { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Account
         ) {
             Ttl = ttl;
         }
+        
+        
+        T.AccountDaysTtl CmpTuple =>
+            Ttl;
+
+        public bool Equals(SetAccountTtl other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SetAccountTtl x && Equals(x);
+        public static bool operator ==(SetAccountTtl x, SetAccountTtl y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SetAccountTtl x, SetAccountTtl y) => !(x == y);
+
+        public int CompareTo(SetAccountTtl other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SetAccountTtl x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SetAccountTtl x, SetAccountTtl y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SetAccountTtl x, SetAccountTtl y) => x.CompareTo(y) < 0;
+        public static bool operator >(SetAccountTtl x, SetAccountTtl y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SetAccountTtl x, SetAccountTtl y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Ttl: {Ttl})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

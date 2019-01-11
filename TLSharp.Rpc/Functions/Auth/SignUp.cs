@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Auth
 {
-    public sealed class SignUp : Record<SignUp>, ITlFunc<T.Auth.Authorization>
+    public sealed class SignUp : ITlFunc<T.Auth.Authorization>, IEquatable<SignUp>, IComparable<SignUp>, IComparable
     {
         public string PhoneNumber { get; }
         public string PhoneCodeHash { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Auth
             FirstName = firstName;
             LastName = lastName;
         }
+        
+        
+        (string, string, string, string, string) CmpTuple =>
+            (PhoneNumber, PhoneCodeHash, PhoneCode, FirstName, LastName);
+
+        public bool Equals(SignUp other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SignUp x && Equals(x);
+        public static bool operator ==(SignUp x, SignUp y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SignUp x, SignUp y) => !(x == y);
+
+        public int CompareTo(SignUp other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SignUp x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SignUp x, SignUp y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SignUp x, SignUp y) => x.CompareTo(y) < 0;
+        public static bool operator >(SignUp x, SignUp y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SignUp x, SignUp y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(PhoneNumber: {PhoneNumber}, PhoneCodeHash: {PhoneCodeHash}, PhoneCode: {PhoneCode}, FirstName: {FirstName}, LastName: {LastName})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

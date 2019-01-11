@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class DeleteMessages : Record<DeleteMessages>, ITlFunc<T.Messages.AffectedMessages>
+    public sealed class DeleteMessages : ITlFunc<T.Messages.AffectedMessages>, IEquatable<DeleteMessages>, IComparable<DeleteMessages>, IComparable
     {
         public bool Revoke { get; }
         public Arr<int> Id { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Revoke = revoke;
             Id = id;
         }
+        
+        
+        (bool, Arr<int>) CmpTuple =>
+            (Revoke, Id);
+
+        public bool Equals(DeleteMessages other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DeleteMessages x && Equals(x);
+        public static bool operator ==(DeleteMessages x, DeleteMessages y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DeleteMessages x, DeleteMessages y) => !(x == y);
+
+        public int CompareTo(DeleteMessages other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DeleteMessages x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DeleteMessages x, DeleteMessages y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DeleteMessages x, DeleteMessages y) => x.CompareTo(y) < 0;
+        public static bool operator >(DeleteMessages x, DeleteMessages y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DeleteMessages x, DeleteMessages y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Revoke: {Revoke}, Id: {Id})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class UserProfilePhoto : ITlType, IEquatable<UserProfilePhoto>, IComparable<UserProfilePhoto>, IComparable
     {
-        public sealed class EmptyTag : Record<EmptyTag>, ITlTypeTag
+        public sealed class EmptyTag : ITlTypeTag, IEquatable<EmptyTag>, IComparable<EmptyTag>, IComparable
         {
             internal const uint TypeNumber = 0x4f11bae1;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types
             ) {
 
             }
+            
+            Unit CmpTuple =>
+                Unit.Default;
+
+            public bool Equals(EmptyTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is EmptyTag x && Equals(x);
+            public static bool operator ==(EmptyTag x, EmptyTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(EmptyTag x, EmptyTag y) => !(x == y);
+
+            public int CompareTo(EmptyTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is EmptyTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(EmptyTag x, EmptyTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(EmptyTag x, EmptyTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(EmptyTag x, EmptyTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(EmptyTag x, EmptyTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"()";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xd559d8c8;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -52,6 +72,26 @@ namespace TLSharp.Rpc.Types
                 PhotoSmall = photoSmall;
                 PhotoBig = photoBig;
             }
+            
+            (long, T.FileLocation, T.FileLocation) CmpTuple =>
+                (PhotoId, PhotoSmall, PhotoBig);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(PhotoId: {PhotoId}, PhotoSmall: {PhotoSmall}, PhotoBig: {PhotoBig})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -115,11 +155,6 @@ namespace TLSharp.Rpc.Types
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(UserProfilePhoto other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is UserProfilePhoto x && Equals(x);
-        public static bool operator ==(UserProfilePhoto a, UserProfilePhoto b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(UserProfilePhoto a, UserProfilePhoto b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -131,13 +166,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(UserProfilePhoto other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is UserProfilePhoto x && Equals(x);
+        public static bool operator ==(UserProfilePhoto x, UserProfilePhoto y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(UserProfilePhoto x, UserProfilePhoto y) => !(x == y);
+
         public int CompareTo(UserProfilePhoto other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is UserProfilePhoto x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(UserProfilePhoto a, UserProfilePhoto b) => a.CompareTo(b) <= 0;
-        public static bool operator <(UserProfilePhoto a, UserProfilePhoto b) => a.CompareTo(b) < 0;
-        public static bool operator >(UserProfilePhoto a, UserProfilePhoto b) => a.CompareTo(b) > 0;
-        public static bool operator >=(UserProfilePhoto a, UserProfilePhoto b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(UserProfilePhoto x, UserProfilePhoto y) => x.CompareTo(y) <= 0;
+        public static bool operator <(UserProfilePhoto x, UserProfilePhoto y) => x.CompareTo(y) < 0;
+        public static bool operator >(UserProfilePhoto x, UserProfilePhoto y) => x.CompareTo(y) > 0;
+        public static bool operator >=(UserProfilePhoto x, UserProfilePhoto y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"UserProfilePhoto.{_tag.GetType().Name}{_tag}";
     }
 }

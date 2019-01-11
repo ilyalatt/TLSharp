@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Payments
 {
     public sealed class SavedInfo : ITlType, IEquatable<SavedInfo>, IComparable<SavedInfo>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xfb8fe43c;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -24,6 +24,26 @@ namespace TLSharp.Rpc.Types.Payments
                 HasSavedCredentials = hasSavedCredentials;
                 SavedInfo = savedInfo;
             }
+            
+            (bool, Option<T.PaymentRequestedInfo>) CmpTuple =>
+                (HasSavedCredentials, SavedInfo);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(HasSavedCredentials: {HasSavedCredentials}, SavedInfo: {SavedInfo})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -80,11 +100,6 @@ namespace TLSharp.Rpc.Types.Payments
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(SavedInfo other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is SavedInfo x && Equals(x);
-        public static bool operator ==(SavedInfo a, SavedInfo b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(SavedInfo a, SavedInfo b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -95,13 +110,20 @@ namespace TLSharp.Rpc.Types.Payments
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(SavedInfo other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is SavedInfo x && Equals(x);
+        public static bool operator ==(SavedInfo x, SavedInfo y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SavedInfo x, SavedInfo y) => !(x == y);
+
         public int CompareTo(SavedInfo other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is SavedInfo x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(SavedInfo a, SavedInfo b) => a.CompareTo(b) <= 0;
-        public static bool operator <(SavedInfo a, SavedInfo b) => a.CompareTo(b) < 0;
-        public static bool operator >(SavedInfo a, SavedInfo b) => a.CompareTo(b) > 0;
-        public static bool operator >=(SavedInfo a, SavedInfo b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(SavedInfo x, SavedInfo y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SavedInfo x, SavedInfo y) => x.CompareTo(y) < 0;
+        public static bool operator >(SavedInfo x, SavedInfo y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SavedInfo x, SavedInfo y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"SavedInfo.{_tag.GetType().Name}{_tag}";
     }
 }

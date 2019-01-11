@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class EditPhoto : Record<EditPhoto>, ITlFunc<T.UpdatesType>
+    public sealed class EditPhoto : ITlFunc<T.UpdatesType>, IEquatable<EditPhoto>, IComparable<EditPhoto>, IComparable
     {
         public T.InputChannel Channel { get; }
         public T.InputChatPhoto Photo { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             Photo = photo;
         }
+        
+        
+        (T.InputChannel, T.InputChatPhoto) CmpTuple =>
+            (Channel, Photo);
+
+        public bool Equals(EditPhoto other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is EditPhoto x && Equals(x);
+        public static bool operator ==(EditPhoto x, EditPhoto y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(EditPhoto x, EditPhoto y) => !(x == y);
+
+        public int CompareTo(EditPhoto other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is EditPhoto x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(EditPhoto x, EditPhoto y) => x.CompareTo(y) <= 0;
+        public static bool operator <(EditPhoto x, EditPhoto y) => x.CompareTo(y) < 0;
+        public static bool operator >(EditPhoto x, EditPhoto y) => x.CompareTo(y) > 0;
+        public static bool operator >=(EditPhoto x, EditPhoto y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, Photo: {Photo})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

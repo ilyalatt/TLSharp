@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Upload
 {
     public sealed class CdnFile : ITlType, IEquatable<CdnFile>, IComparable<CdnFile>, IComparable
     {
-        public sealed class ReuploadNeededTag : Record<ReuploadNeededTag>, ITlTypeTag
+        public sealed class ReuploadNeededTag : ITlTypeTag, IEquatable<ReuploadNeededTag>, IComparable<ReuploadNeededTag>, IComparable
         {
             internal const uint TypeNumber = 0xeea8e46e;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types.Upload
             ) {
                 RequestToken = requestToken;
             }
+            
+            Arr<byte> CmpTuple =>
+                RequestToken;
+
+            public bool Equals(ReuploadNeededTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is ReuploadNeededTag x && Equals(x);
+            public static bool operator ==(ReuploadNeededTag x, ReuploadNeededTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(ReuploadNeededTag x, ReuploadNeededTag y) => !(x == y);
+
+            public int CompareTo(ReuploadNeededTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is ReuploadNeededTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(ReuploadNeededTag x, ReuploadNeededTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(ReuploadNeededTag x, ReuploadNeededTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(ReuploadNeededTag x, ReuploadNeededTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(ReuploadNeededTag x, ReuploadNeededTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(RequestToken: {RequestToken})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types.Upload
             }
         }
 
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xa99fca4f;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -46,6 +66,26 @@ namespace TLSharp.Rpc.Types.Upload
             ) {
                 Bytes = bytes;
             }
+            
+            Arr<byte> CmpTuple =>
+                Bytes;
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Bytes: {Bytes})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -105,11 +145,6 @@ namespace TLSharp.Rpc.Types.Upload
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(CdnFile other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is CdnFile x && Equals(x);
-        public static bool operator ==(CdnFile a, CdnFile b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(CdnFile a, CdnFile b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -121,13 +156,20 @@ namespace TLSharp.Rpc.Types.Upload
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(CdnFile other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is CdnFile x && Equals(x);
+        public static bool operator ==(CdnFile x, CdnFile y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(CdnFile x, CdnFile y) => !(x == y);
+
         public int CompareTo(CdnFile other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is CdnFile x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(CdnFile a, CdnFile b) => a.CompareTo(b) <= 0;
-        public static bool operator <(CdnFile a, CdnFile b) => a.CompareTo(b) < 0;
-        public static bool operator >(CdnFile a, CdnFile b) => a.CompareTo(b) > 0;
-        public static bool operator >=(CdnFile a, CdnFile b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(CdnFile x, CdnFile y) => x.CompareTo(y) <= 0;
+        public static bool operator <(CdnFile x, CdnFile y) => x.CompareTo(y) < 0;
+        public static bool operator >(CdnFile x, CdnFile y) => x.CompareTo(y) > 0;
+        public static bool operator >=(CdnFile x, CdnFile y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"CdnFile.{_tag.GetType().Name}{_tag}";
     }
 }

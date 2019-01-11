@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Upload
 {
-    public sealed class ReuploadCdnFile : Record<ReuploadCdnFile>, ITlFunc<bool>
+    public sealed class ReuploadCdnFile : ITlFunc<bool>, IEquatable<ReuploadCdnFile>, IComparable<ReuploadCdnFile>, IComparable
     {
         public Arr<byte> FileToken { get; }
         public Arr<byte> RequestToken { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Upload
             FileToken = fileToken;
             RequestToken = requestToken;
         }
+        
+        
+        (Arr<byte>, Arr<byte>) CmpTuple =>
+            (FileToken, RequestToken);
+
+        public bool Equals(ReuploadCdnFile other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ReuploadCdnFile x && Equals(x);
+        public static bool operator ==(ReuploadCdnFile x, ReuploadCdnFile y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ReuploadCdnFile x, ReuploadCdnFile y) => !(x == y);
+
+        public int CompareTo(ReuploadCdnFile other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ReuploadCdnFile x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ReuploadCdnFile x, ReuploadCdnFile y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ReuploadCdnFile x, ReuploadCdnFile y) => x.CompareTo(y) < 0;
+        public static bool operator >(ReuploadCdnFile x, ReuploadCdnFile y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ReuploadCdnFile x, ReuploadCdnFile y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(FileToken: {FileToken}, RequestToken: {RequestToken})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

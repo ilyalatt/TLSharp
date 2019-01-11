@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class DeleteUserHistory : Record<DeleteUserHistory>, ITlFunc<T.Messages.AffectedHistory>
+    public sealed class DeleteUserHistory : ITlFunc<T.Messages.AffectedHistory>, IEquatable<DeleteUserHistory>, IComparable<DeleteUserHistory>, IComparable
     {
         public T.InputChannel Channel { get; }
         public T.InputUser UserId { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             UserId = userId;
         }
+        
+        
+        (T.InputChannel, T.InputUser) CmpTuple =>
+            (Channel, UserId);
+
+        public bool Equals(DeleteUserHistory other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DeleteUserHistory x && Equals(x);
+        public static bool operator ==(DeleteUserHistory x, DeleteUserHistory y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DeleteUserHistory x, DeleteUserHistory y) => !(x == y);
+
+        public int CompareTo(DeleteUserHistory other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DeleteUserHistory x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DeleteUserHistory x, DeleteUserHistory y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DeleteUserHistory x, DeleteUserHistory y) => x.CompareTo(y) < 0;
+        public static bool operator >(DeleteUserHistory x, DeleteUserHistory y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DeleteUserHistory x, DeleteUserHistory y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, UserId: {UserId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

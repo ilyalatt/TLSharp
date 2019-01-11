@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class WallPaper : ITlType, IEquatable<WallPaper>, IComparable<WallPaper>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xccb03657;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -31,6 +31,26 @@ namespace TLSharp.Rpc.Types
                 Color = color;
             }
             
+            (int, string, Arr<T.PhotoSize>, int) CmpTuple =>
+                (Id, Title, Sizes, Color);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Title: {Title}, Sizes: {Sizes}, Color: {Color})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Id, bw, WriteInt);
@@ -49,7 +69,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class SolidTag : Record<SolidTag>, ITlTypeTag
+        public sealed class SolidTag : ITlTypeTag, IEquatable<SolidTag>, IComparable<SolidTag>, IComparable
         {
             internal const uint TypeNumber = 0x63117f24;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -70,6 +90,26 @@ namespace TLSharp.Rpc.Types
                 BgColor = bgColor;
                 Color = color;
             }
+            
+            (int, string, int, int) CmpTuple =>
+                (Id, Title, BgColor, Color);
+
+            public bool Equals(SolidTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is SolidTag x && Equals(x);
+            public static bool operator ==(SolidTag x, SolidTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(SolidTag x, SolidTag y) => !(x == y);
+
+            public int CompareTo(SolidTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is SolidTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(SolidTag x, SolidTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(SolidTag x, SolidTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(SolidTag x, SolidTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(SolidTag x, SolidTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Id: {Id}, Title: {Title}, BgColor: {BgColor}, Color: {Color})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -135,11 +175,6 @@ namespace TLSharp.Rpc.Types
             solidTag ?? throw new ArgumentNullException(nameof(solidTag))
         );
 
-        public bool Equals(WallPaper other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is WallPaper x && Equals(x);
-        public static bool operator ==(WallPaper a, WallPaper b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(WallPaper a, WallPaper b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -151,13 +186,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(WallPaper other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is WallPaper x && Equals(x);
+        public static bool operator ==(WallPaper x, WallPaper y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(WallPaper x, WallPaper y) => !(x == y);
+
         public int CompareTo(WallPaper other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is WallPaper x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(WallPaper a, WallPaper b) => a.CompareTo(b) <= 0;
-        public static bool operator <(WallPaper a, WallPaper b) => a.CompareTo(b) < 0;
-        public static bool operator >(WallPaper a, WallPaper b) => a.CompareTo(b) > 0;
-        public static bool operator >=(WallPaper a, WallPaper b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(WallPaper x, WallPaper y) => x.CompareTo(y) <= 0;
+        public static bool operator <(WallPaper x, WallPaper y) => x.CompareTo(y) < 0;
+        public static bool operator >(WallPaper x, WallPaper y) => x.CompareTo(y) > 0;
+        public static bool operator >=(WallPaper x, WallPaper y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"WallPaper.{_tag.GetType().Name}{_tag}";
     }
 }

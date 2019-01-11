@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetHistory : Record<GetHistory>, ITlFunc<T.Messages.Messages>
+    public sealed class GetHistory : ITlFunc<T.Messages.Messages>, IEquatable<GetHistory>, IComparable<GetHistory>, IComparable
     {
         public T.InputPeer Peer { get; }
         public int OffsetId { get; }
@@ -34,6 +34,26 @@ namespace TLSharp.Rpc.Functions.Messages
             MaxId = maxId;
             MinId = minId;
         }
+        
+        
+        (T.InputPeer, int, int, int, int, int, int) CmpTuple =>
+            (Peer, OffsetId, OffsetDate, AddOffset, Limit, MaxId, MinId);
+
+        public bool Equals(GetHistory other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetHistory x && Equals(x);
+        public static bool operator ==(GetHistory x, GetHistory y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetHistory x, GetHistory y) => !(x == y);
+
+        public int CompareTo(GetHistory other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetHistory x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetHistory x, GetHistory y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetHistory x, GetHistory y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetHistory x, GetHistory y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetHistory x, GetHistory y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, OffsetId: {OffsetId}, OffsetDate: {OffsetDate}, AddOffset: {AddOffset}, Limit: {Limit}, MaxId: {MaxId}, MinId: {MinId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

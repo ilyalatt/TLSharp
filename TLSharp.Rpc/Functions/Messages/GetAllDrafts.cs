@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetAllDrafts : Record<GetAllDrafts>, ITlFunc<T.UpdatesType>
+    public sealed class GetAllDrafts : ITlFunc<T.UpdatesType>, IEquatable<GetAllDrafts>, IComparable<GetAllDrafts>, IComparable
     {
 
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
 
         }
+        
+        
+        Unit CmpTuple =>
+            Unit.Default;
+
+        public bool Equals(GetAllDrafts other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetAllDrafts x && Equals(x);
+        public static bool operator ==(GetAllDrafts x, GetAllDrafts y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetAllDrafts x, GetAllDrafts y) => !(x == y);
+
+        public int CompareTo(GetAllDrafts other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetAllDrafts x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetAllDrafts x, GetAllDrafts y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetAllDrafts x, GetAllDrafts y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetAllDrafts x, GetAllDrafts y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetAllDrafts x, GetAllDrafts y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"()";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

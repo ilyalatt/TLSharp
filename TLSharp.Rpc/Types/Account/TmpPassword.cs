@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Account
 {
     public sealed class TmpPassword : ITlType, IEquatable<TmpPassword>, IComparable<TmpPassword>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xdb64fd34;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -24,6 +24,26 @@ namespace TLSharp.Rpc.Types.Account
                 TmpPassword = tmpPassword;
                 ValidUntil = validUntil;
             }
+            
+            (Arr<byte>, int) CmpTuple =>
+                (TmpPassword, ValidUntil);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(TmpPassword: {TmpPassword}, ValidUntil: {ValidUntil})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -79,11 +99,6 @@ namespace TLSharp.Rpc.Types.Account
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(TmpPassword other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is TmpPassword x && Equals(x);
-        public static bool operator ==(TmpPassword a, TmpPassword b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(TmpPassword a, TmpPassword b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -94,13 +109,20 @@ namespace TLSharp.Rpc.Types.Account
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(TmpPassword other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is TmpPassword x && Equals(x);
+        public static bool operator ==(TmpPassword x, TmpPassword y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(TmpPassword x, TmpPassword y) => !(x == y);
+
         public int CompareTo(TmpPassword other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is TmpPassword x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(TmpPassword a, TmpPassword b) => a.CompareTo(b) <= 0;
-        public static bool operator <(TmpPassword a, TmpPassword b) => a.CompareTo(b) < 0;
-        public static bool operator >(TmpPassword a, TmpPassword b) => a.CompareTo(b) > 0;
-        public static bool operator >=(TmpPassword a, TmpPassword b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(TmpPassword x, TmpPassword y) => x.CompareTo(y) <= 0;
+        public static bool operator <(TmpPassword x, TmpPassword y) => x.CompareTo(y) < 0;
+        public static bool operator >(TmpPassword x, TmpPassword y) => x.CompareTo(y) > 0;
+        public static bool operator >=(TmpPassword x, TmpPassword y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"TmpPassword.{_tag.GetType().Name}{_tag}";
     }
 }

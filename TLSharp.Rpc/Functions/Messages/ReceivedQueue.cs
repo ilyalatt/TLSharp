@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class ReceivedQueue : Record<ReceivedQueue>, ITlFunc<Arr<long>>
+    public sealed class ReceivedQueue : ITlFunc<Arr<long>>, IEquatable<ReceivedQueue>, IComparable<ReceivedQueue>, IComparable
     {
         public int MaxQts { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             MaxQts = maxQts;
         }
+        
+        
+        int CmpTuple =>
+            MaxQts;
+
+        public bool Equals(ReceivedQueue other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ReceivedQueue x && Equals(x);
+        public static bool operator ==(ReceivedQueue x, ReceivedQueue y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ReceivedQueue x, ReceivedQueue y) => !(x == y);
+
+        public int CompareTo(ReceivedQueue other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ReceivedQueue x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ReceivedQueue x, ReceivedQueue y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ReceivedQueue x, ReceivedQueue y) => x.CompareTo(y) < 0;
+        public static bool operator >(ReceivedQueue x, ReceivedQueue y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ReceivedQueue x, ReceivedQueue y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(MaxQts: {MaxQts})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

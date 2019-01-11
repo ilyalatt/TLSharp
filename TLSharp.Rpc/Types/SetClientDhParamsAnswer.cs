@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class SetClientDhParamsAnswer : ITlType, IEquatable<SetClientDhParamsAnswer>, IComparable<SetClientDhParamsAnswer>, IComparable
     {
-        public sealed class DhGenOkTag : Record<DhGenOkTag>, ITlTypeTag
+        public sealed class DhGenOkTag : ITlTypeTag, IEquatable<DhGenOkTag>, IComparable<DhGenOkTag>, IComparable
         {
             internal const uint TypeNumber = 0x3bcbf734;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Types
                 NewNonceHash1 = newNonceHash1;
             }
             
+            (Int128, Int128, Int128) CmpTuple =>
+                (Nonce, ServerNonce, NewNonceHash1);
+
+            public bool Equals(DhGenOkTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is DhGenOkTag x && Equals(x);
+            public static bool operator ==(DhGenOkTag x, DhGenOkTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(DhGenOkTag x, DhGenOkTag y) => !(x == y);
+
+            public int CompareTo(DhGenOkTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is DhGenOkTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(DhGenOkTag x, DhGenOkTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(DhGenOkTag x, DhGenOkTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(DhGenOkTag x, DhGenOkTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(DhGenOkTag x, DhGenOkTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Nonce: {Nonce}, ServerNonce: {ServerNonce}, NewNonceHash1: {NewNonceHash1})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Nonce, bw, WriteInt128);
@@ -44,7 +64,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class DhGenRetryTag : Record<DhGenRetryTag>, ITlTypeTag
+        public sealed class DhGenRetryTag : ITlTypeTag, IEquatable<DhGenRetryTag>, IComparable<DhGenRetryTag>, IComparable
         {
             internal const uint TypeNumber = 0x46dc1fb9;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -63,6 +83,26 @@ namespace TLSharp.Rpc.Types
                 NewNonceHash2 = newNonceHash2;
             }
             
+            (Int128, Int128, Int128) CmpTuple =>
+                (Nonce, ServerNonce, NewNonceHash2);
+
+            public bool Equals(DhGenRetryTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is DhGenRetryTag x && Equals(x);
+            public static bool operator ==(DhGenRetryTag x, DhGenRetryTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(DhGenRetryTag x, DhGenRetryTag y) => !(x == y);
+
+            public int CompareTo(DhGenRetryTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is DhGenRetryTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(DhGenRetryTag x, DhGenRetryTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(DhGenRetryTag x, DhGenRetryTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(DhGenRetryTag x, DhGenRetryTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(DhGenRetryTag x, DhGenRetryTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Nonce: {Nonce}, ServerNonce: {ServerNonce}, NewNonceHash2: {NewNonceHash2})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Nonce, bw, WriteInt128);
@@ -79,7 +119,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class DhGenFailTag : Record<DhGenFailTag>, ITlTypeTag
+        public sealed class DhGenFailTag : ITlTypeTag, IEquatable<DhGenFailTag>, IComparable<DhGenFailTag>, IComparable
         {
             internal const uint TypeNumber = 0xa69dae02;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -97,6 +137,26 @@ namespace TLSharp.Rpc.Types
                 ServerNonce = serverNonce;
                 NewNonceHash3 = newNonceHash3;
             }
+            
+            (Int128, Int128, Int128) CmpTuple =>
+                (Nonce, ServerNonce, NewNonceHash3);
+
+            public bool Equals(DhGenFailTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is DhGenFailTag x && Equals(x);
+            public static bool operator ==(DhGenFailTag x, DhGenFailTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(DhGenFailTag x, DhGenFailTag y) => !(x == y);
+
+            public int CompareTo(DhGenFailTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is DhGenFailTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(DhGenFailTag x, DhGenFailTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(DhGenFailTag x, DhGenFailTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(DhGenFailTag x, DhGenFailTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(DhGenFailTag x, DhGenFailTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Nonce: {Nonce}, ServerNonce: {ServerNonce}, NewNonceHash3: {NewNonceHash3})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -166,11 +226,6 @@ namespace TLSharp.Rpc.Types
             dhGenFailTag ?? throw new ArgumentNullException(nameof(dhGenFailTag))
         );
 
-        public bool Equals(SetClientDhParamsAnswer other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is SetClientDhParamsAnswer x && Equals(x);
-        public static bool operator ==(SetClientDhParamsAnswer a, SetClientDhParamsAnswer b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(SetClientDhParamsAnswer a, SetClientDhParamsAnswer b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -183,13 +238,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(SetClientDhParamsAnswer other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is SetClientDhParamsAnswer x && Equals(x);
+        public static bool operator ==(SetClientDhParamsAnswer x, SetClientDhParamsAnswer y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SetClientDhParamsAnswer x, SetClientDhParamsAnswer y) => !(x == y);
+
         public int CompareTo(SetClientDhParamsAnswer other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is SetClientDhParamsAnswer x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(SetClientDhParamsAnswer a, SetClientDhParamsAnswer b) => a.CompareTo(b) <= 0;
-        public static bool operator <(SetClientDhParamsAnswer a, SetClientDhParamsAnswer b) => a.CompareTo(b) < 0;
-        public static bool operator >(SetClientDhParamsAnswer a, SetClientDhParamsAnswer b) => a.CompareTo(b) > 0;
-        public static bool operator >=(SetClientDhParamsAnswer a, SetClientDhParamsAnswer b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(SetClientDhParamsAnswer x, SetClientDhParamsAnswer y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SetClientDhParamsAnswer x, SetClientDhParamsAnswer y) => x.CompareTo(y) < 0;
+        public static bool operator >(SetClientDhParamsAnswer x, SetClientDhParamsAnswer y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SetClientDhParamsAnswer x, SetClientDhParamsAnswer y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"SetClientDhParamsAnswer.{_tag.GetType().Name}{_tag}";
     }
 }

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetWebPagePreview : Record<GetWebPagePreview>, ITlFunc<T.MessageMedia>
+    public sealed class GetWebPagePreview : ITlFunc<T.MessageMedia>, IEquatable<GetWebPagePreview>, IComparable<GetWebPagePreview>, IComparable
     {
         public string Message { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             Message = message;
         }
+        
+        
+        string CmpTuple =>
+            Message;
+
+        public bool Equals(GetWebPagePreview other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetWebPagePreview x && Equals(x);
+        public static bool operator ==(GetWebPagePreview x, GetWebPagePreview y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetWebPagePreview x, GetWebPagePreview y) => !(x == y);
+
+        public int CompareTo(GetWebPagePreview other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetWebPagePreview x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetWebPagePreview x, GetWebPagePreview y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetWebPagePreview x, GetWebPagePreview y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetWebPagePreview x, GetWebPagePreview y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetWebPagePreview x, GetWebPagePreview y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Message: {Message})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

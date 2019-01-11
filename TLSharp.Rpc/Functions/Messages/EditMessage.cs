@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class EditMessage : Record<EditMessage>, ITlFunc<T.UpdatesType>
+    public sealed class EditMessage : ITlFunc<T.UpdatesType>, IEquatable<EditMessage>, IComparable<EditMessage>, IComparable
     {
         public bool NoWebpage { get; }
         public T.InputPeer Peer { get; }
@@ -31,6 +31,26 @@ namespace TLSharp.Rpc.Functions.Messages
             ReplyMarkup = replyMarkup;
             Entities = entities;
         }
+        
+        
+        (bool, T.InputPeer, int, Option<string>, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>) CmpTuple =>
+            (NoWebpage, Peer, Id, Message, ReplyMarkup, Entities);
+
+        public bool Equals(EditMessage other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is EditMessage x && Equals(x);
+        public static bool operator ==(EditMessage x, EditMessage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(EditMessage x, EditMessage y) => !(x == y);
+
+        public int CompareTo(EditMessage other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is EditMessage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(EditMessage x, EditMessage y) => x.CompareTo(y) <= 0;
+        public static bool operator <(EditMessage x, EditMessage y) => x.CompareTo(y) < 0;
+        public static bool operator >(EditMessage x, EditMessage y) => x.CompareTo(y) > 0;
+        public static bool operator >=(EditMessage x, EditMessage y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(NoWebpage: {NoWebpage}, Peer: {Peer}, Id: {Id}, Message: {Message}, ReplyMarkup: {ReplyMarkup}, Entities: {Entities})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

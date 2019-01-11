@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class InstallStickerSet : Record<InstallStickerSet>, ITlFunc<T.Messages.StickerSetInstallResult>
+    public sealed class InstallStickerSet : ITlFunc<T.Messages.StickerSetInstallResult>, IEquatable<InstallStickerSet>, IComparable<InstallStickerSet>, IComparable
     {
         public T.InputStickerSet Stickerset { get; }
         public bool Archived { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Stickerset = stickerset;
             Archived = archived;
         }
+        
+        
+        (T.InputStickerSet, bool) CmpTuple =>
+            (Stickerset, Archived);
+
+        public bool Equals(InstallStickerSet other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is InstallStickerSet x && Equals(x);
+        public static bool operator ==(InstallStickerSet x, InstallStickerSet y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(InstallStickerSet x, InstallStickerSet y) => !(x == y);
+
+        public int CompareTo(InstallStickerSet other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is InstallStickerSet x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(InstallStickerSet x, InstallStickerSet y) => x.CompareTo(y) <= 0;
+        public static bool operator <(InstallStickerSet x, InstallStickerSet y) => x.CompareTo(y) < 0;
+        public static bool operator >(InstallStickerSet x, InstallStickerSet y) => x.CompareTo(y) > 0;
+        public static bool operator >=(InstallStickerSet x, InstallStickerSet y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Stickerset: {Stickerset}, Archived: {Archived})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

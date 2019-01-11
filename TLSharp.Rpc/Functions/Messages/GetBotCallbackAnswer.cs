@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetBotCallbackAnswer : Record<GetBotCallbackAnswer>, ITlFunc<T.Messages.BotCallbackAnswer>
+    public sealed class GetBotCallbackAnswer : ITlFunc<T.Messages.BotCallbackAnswer>, IEquatable<GetBotCallbackAnswer>, IComparable<GetBotCallbackAnswer>, IComparable
     {
         public bool Game { get; }
         public T.InputPeer Peer { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Messages
             MsgId = msgId;
             Data = data;
         }
+        
+        
+        (bool, T.InputPeer, int, Option<Arr<byte>>) CmpTuple =>
+            (Game, Peer, MsgId, Data);
+
+        public bool Equals(GetBotCallbackAnswer other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetBotCallbackAnswer x && Equals(x);
+        public static bool operator ==(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => !(x == y);
+
+        public int CompareTo(GetBotCallbackAnswer other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetBotCallbackAnswer x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetBotCallbackAnswer x, GetBotCallbackAnswer y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Game: {Game}, Peer: {Peer}, MsgId: {MsgId}, Data: {Data})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

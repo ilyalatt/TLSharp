@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class RequestEncryption : Record<RequestEncryption>, ITlFunc<T.EncryptedChat>
+    public sealed class RequestEncryption : ITlFunc<T.EncryptedChat>, IEquatable<RequestEncryption>, IComparable<RequestEncryption>, IComparable
     {
         public T.InputUser UserId { get; }
         public int RandomId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             RandomId = randomId;
             Ga = ga;
         }
+        
+        
+        (T.InputUser, int, Arr<byte>) CmpTuple =>
+            (UserId, RandomId, Ga);
+
+        public bool Equals(RequestEncryption other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is RequestEncryption x && Equals(x);
+        public static bool operator ==(RequestEncryption x, RequestEncryption y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(RequestEncryption x, RequestEncryption y) => !(x == y);
+
+        public int CompareTo(RequestEncryption other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is RequestEncryption x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(RequestEncryption x, RequestEncryption y) => x.CompareTo(y) <= 0;
+        public static bool operator <(RequestEncryption x, RequestEncryption y) => x.CompareTo(y) < 0;
+        public static bool operator >(RequestEncryption x, RequestEncryption y) => x.CompareTo(y) > 0;
+        public static bool operator >=(RequestEncryption x, RequestEncryption y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(UserId: {UserId}, RandomId: {RandomId}, Ga: {Ga})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

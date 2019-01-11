@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SetBotPrecheckoutResults : Record<SetBotPrecheckoutResults>, ITlFunc<bool>
+    public sealed class SetBotPrecheckoutResults : ITlFunc<bool>, IEquatable<SetBotPrecheckoutResults>, IComparable<SetBotPrecheckoutResults>, IComparable
     {
         public bool Success { get; }
         public long QueryId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             QueryId = queryId;
             Error = error;
         }
+        
+        
+        (bool, long, Option<string>) CmpTuple =>
+            (Success, QueryId, Error);
+
+        public bool Equals(SetBotPrecheckoutResults other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SetBotPrecheckoutResults x && Equals(x);
+        public static bool operator ==(SetBotPrecheckoutResults x, SetBotPrecheckoutResults y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SetBotPrecheckoutResults x, SetBotPrecheckoutResults y) => !(x == y);
+
+        public int CompareTo(SetBotPrecheckoutResults other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SetBotPrecheckoutResults x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SetBotPrecheckoutResults x, SetBotPrecheckoutResults y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SetBotPrecheckoutResults x, SetBotPrecheckoutResults y) => x.CompareTo(y) < 0;
+        public static bool operator >(SetBotPrecheckoutResults x, SetBotPrecheckoutResults y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SetBotPrecheckoutResults x, SetBotPrecheckoutResults y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Success: {Success}, QueryId: {QueryId}, Error: {Error})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

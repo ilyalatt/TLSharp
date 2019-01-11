@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SendEncryptedFile : Record<SendEncryptedFile>, ITlFunc<T.Messages.SentEncryptedMessage>
+    public sealed class SendEncryptedFile : ITlFunc<T.Messages.SentEncryptedMessage>, IEquatable<SendEncryptedFile>, IComparable<SendEncryptedFile>, IComparable
     {
         public T.InputEncryptedChat Peer { get; }
         public long RandomId { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Data = data;
             File = file;
         }
+        
+        
+        (T.InputEncryptedChat, long, Arr<byte>, T.InputEncryptedFile) CmpTuple =>
+            (Peer, RandomId, Data, File);
+
+        public bool Equals(SendEncryptedFile other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendEncryptedFile x && Equals(x);
+        public static bool operator ==(SendEncryptedFile x, SendEncryptedFile y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendEncryptedFile x, SendEncryptedFile y) => !(x == y);
+
+        public int CompareTo(SendEncryptedFile other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendEncryptedFile x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendEncryptedFile x, SendEncryptedFile y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendEncryptedFile x, SendEncryptedFile y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendEncryptedFile x, SendEncryptedFile y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendEncryptedFile x, SendEncryptedFile y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, RandomId: {RandomId}, Data: {Data}, File: {File})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Payments
 {
-    public sealed class ClearSavedInfo : Record<ClearSavedInfo>, ITlFunc<bool>
+    public sealed class ClearSavedInfo : ITlFunc<bool>, IEquatable<ClearSavedInfo>, IComparable<ClearSavedInfo>, IComparable
     {
         public bool Credentials { get; }
         public bool Info { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Payments
             Credentials = credentials;
             Info = info;
         }
+        
+        
+        (bool, bool) CmpTuple =>
+            (Credentials, Info);
+
+        public bool Equals(ClearSavedInfo other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ClearSavedInfo x && Equals(x);
+        public static bool operator ==(ClearSavedInfo x, ClearSavedInfo y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ClearSavedInfo x, ClearSavedInfo y) => !(x == y);
+
+        public int CompareTo(ClearSavedInfo other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ClearSavedInfo x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ClearSavedInfo x, ClearSavedInfo y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ClearSavedInfo x, ClearSavedInfo y) => x.CompareTo(y) < 0;
+        public static bool operator >(ClearSavedInfo x, ClearSavedInfo y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ClearSavedInfo x, ClearSavedInfo y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Credentials: {Credentials}, Info: {Info})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

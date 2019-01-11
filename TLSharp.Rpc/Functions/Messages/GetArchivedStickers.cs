@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetArchivedStickers : Record<GetArchivedStickers>, ITlFunc<T.Messages.ArchivedStickers>
+    public sealed class GetArchivedStickers : ITlFunc<T.Messages.ArchivedStickers>, IEquatable<GetArchivedStickers>, IComparable<GetArchivedStickers>, IComparable
     {
         public bool Masks { get; }
         public long OffsetId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             OffsetId = offsetId;
             Limit = limit;
         }
+        
+        
+        (bool, long, int) CmpTuple =>
+            (Masks, OffsetId, Limit);
+
+        public bool Equals(GetArchivedStickers other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetArchivedStickers x && Equals(x);
+        public static bool operator ==(GetArchivedStickers x, GetArchivedStickers y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetArchivedStickers x, GetArchivedStickers y) => !(x == y);
+
+        public int CompareTo(GetArchivedStickers other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetArchivedStickers x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetArchivedStickers x, GetArchivedStickers y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetArchivedStickers x, GetArchivedStickers y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetArchivedStickers x, GetArchivedStickers y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetArchivedStickers x, GetArchivedStickers y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Masks: {Masks}, OffsetId: {OffsetId}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

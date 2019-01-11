@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class LeaveChannel : Record<LeaveChannel>, ITlFunc<T.UpdatesType>
+    public sealed class LeaveChannel : ITlFunc<T.UpdatesType>, IEquatable<LeaveChannel>, IComparable<LeaveChannel>, IComparable
     {
         public T.InputChannel Channel { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Channels
         ) {
             Channel = channel;
         }
+        
+        
+        T.InputChannel CmpTuple =>
+            Channel;
+
+        public bool Equals(LeaveChannel other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is LeaveChannel x && Equals(x);
+        public static bool operator ==(LeaveChannel x, LeaveChannel y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(LeaveChannel x, LeaveChannel y) => !(x == y);
+
+        public int CompareTo(LeaveChannel other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is LeaveChannel x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(LeaveChannel x, LeaveChannel y) => x.CompareTo(y) <= 0;
+        public static bool operator <(LeaveChannel x, LeaveChannel y) => x.CompareTo(y) < 0;
+        public static bool operator >(LeaveChannel x, LeaveChannel y) => x.CompareTo(y) > 0;
+        public static bool operator >=(LeaveChannel x, LeaveChannel y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

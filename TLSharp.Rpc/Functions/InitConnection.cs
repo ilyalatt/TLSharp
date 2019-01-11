@@ -32,6 +32,8 @@ namespace TLSharp.Rpc.Functions
             Query = query;
         }
         
+        
+
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
             WriteUint(bw, 0x69796de9);

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class GetParticipant : Record<GetParticipant>, ITlFunc<T.Channels.ChannelParticipant>
+    public sealed class GetParticipant : ITlFunc<T.Channels.ChannelParticipant>, IEquatable<GetParticipant>, IComparable<GetParticipant>, IComparable
     {
         public T.InputChannel Channel { get; }
         public T.InputUser UserId { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             UserId = userId;
         }
+        
+        
+        (T.InputChannel, T.InputUser) CmpTuple =>
+            (Channel, UserId);
+
+        public bool Equals(GetParticipant other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetParticipant x && Equals(x);
+        public static bool operator ==(GetParticipant x, GetParticipant y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetParticipant x, GetParticipant y) => !(x == y);
+
+        public int CompareTo(GetParticipant other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetParticipant x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetParticipant x, GetParticipant y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetParticipant x, GetParticipant y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetParticipant x, GetParticipant y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetParticipant x, GetParticipant y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, UserId: {UserId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

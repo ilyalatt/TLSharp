@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetDocumentByHash : Record<GetDocumentByHash>, ITlFunc<T.Document>
+    public sealed class GetDocumentByHash : ITlFunc<T.Document>, IEquatable<GetDocumentByHash>, IComparable<GetDocumentByHash>, IComparable
     {
         public Arr<byte> Sha256 { get; }
         public int Size { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Size = size;
             MimeType = mimeType;
         }
+        
+        
+        (Arr<byte>, int, string) CmpTuple =>
+            (Sha256, Size, MimeType);
+
+        public bool Equals(GetDocumentByHash other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetDocumentByHash x && Equals(x);
+        public static bool operator ==(GetDocumentByHash x, GetDocumentByHash y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetDocumentByHash x, GetDocumentByHash y) => !(x == y);
+
+        public int CompareTo(GetDocumentByHash other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetDocumentByHash x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetDocumentByHash x, GetDocumentByHash y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetDocumentByHash x, GetDocumentByHash y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetDocumentByHash x, GetDocumentByHash y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetDocumentByHash x, GetDocumentByHash y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Sha256: {Sha256}, Size: {Size}, MimeType: {MimeType})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions
 {
-    public sealed class DestroySession : Record<DestroySession>, ITlFunc<T.DestroySessionRes>
+    public sealed class DestroySession : ITlFunc<T.DestroySessionRes>, IEquatable<DestroySession>, IComparable<DestroySession>, IComparable
     {
         public long SessionId { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions
         ) {
             SessionId = sessionId;
         }
+        
+        
+        long CmpTuple =>
+            SessionId;
+
+        public bool Equals(DestroySession other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DestroySession x && Equals(x);
+        public static bool operator ==(DestroySession x, DestroySession y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DestroySession x, DestroySession y) => !(x == y);
+
+        public int CompareTo(DestroySession other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DestroySession x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DestroySession x, DestroySession y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DestroySession x, DestroySession y) => x.CompareTo(y) < 0;
+        public static bool operator >(DestroySession x, DestroySession y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DestroySession x, DestroySession y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(SessionId: {SessionId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetInlineGameHighScores : Record<GetInlineGameHighScores>, ITlFunc<T.Messages.HighScores>
+    public sealed class GetInlineGameHighScores : ITlFunc<T.Messages.HighScores>, IEquatable<GetInlineGameHighScores>, IComparable<GetInlineGameHighScores>, IComparable
     {
         public T.InputBotInlineMessageId Id { get; }
         public T.InputUser UserId { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Id = id;
             UserId = userId;
         }
+        
+        
+        (T.InputBotInlineMessageId, T.InputUser) CmpTuple =>
+            (Id, UserId);
+
+        public bool Equals(GetInlineGameHighScores other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetInlineGameHighScores x && Equals(x);
+        public static bool operator ==(GetInlineGameHighScores x, GetInlineGameHighScores y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetInlineGameHighScores x, GetInlineGameHighScores y) => !(x == y);
+
+        public int CompareTo(GetInlineGameHighScores other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetInlineGameHighScores x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetInlineGameHighScores x, GetInlineGameHighScores y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetInlineGameHighScores x, GetInlineGameHighScores y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetInlineGameHighScores x, GetInlineGameHighScores y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetInlineGameHighScores x, GetInlineGameHighScores y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Id: {Id}, UserId: {UserId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

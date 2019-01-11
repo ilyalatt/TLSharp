@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class NewSession : ITlType, IEquatable<NewSession>, IComparable<NewSession>, IComparable
     {
-        public sealed class CreatedTag : Record<CreatedTag>, ITlTypeTag
+        public sealed class CreatedTag : ITlTypeTag, IEquatable<CreatedTag>, IComparable<CreatedTag>, IComparable
         {
             internal const uint TypeNumber = 0x9ec20908;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -27,6 +27,26 @@ namespace TLSharp.Rpc.Types
                 UniqueId = uniqueId;
                 ServerSalt = serverSalt;
             }
+            
+            (long, long, long) CmpTuple =>
+                (FirstMsgId, UniqueId, ServerSalt);
+
+            public bool Equals(CreatedTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is CreatedTag x && Equals(x);
+            public static bool operator ==(CreatedTag x, CreatedTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(CreatedTag x, CreatedTag y) => !(x == y);
+
+            public int CompareTo(CreatedTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is CreatedTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(CreatedTag x, CreatedTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(CreatedTag x, CreatedTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(CreatedTag x, CreatedTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(CreatedTag x, CreatedTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(FirstMsgId: {FirstMsgId}, UniqueId: {UniqueId}, ServerSalt: {ServerSalt})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -84,11 +104,6 @@ namespace TLSharp.Rpc.Types
             createdTag ?? throw new ArgumentNullException(nameof(createdTag))
         );
 
-        public bool Equals(NewSession other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is NewSession x && Equals(x);
-        public static bool operator ==(NewSession a, NewSession b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(NewSession a, NewSession b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -99,13 +114,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(NewSession other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is NewSession x && Equals(x);
+        public static bool operator ==(NewSession x, NewSession y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(NewSession x, NewSession y) => !(x == y);
+
         public int CompareTo(NewSession other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is NewSession x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(NewSession a, NewSession b) => a.CompareTo(b) <= 0;
-        public static bool operator <(NewSession a, NewSession b) => a.CompareTo(b) < 0;
-        public static bool operator >(NewSession a, NewSession b) => a.CompareTo(b) > 0;
-        public static bool operator >=(NewSession a, NewSession b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(NewSession x, NewSession y) => x.CompareTo(y) <= 0;
+        public static bool operator <(NewSession x, NewSession y) => x.CompareTo(y) < 0;
+        public static bool operator >(NewSession x, NewSession y) => x.CompareTo(y) > 0;
+        public static bool operator >=(NewSession x, NewSession y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"NewSession.{_tag.GetType().Name}{_tag}";
     }
 }

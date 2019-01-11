@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SendMessage : Record<SendMessage>, ITlFunc<T.UpdatesType>
+    public sealed class SendMessage : ITlFunc<T.UpdatesType>, IEquatable<SendMessage>, IComparable<SendMessage>, IComparable
     {
         public bool NoWebpage { get; }
         public bool Silent { get; }
@@ -43,6 +43,26 @@ namespace TLSharp.Rpc.Functions.Messages
             ReplyMarkup = replyMarkup;
             Entities = entities;
         }
+        
+        
+        (bool, bool, bool, bool, T.InputPeer, Option<int>, string, long, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>) CmpTuple =>
+            (NoWebpage, Silent, Background, ClearDraft, Peer, ReplyToMsgId, Message, RandomId, ReplyMarkup, Entities);
+
+        public bool Equals(SendMessage other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendMessage x && Equals(x);
+        public static bool operator ==(SendMessage x, SendMessage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendMessage x, SendMessage y) => !(x == y);
+
+        public int CompareTo(SendMessage other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendMessage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendMessage x, SendMessage y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendMessage x, SendMessage y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendMessage x, SendMessage y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendMessage x, SendMessage y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(NoWebpage: {NoWebpage}, Silent: {Silent}, Background: {Background}, ClearDraft: {ClearDraft}, Peer: {Peer}, ReplyToMsgId: {ReplyToMsgId}, Message: {Message}, RandomId: {RandomId}, ReplyMarkup: {ReplyMarkup}, Entities: {Entities})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

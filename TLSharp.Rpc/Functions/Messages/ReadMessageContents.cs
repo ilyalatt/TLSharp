@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class ReadMessageContents : Record<ReadMessageContents>, ITlFunc<T.Messages.AffectedMessages>
+    public sealed class ReadMessageContents : ITlFunc<T.Messages.AffectedMessages>, IEquatable<ReadMessageContents>, IComparable<ReadMessageContents>, IComparable
     {
         public Arr<int> Id { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             Id = id;
         }
+        
+        
+        Arr<int> CmpTuple =>
+            Id;
+
+        public bool Equals(ReadMessageContents other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ReadMessageContents x && Equals(x);
+        public static bool operator ==(ReadMessageContents x, ReadMessageContents y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ReadMessageContents x, ReadMessageContents y) => !(x == y);
+
+        public int CompareTo(ReadMessageContents other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ReadMessageContents x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ReadMessageContents x, ReadMessageContents y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ReadMessageContents x, ReadMessageContents y) => x.CompareTo(y) < 0;
+        public static bool operator >(ReadMessageContents x, ReadMessageContents y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ReadMessageContents x, ReadMessageContents y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Id: {Id})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

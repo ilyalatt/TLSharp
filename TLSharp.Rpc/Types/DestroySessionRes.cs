@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class DestroySessionRes : ITlType, IEquatable<DestroySessionRes>, IComparable<DestroySessionRes>, IComparable
     {
-        public sealed class OkTag : Record<OkTag>, ITlTypeTag
+        public sealed class OkTag : ITlTypeTag, IEquatable<OkTag>, IComparable<OkTag>, IComparable
         {
             internal const uint TypeNumber = 0xe22045fc;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -21,6 +21,26 @@ namespace TLSharp.Rpc.Types
             ) {
                 SessionId = sessionId;
             }
+            
+            long CmpTuple =>
+                SessionId;
+
+            public bool Equals(OkTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is OkTag x && Equals(x);
+            public static bool operator ==(OkTag x, OkTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(OkTag x, OkTag y) => !(x == y);
+
+            public int CompareTo(OkTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is OkTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(OkTag x, OkTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(OkTag x, OkTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(OkTag x, OkTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(OkTag x, OkTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(SessionId: {SessionId})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -34,7 +54,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class NoneTag : Record<NoneTag>, ITlTypeTag
+        public sealed class NoneTag : ITlTypeTag, IEquatable<NoneTag>, IComparable<NoneTag>, IComparable
         {
             internal const uint TypeNumber = 0x62d350c9;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -46,6 +66,26 @@ namespace TLSharp.Rpc.Types
             ) {
                 SessionId = sessionId;
             }
+            
+            long CmpTuple =>
+                SessionId;
+
+            public bool Equals(NoneTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is NoneTag x && Equals(x);
+            public static bool operator ==(NoneTag x, NoneTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(NoneTag x, NoneTag y) => !(x == y);
+
+            public int CompareTo(NoneTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is NoneTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(NoneTag x, NoneTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(NoneTag x, NoneTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(NoneTag x, NoneTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(NoneTag x, NoneTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(SessionId: {SessionId})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -105,11 +145,6 @@ namespace TLSharp.Rpc.Types
             noneTag ?? throw new ArgumentNullException(nameof(noneTag))
         );
 
-        public bool Equals(DestroySessionRes other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is DestroySessionRes x && Equals(x);
-        public static bool operator ==(DestroySessionRes a, DestroySessionRes b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(DestroySessionRes a, DestroySessionRes b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -121,13 +156,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(DestroySessionRes other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is DestroySessionRes x && Equals(x);
+        public static bool operator ==(DestroySessionRes x, DestroySessionRes y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DestroySessionRes x, DestroySessionRes y) => !(x == y);
+
         public int CompareTo(DestroySessionRes other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is DestroySessionRes x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(DestroySessionRes a, DestroySessionRes b) => a.CompareTo(b) <= 0;
-        public static bool operator <(DestroySessionRes a, DestroySessionRes b) => a.CompareTo(b) < 0;
-        public static bool operator >(DestroySessionRes a, DestroySessionRes b) => a.CompareTo(b) > 0;
-        public static bool operator >=(DestroySessionRes a, DestroySessionRes b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(DestroySessionRes x, DestroySessionRes y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DestroySessionRes x, DestroySessionRes y) => x.CompareTo(y) < 0;
+        public static bool operator >(DestroySessionRes x, DestroySessionRes y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DestroySessionRes x, DestroySessionRes y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"DestroySessionRes.{_tag.GetType().Name}{_tag}";
     }
 }

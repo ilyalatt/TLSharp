@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Auth
 {
-    public sealed class ImportBotAuthorization : Record<ImportBotAuthorization>, ITlFunc<T.Auth.Authorization>
+    public sealed class ImportBotAuthorization : ITlFunc<T.Auth.Authorization>, IEquatable<ImportBotAuthorization>, IComparable<ImportBotAuthorization>, IComparable
     {
         public int Flags { get; }
         public int ApiId { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Auth
             ApiHash = apiHash;
             BotAuthToken = botAuthToken;
         }
+        
+        
+        (int, int, string, string) CmpTuple =>
+            (Flags, ApiId, ApiHash, BotAuthToken);
+
+        public bool Equals(ImportBotAuthorization other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ImportBotAuthorization x && Equals(x);
+        public static bool operator ==(ImportBotAuthorization x, ImportBotAuthorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ImportBotAuthorization x, ImportBotAuthorization y) => !(x == y);
+
+        public int CompareTo(ImportBotAuthorization other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ImportBotAuthorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ImportBotAuthorization x, ImportBotAuthorization y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ImportBotAuthorization x, ImportBotAuthorization y) => x.CompareTo(y) < 0;
+        public static bool operator >(ImportBotAuthorization x, ImportBotAuthorization y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ImportBotAuthorization x, ImportBotAuthorization y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Flags: {Flags}, ApiId: {ApiId}, ApiHash: {ApiHash}, BotAuthToken: {BotAuthToken})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

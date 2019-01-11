@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class StartBot : Record<StartBot>, ITlFunc<T.UpdatesType>
+    public sealed class StartBot : ITlFunc<T.UpdatesType>, IEquatable<StartBot>, IComparable<StartBot>, IComparable
     {
         public T.InputUser Bot { get; }
         public T.InputPeer Peer { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Messages
             RandomId = randomId;
             StartParam = startParam;
         }
+        
+        
+        (T.InputUser, T.InputPeer, long, string) CmpTuple =>
+            (Bot, Peer, RandomId, StartParam);
+
+        public bool Equals(StartBot other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is StartBot x && Equals(x);
+        public static bool operator ==(StartBot x, StartBot y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(StartBot x, StartBot y) => !(x == y);
+
+        public int CompareTo(StartBot other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is StartBot x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(StartBot x, StartBot y) => x.CompareTo(y) <= 0;
+        public static bool operator <(StartBot x, StartBot y) => x.CompareTo(y) < 0;
+        public static bool operator >(StartBot x, StartBot y) => x.CompareTo(y) > 0;
+        public static bool operator >=(StartBot x, StartBot y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Bot: {Bot}, Peer: {Peer}, RandomId: {RandomId}, StartParam: {StartParam})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

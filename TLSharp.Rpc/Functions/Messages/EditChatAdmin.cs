@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class EditChatAdmin : Record<EditChatAdmin>, ITlFunc<bool>
+    public sealed class EditChatAdmin : ITlFunc<bool>, IEquatable<EditChatAdmin>, IComparable<EditChatAdmin>, IComparable
     {
         public int ChatId { get; }
         public T.InputUser UserId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             UserId = userId;
             IsAdmin = isAdmin;
         }
+        
+        
+        (int, T.InputUser, bool) CmpTuple =>
+            (ChatId, UserId, IsAdmin);
+
+        public bool Equals(EditChatAdmin other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is EditChatAdmin x && Equals(x);
+        public static bool operator ==(EditChatAdmin x, EditChatAdmin y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(EditChatAdmin x, EditChatAdmin y) => !(x == y);
+
+        public int CompareTo(EditChatAdmin other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is EditChatAdmin x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(EditChatAdmin x, EditChatAdmin y) => x.CompareTo(y) <= 0;
+        public static bool operator <(EditChatAdmin x, EditChatAdmin y) => x.CompareTo(y) < 0;
+        public static bool operator >(EditChatAdmin x, EditChatAdmin y) => x.CompareTo(y) > 0;
+        public static bool operator >=(EditChatAdmin x, EditChatAdmin y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(ChatId: {ChatId}, UserId: {UserId}, IsAdmin: {IsAdmin})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

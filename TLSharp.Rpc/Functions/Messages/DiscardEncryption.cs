@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class DiscardEncryption : Record<DiscardEncryption>, ITlFunc<bool>
+    public sealed class DiscardEncryption : ITlFunc<bool>, IEquatable<DiscardEncryption>, IComparable<DiscardEncryption>, IComparable
     {
         public int ChatId { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             ChatId = chatId;
         }
+        
+        
+        int CmpTuple =>
+            ChatId;
+
+        public bool Equals(DiscardEncryption other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DiscardEncryption x && Equals(x);
+        public static bool operator ==(DiscardEncryption x, DiscardEncryption y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DiscardEncryption x, DiscardEncryption y) => !(x == y);
+
+        public int CompareTo(DiscardEncryption other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DiscardEncryption x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DiscardEncryption x, DiscardEncryption y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DiscardEncryption x, DiscardEncryption y) => x.CompareTo(y) < 0;
+        public static bool operator >(DiscardEncryption x, DiscardEncryption y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DiscardEncryption x, DiscardEncryption y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(ChatId: {ChatId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class ResetTopPeerRating : Record<ResetTopPeerRating>, ITlFunc<bool>
+    public sealed class ResetTopPeerRating : ITlFunc<bool>, IEquatable<ResetTopPeerRating>, IComparable<ResetTopPeerRating>, IComparable
     {
         public T.TopPeerCategory Category { get; }
         public T.InputPeer Peer { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Contacts
             Category = category;
             Peer = peer;
         }
+        
+        
+        (T.TopPeerCategory, T.InputPeer) CmpTuple =>
+            (Category, Peer);
+
+        public bool Equals(ResetTopPeerRating other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ResetTopPeerRating x && Equals(x);
+        public static bool operator ==(ResetTopPeerRating x, ResetTopPeerRating y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ResetTopPeerRating x, ResetTopPeerRating y) => !(x == y);
+
+        public int CompareTo(ResetTopPeerRating other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ResetTopPeerRating x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ResetTopPeerRating x, ResetTopPeerRating y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ResetTopPeerRating x, ResetTopPeerRating y) => x.CompareTo(y) < 0;
+        public static bool operator >(ResetTopPeerRating x, ResetTopPeerRating y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ResetTopPeerRating x, ResetTopPeerRating y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Category: {Category}, Peer: {Peer})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

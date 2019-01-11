@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Photos
 {
-    public sealed class GetUserPhotos : Record<GetUserPhotos>, ITlFunc<T.Photos.Photos>
+    public sealed class GetUserPhotos : ITlFunc<T.Photos.Photos>, IEquatable<GetUserPhotos>, IComparable<GetUserPhotos>, IComparable
     {
         public T.InputUser UserId { get; }
         public int Offset { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Photos
             MaxId = maxId;
             Limit = limit;
         }
+        
+        
+        (T.InputUser, int, long, int) CmpTuple =>
+            (UserId, Offset, MaxId, Limit);
+
+        public bool Equals(GetUserPhotos other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetUserPhotos x && Equals(x);
+        public static bool operator ==(GetUserPhotos x, GetUserPhotos y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetUserPhotos x, GetUserPhotos y) => !(x == y);
+
+        public int CompareTo(GetUserPhotos other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetUserPhotos x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetUserPhotos x, GetUserPhotos y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetUserPhotos x, GetUserPhotos y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetUserPhotos x, GetUserPhotos y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetUserPhotos x, GetUserPhotos y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(UserId: {UserId}, Offset: {Offset}, MaxId: {MaxId}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

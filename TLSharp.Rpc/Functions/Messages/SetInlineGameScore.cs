@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SetInlineGameScore : Record<SetInlineGameScore>, ITlFunc<bool>
+    public sealed class SetInlineGameScore : ITlFunc<bool>, IEquatable<SetInlineGameScore>, IComparable<SetInlineGameScore>, IComparable
     {
         public bool EditMessage { get; }
         public bool Force { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Messages
             UserId = userId;
             Score = score;
         }
+        
+        
+        (bool, bool, T.InputBotInlineMessageId, T.InputUser, int) CmpTuple =>
+            (EditMessage, Force, Id, UserId, Score);
+
+        public bool Equals(SetInlineGameScore other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SetInlineGameScore x && Equals(x);
+        public static bool operator ==(SetInlineGameScore x, SetInlineGameScore y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SetInlineGameScore x, SetInlineGameScore y) => !(x == y);
+
+        public int CompareTo(SetInlineGameScore other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SetInlineGameScore x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SetInlineGameScore x, SetInlineGameScore y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SetInlineGameScore x, SetInlineGameScore y) => x.CompareTo(y) < 0;
+        public static bool operator >(SetInlineGameScore x, SetInlineGameScore y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SetInlineGameScore x, SetInlineGameScore y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(EditMessage: {EditMessage}, Force: {Force}, Id: {Id}, UserId: {UserId}, Score: {Score})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

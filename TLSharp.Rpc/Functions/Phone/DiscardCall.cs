@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Phone
 {
-    public sealed class DiscardCall : Record<DiscardCall>, ITlFunc<T.UpdatesType>
+    public sealed class DiscardCall : ITlFunc<T.UpdatesType>, IEquatable<DiscardCall>, IComparable<DiscardCall>, IComparable
     {
         public T.InputPhoneCall Peer { get; }
         public int Duration { get; }
@@ -25,6 +25,26 @@ namespace TLSharp.Rpc.Functions.Phone
             Reason = reason;
             ConnectionId = connectionId;
         }
+        
+        
+        (T.InputPhoneCall, int, T.PhoneCallDiscardReason, long) CmpTuple =>
+            (Peer, Duration, Reason, ConnectionId);
+
+        public bool Equals(DiscardCall other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DiscardCall x && Equals(x);
+        public static bool operator ==(DiscardCall x, DiscardCall y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DiscardCall x, DiscardCall y) => !(x == y);
+
+        public int CompareTo(DiscardCall other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DiscardCall x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DiscardCall x, DiscardCall y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DiscardCall x, DiscardCall y) => x.CompareTo(y) < 0;
+        public static bool operator >(DiscardCall x, DiscardCall y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DiscardCall x, DiscardCall y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, Duration: {Duration}, Reason: {Reason}, ConnectionId: {ConnectionId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

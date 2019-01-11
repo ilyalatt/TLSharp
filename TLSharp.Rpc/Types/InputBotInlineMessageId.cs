@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class InputBotInlineMessageId : ITlType, IEquatable<InputBotInlineMessageId>, IComparable<InputBotInlineMessageId>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0x890c3d89;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -27,6 +27,26 @@ namespace TLSharp.Rpc.Types
                 Id = id;
                 AccessHash = accessHash;
             }
+            
+            (int, long, long) CmpTuple =>
+                (DcId, Id, AccessHash);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(DcId: {DcId}, Id: {Id}, AccessHash: {AccessHash})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -84,11 +104,6 @@ namespace TLSharp.Rpc.Types
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(InputBotInlineMessageId other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is InputBotInlineMessageId x && Equals(x);
-        public static bool operator ==(InputBotInlineMessageId a, InputBotInlineMessageId b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(InputBotInlineMessageId a, InputBotInlineMessageId b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -99,13 +114,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(InputBotInlineMessageId other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is InputBotInlineMessageId x && Equals(x);
+        public static bool operator ==(InputBotInlineMessageId x, InputBotInlineMessageId y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(InputBotInlineMessageId x, InputBotInlineMessageId y) => !(x == y);
+
         public int CompareTo(InputBotInlineMessageId other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is InputBotInlineMessageId x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(InputBotInlineMessageId a, InputBotInlineMessageId b) => a.CompareTo(b) <= 0;
-        public static bool operator <(InputBotInlineMessageId a, InputBotInlineMessageId b) => a.CompareTo(b) < 0;
-        public static bool operator >(InputBotInlineMessageId a, InputBotInlineMessageId b) => a.CompareTo(b) > 0;
-        public static bool operator >=(InputBotInlineMessageId a, InputBotInlineMessageId b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(InputBotInlineMessageId x, InputBotInlineMessageId y) => x.CompareTo(y) <= 0;
+        public static bool operator <(InputBotInlineMessageId x, InputBotInlineMessageId y) => x.CompareTo(y) < 0;
+        public static bool operator >(InputBotInlineMessageId x, InputBotInlineMessageId y) => x.CompareTo(y) > 0;
+        public static bool operator >=(InputBotInlineMessageId x, InputBotInlineMessageId y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"InputBotInlineMessageId.{_tag.GetType().Name}{_tag}";
     }
 }

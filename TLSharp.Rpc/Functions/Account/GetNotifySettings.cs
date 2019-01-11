@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Account
 {
-    public sealed class GetNotifySettings : Record<GetNotifySettings>, ITlFunc<T.PeerNotifySettings>
+    public sealed class GetNotifySettings : ITlFunc<T.PeerNotifySettings>, IEquatable<GetNotifySettings>, IComparable<GetNotifySettings>, IComparable
     {
         public T.InputNotifyPeer Peer { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Account
         ) {
             Peer = peer;
         }
+        
+        
+        T.InputNotifyPeer CmpTuple =>
+            Peer;
+
+        public bool Equals(GetNotifySettings other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetNotifySettings x && Equals(x);
+        public static bool operator ==(GetNotifySettings x, GetNotifySettings y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetNotifySettings x, GetNotifySettings y) => !(x == y);
+
+        public int CompareTo(GetNotifySettings other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetNotifySettings x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetNotifySettings x, GetNotifySettings y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetNotifySettings x, GetNotifySettings y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetNotifySettings x, GetNotifySettings y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetNotifySettings x, GetNotifySettings y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

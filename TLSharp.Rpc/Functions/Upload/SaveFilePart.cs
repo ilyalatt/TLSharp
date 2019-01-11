@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Upload
 {
-    public sealed class SaveFilePart : Record<SaveFilePart>, ITlFunc<bool>
+    public sealed class SaveFilePart : ITlFunc<bool>, IEquatable<SaveFilePart>, IComparable<SaveFilePart>, IComparable
     {
         public long FileId { get; }
         public int FilePart { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Upload
             FilePart = filePart;
             Bytes = bytes;
         }
+        
+        
+        (long, int, Arr<byte>) CmpTuple =>
+            (FileId, FilePart, Bytes);
+
+        public bool Equals(SaveFilePart other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SaveFilePart x && Equals(x);
+        public static bool operator ==(SaveFilePart x, SaveFilePart y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SaveFilePart x, SaveFilePart y) => !(x == y);
+
+        public int CompareTo(SaveFilePart other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SaveFilePart x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SaveFilePart x, SaveFilePart y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SaveFilePart x, SaveFilePart y) => x.CompareTo(y) < 0;
+        public static bool operator >(SaveFilePart x, SaveFilePart y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SaveFilePart x, SaveFilePart y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(FileId: {FileId}, FilePart: {FilePart}, Bytes: {Bytes})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class AddChatUser : Record<AddChatUser>, ITlFunc<T.UpdatesType>
+    public sealed class AddChatUser : ITlFunc<T.UpdatesType>, IEquatable<AddChatUser>, IComparable<AddChatUser>, IComparable
     {
         public int ChatId { get; }
         public T.InputUser UserId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             UserId = userId;
             FwdLimit = fwdLimit;
         }
+        
+        
+        (int, T.InputUser, int) CmpTuple =>
+            (ChatId, UserId, FwdLimit);
+
+        public bool Equals(AddChatUser other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is AddChatUser x && Equals(x);
+        public static bool operator ==(AddChatUser x, AddChatUser y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(AddChatUser x, AddChatUser y) => !(x == y);
+
+        public int CompareTo(AddChatUser other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is AddChatUser x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(AddChatUser x, AddChatUser y) => x.CompareTo(y) <= 0;
+        public static bool operator <(AddChatUser x, AddChatUser y) => x.CompareTo(y) < 0;
+        public static bool operator >(AddChatUser x, AddChatUser y) => x.CompareTo(y) > 0;
+        public static bool operator >=(AddChatUser x, AddChatUser y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(ChatId: {ChatId}, UserId: {UserId}, FwdLimit: {FwdLimit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetDhConfig : Record<GetDhConfig>, ITlFunc<T.Messages.DhConfig>
+    public sealed class GetDhConfig : ITlFunc<T.Messages.DhConfig>, IEquatable<GetDhConfig>, IComparable<GetDhConfig>, IComparable
     {
         public int Version { get; }
         public int RandomLength { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Version = version;
             RandomLength = randomLength;
         }
+        
+        
+        (int, int) CmpTuple =>
+            (Version, RandomLength);
+
+        public bool Equals(GetDhConfig other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetDhConfig x && Equals(x);
+        public static bool operator ==(GetDhConfig x, GetDhConfig y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetDhConfig x, GetDhConfig y) => !(x == y);
+
+        public int CompareTo(GetDhConfig other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetDhConfig x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetDhConfig x, GetDhConfig y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetDhConfig x, GetDhConfig y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetDhConfig x, GetDhConfig y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetDhConfig x, GetDhConfig y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Version: {Version}, RandomLength: {RandomLength})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

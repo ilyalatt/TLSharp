@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class Search : Record<Search>, ITlFunc<T.Messages.Messages>
+    public sealed class Search : ITlFunc<T.Messages.Messages>, IEquatable<Search>, IComparable<Search>, IComparable
     {
         public T.InputPeer Peer { get; }
         public string Q { get; }
@@ -37,6 +37,26 @@ namespace TLSharp.Rpc.Functions.Messages
             MaxId = maxId;
             Limit = limit;
         }
+        
+        
+        (T.InputPeer, string, T.MessagesFilter, int, int, int, int, int) CmpTuple =>
+            (Peer, Q, Filter, MinDate, MaxDate, Offset, MaxId, Limit);
+
+        public bool Equals(Search other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is Search x && Equals(x);
+        public static bool operator ==(Search x, Search y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(Search x, Search y) => !(x == y);
+
+        public int CompareTo(Search other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is Search x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(Search x, Search y) => x.CompareTo(y) <= 0;
+        public static bool operator <(Search x, Search y) => x.CompareTo(y) < 0;
+        public static bool operator >(Search x, Search y) => x.CompareTo(y) > 0;
+        public static bool operator >=(Search x, Search y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, Q: {Q}, Filter: {Filter}, MinDate: {MinDate}, MaxDate: {MaxDate}, Offset: {Offset}, MaxId: {MaxId}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

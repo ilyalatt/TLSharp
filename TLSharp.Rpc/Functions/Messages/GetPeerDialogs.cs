@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetPeerDialogs : Record<GetPeerDialogs>, ITlFunc<T.Messages.PeerDialogs>
+    public sealed class GetPeerDialogs : ITlFunc<T.Messages.PeerDialogs>, IEquatable<GetPeerDialogs>, IComparable<GetPeerDialogs>, IComparable
     {
         public Arr<T.InputPeer> Peers { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             Peers = peers;
         }
+        
+        
+        Arr<T.InputPeer> CmpTuple =>
+            Peers;
+
+        public bool Equals(GetPeerDialogs other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetPeerDialogs x && Equals(x);
+        public static bool operator ==(GetPeerDialogs x, GetPeerDialogs y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetPeerDialogs x, GetPeerDialogs y) => !(x == y);
+
+        public int CompareTo(GetPeerDialogs other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetPeerDialogs x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetPeerDialogs x, GetPeerDialogs y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetPeerDialogs x, GetPeerDialogs y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetPeerDialogs x, GetPeerDialogs y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetPeerDialogs x, GetPeerDialogs y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peers: {Peers})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

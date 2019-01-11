@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Help
 {
-    public sealed class GetNearestDc : Record<GetNearestDc>, ITlFunc<T.NearestDc>
+    public sealed class GetNearestDc : ITlFunc<T.NearestDc>, IEquatable<GetNearestDc>, IComparable<GetNearestDc>, IComparable
     {
 
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Help
         ) {
 
         }
+        
+        
+        Unit CmpTuple =>
+            Unit.Default;
+
+        public bool Equals(GetNearestDc other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetNearestDc x && Equals(x);
+        public static bool operator ==(GetNearestDc x, GetNearestDc y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetNearestDc x, GetNearestDc y) => !(x == y);
+
+        public int CompareTo(GetNearestDc other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetNearestDc x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetNearestDc x, GetNearestDc y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetNearestDc x, GetNearestDc y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetNearestDc x, GetNearestDc y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetNearestDc x, GetNearestDc y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"()";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

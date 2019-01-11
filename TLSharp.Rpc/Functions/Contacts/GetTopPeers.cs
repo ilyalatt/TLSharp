@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class GetTopPeers : Record<GetTopPeers>, ITlFunc<T.Contacts.TopPeers>
+    public sealed class GetTopPeers : ITlFunc<T.Contacts.TopPeers>, IEquatable<GetTopPeers>, IComparable<GetTopPeers>, IComparable
     {
         public bool Correspondents { get; }
         public bool BotsPm { get; }
@@ -37,6 +37,26 @@ namespace TLSharp.Rpc.Functions.Contacts
             Limit = limit;
             Hash = hash;
         }
+        
+        
+        (bool, bool, bool, bool, bool, int, int, int) CmpTuple =>
+            (Correspondents, BotsPm, BotsInline, Groups, Channels, Offset, Limit, Hash);
+
+        public bool Equals(GetTopPeers other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetTopPeers x && Equals(x);
+        public static bool operator ==(GetTopPeers x, GetTopPeers y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetTopPeers x, GetTopPeers y) => !(x == y);
+
+        public int CompareTo(GetTopPeers other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetTopPeers x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetTopPeers x, GetTopPeers y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetTopPeers x, GetTopPeers y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetTopPeers x, GetTopPeers y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetTopPeers x, GetTopPeers y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Correspondents: {Correspondents}, BotsPm: {BotsPm}, BotsInline: {BotsInline}, Groups: {Groups}, Channels: {Channels}, Offset: {Offset}, Limit: {Limit}, Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

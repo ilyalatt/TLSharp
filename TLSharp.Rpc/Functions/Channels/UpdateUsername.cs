@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class UpdateUsername : Record<UpdateUsername>, ITlFunc<bool>
+    public sealed class UpdateUsername : ITlFunc<bool>, IEquatable<UpdateUsername>, IComparable<UpdateUsername>, IComparable
     {
         public T.InputChannel Channel { get; }
         public string Username { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             Username = username;
         }
+        
+        
+        (T.InputChannel, string) CmpTuple =>
+            (Channel, Username);
+
+        public bool Equals(UpdateUsername other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is UpdateUsername x && Equals(x);
+        public static bool operator ==(UpdateUsername x, UpdateUsername y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(UpdateUsername x, UpdateUsername y) => !(x == y);
+
+        public int CompareTo(UpdateUsername other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is UpdateUsername x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(UpdateUsername x, UpdateUsername y) => x.CompareTo(y) <= 0;
+        public static bool operator <(UpdateUsername x, UpdateUsername y) => x.CompareTo(y) < 0;
+        public static bool operator >(UpdateUsername x, UpdateUsername y) => x.CompareTo(y) > 0;
+        public static bool operator >=(UpdateUsername x, UpdateUsername y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, Username: {Username})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

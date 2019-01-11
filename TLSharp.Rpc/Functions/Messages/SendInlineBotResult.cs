@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SendInlineBotResult : Record<SendInlineBotResult>, ITlFunc<T.UpdatesType>
+    public sealed class SendInlineBotResult : ITlFunc<T.UpdatesType>, IEquatable<SendInlineBotResult>, IComparable<SendInlineBotResult>, IComparable
     {
         public bool Silent { get; }
         public bool Background { get; }
@@ -37,6 +37,26 @@ namespace TLSharp.Rpc.Functions.Messages
             QueryId = queryId;
             Id = id;
         }
+        
+        
+        (bool, bool, bool, T.InputPeer, Option<int>, long, long, string) CmpTuple =>
+            (Silent, Background, ClearDraft, Peer, ReplyToMsgId, RandomId, QueryId, Id);
+
+        public bool Equals(SendInlineBotResult other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendInlineBotResult x && Equals(x);
+        public static bool operator ==(SendInlineBotResult x, SendInlineBotResult y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendInlineBotResult x, SendInlineBotResult y) => !(x == y);
+
+        public int CompareTo(SendInlineBotResult other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendInlineBotResult x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendInlineBotResult x, SendInlineBotResult y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendInlineBotResult x, SendInlineBotResult y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendInlineBotResult x, SendInlineBotResult y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendInlineBotResult x, SendInlineBotResult y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, ClearDraft: {ClearDraft}, Peer: {Peer}, ReplyToMsgId: {ReplyToMsgId}, RandomId: {RandomId}, QueryId: {QueryId}, Id: {Id})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

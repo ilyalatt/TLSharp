@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class GetChannels : Record<GetChannels>, ITlFunc<T.Messages.Chats>
+    public sealed class GetChannels : ITlFunc<T.Messages.Chats>, IEquatable<GetChannels>, IComparable<GetChannels>, IComparable
     {
         public Arr<T.InputChannel> Id { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Channels
         ) {
             Id = id;
         }
+        
+        
+        Arr<T.InputChannel> CmpTuple =>
+            Id;
+
+        public bool Equals(GetChannels other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetChannels x && Equals(x);
+        public static bool operator ==(GetChannels x, GetChannels y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetChannels x, GetChannels y) => !(x == y);
+
+        public int CompareTo(GetChannels other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetChannels x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetChannels x, GetChannels y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetChannels x, GetChannels y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetChannels x, GetChannels y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetChannels x, GetChannels y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Id: {Id})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

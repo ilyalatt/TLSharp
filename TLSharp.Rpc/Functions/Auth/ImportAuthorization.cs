@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Auth
 {
-    public sealed class ImportAuthorization : Record<ImportAuthorization>, ITlFunc<T.Auth.Authorization>
+    public sealed class ImportAuthorization : ITlFunc<T.Auth.Authorization>, IEquatable<ImportAuthorization>, IComparable<ImportAuthorization>, IComparable
     {
         public int Id { get; }
         public Arr<byte> Bytes { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Auth
             Id = id;
             Bytes = bytes;
         }
+        
+        
+        (int, Arr<byte>) CmpTuple =>
+            (Id, Bytes);
+
+        public bool Equals(ImportAuthorization other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ImportAuthorization x && Equals(x);
+        public static bool operator ==(ImportAuthorization x, ImportAuthorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ImportAuthorization x, ImportAuthorization y) => !(x == y);
+
+        public int CompareTo(ImportAuthorization other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ImportAuthorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ImportAuthorization x, ImportAuthorization y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ImportAuthorization x, ImportAuthorization y) => x.CompareTo(y) < 0;
+        public static bool operator >(ImportAuthorization x, ImportAuthorization y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ImportAuthorization x, ImportAuthorization y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Id: {Id}, Bytes: {Bytes})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

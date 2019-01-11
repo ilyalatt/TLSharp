@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class EditTitle : Record<EditTitle>, ITlFunc<T.UpdatesType>
+    public sealed class EditTitle : ITlFunc<T.UpdatesType>, IEquatable<EditTitle>, IComparable<EditTitle>, IComparable
     {
         public T.InputChannel Channel { get; }
         public string Title { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             Title = title;
         }
+        
+        
+        (T.InputChannel, string) CmpTuple =>
+            (Channel, Title);
+
+        public bool Equals(EditTitle other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is EditTitle x && Equals(x);
+        public static bool operator ==(EditTitle x, EditTitle y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(EditTitle x, EditTitle y) => !(x == y);
+
+        public int CompareTo(EditTitle other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is EditTitle x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(EditTitle x, EditTitle y) => x.CompareTo(y) <= 0;
+        public static bool operator <(EditTitle x, EditTitle y) => x.CompareTo(y) < 0;
+        public static bool operator >(EditTitle x, EditTitle y) => x.CompareTo(y) > 0;
+        public static bool operator >=(EditTitle x, EditTitle y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, Title: {Title})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class Page : ITlType, IEquatable<Page>, IComparable<Page>, IComparable
     {
-        public sealed class PartTag : Record<PartTag>, ITlTypeTag
+        public sealed class PartTag : ITlTypeTag, IEquatable<PartTag>, IComparable<PartTag>, IComparable
         {
             internal const uint TypeNumber = 0x8dee6c44;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Types
                 Videos = videos;
             }
             
+            (Arr<T.PageBlock>, Arr<T.Photo>, Arr<T.Document>) CmpTuple =>
+                (Blocks, Photos, Videos);
+
+            public bool Equals(PartTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is PartTag x && Equals(x);
+            public static bool operator ==(PartTag x, PartTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(PartTag x, PartTag y) => !(x == y);
+
+            public int CompareTo(PartTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is PartTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(PartTag x, PartTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(PartTag x, PartTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(PartTag x, PartTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(PartTag x, PartTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Blocks: {Blocks}, Photos: {Photos}, Videos: {Videos})";
+            
+            
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
                 Write(Blocks, bw, WriteVector<T.PageBlock>(WriteSerializable));
@@ -44,7 +64,7 @@ namespace TLSharp.Rpc.Types
             }
         }
 
-        public sealed class FullTag : Record<FullTag>, ITlTypeTag
+        public sealed class FullTag : ITlTypeTag, IEquatable<FullTag>, IComparable<FullTag>, IComparable
         {
             internal const uint TypeNumber = 0xd7a19d69;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -62,6 +82,26 @@ namespace TLSharp.Rpc.Types
                 Photos = photos;
                 Videos = videos;
             }
+            
+            (Arr<T.PageBlock>, Arr<T.Photo>, Arr<T.Document>) CmpTuple =>
+                (Blocks, Photos, Videos);
+
+            public bool Equals(FullTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is FullTag x && Equals(x);
+            public static bool operator ==(FullTag x, FullTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(FullTag x, FullTag y) => !(x == y);
+
+            public int CompareTo(FullTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is FullTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(FullTag x, FullTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(FullTag x, FullTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(FullTag x, FullTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(FullTag x, FullTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Blocks: {Blocks}, Photos: {Photos}, Videos: {Videos})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -125,11 +165,6 @@ namespace TLSharp.Rpc.Types
             fullTag ?? throw new ArgumentNullException(nameof(fullTag))
         );
 
-        public bool Equals(Page other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is Page x && Equals(x);
-        public static bool operator ==(Page a, Page b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(Page a, Page b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -141,13 +176,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(Page other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is Page x && Equals(x);
+        public static bool operator ==(Page x, Page y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(Page x, Page y) => !(x == y);
+
         public int CompareTo(Page other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is Page x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(Page a, Page b) => a.CompareTo(b) <= 0;
-        public static bool operator <(Page a, Page b) => a.CompareTo(b) < 0;
-        public static bool operator >(Page a, Page b) => a.CompareTo(b) > 0;
-        public static bool operator >=(Page a, Page b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(Page x, Page y) => x.CompareTo(y) <= 0;
+        public static bool operator <(Page x, Page y) => x.CompareTo(y) < 0;
+        public static bool operator >(Page x, Page y) => x.CompareTo(y) > 0;
+        public static bool operator >=(Page x, Page y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"Page.{_tag.GetType().Name}{_tag}";
     }
 }

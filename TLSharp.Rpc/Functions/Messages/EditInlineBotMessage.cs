@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class EditInlineBotMessage : Record<EditInlineBotMessage>, ITlFunc<bool>
+    public sealed class EditInlineBotMessage : ITlFunc<bool>, IEquatable<EditInlineBotMessage>, IComparable<EditInlineBotMessage>, IComparable
     {
         public bool NoWebpage { get; }
         public T.InputBotInlineMessageId Id { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Messages
             ReplyMarkup = replyMarkup;
             Entities = entities;
         }
+        
+        
+        (bool, T.InputBotInlineMessageId, Option<string>, Option<T.ReplyMarkup>, Option<Arr<T.MessageEntity>>) CmpTuple =>
+            (NoWebpage, Id, Message, ReplyMarkup, Entities);
+
+        public bool Equals(EditInlineBotMessage other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is EditInlineBotMessage x && Equals(x);
+        public static bool operator ==(EditInlineBotMessage x, EditInlineBotMessage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(EditInlineBotMessage x, EditInlineBotMessage y) => !(x == y);
+
+        public int CompareTo(EditInlineBotMessage other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is EditInlineBotMessage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(EditInlineBotMessage x, EditInlineBotMessage y) => x.CompareTo(y) <= 0;
+        public static bool operator <(EditInlineBotMessage x, EditInlineBotMessage y) => x.CompareTo(y) < 0;
+        public static bool operator >(EditInlineBotMessage x, EditInlineBotMessage y) => x.CompareTo(y) > 0;
+        public static bool operator >=(EditInlineBotMessage x, EditInlineBotMessage y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(NoWebpage: {NoWebpage}, Id: {Id}, Message: {Message}, ReplyMarkup: {ReplyMarkup}, Entities: {Entities})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

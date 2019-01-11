@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Updates
 {
-    public sealed class GetChannelDifference : Record<GetChannelDifference>, ITlFunc<T.Updates.ChannelDifference>
+    public sealed class GetChannelDifference : ITlFunc<T.Updates.ChannelDifference>, IEquatable<GetChannelDifference>, IComparable<GetChannelDifference>, IComparable
     {
         public bool Force { get; }
         public T.InputChannel Channel { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Updates
             Pts = pts;
             Limit = limit;
         }
+        
+        
+        (bool, T.InputChannel, T.ChannelMessagesFilter, int, int) CmpTuple =>
+            (Force, Channel, Filter, Pts, Limit);
+
+        public bool Equals(GetChannelDifference other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetChannelDifference x && Equals(x);
+        public static bool operator ==(GetChannelDifference x, GetChannelDifference y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetChannelDifference x, GetChannelDifference y) => !(x == y);
+
+        public int CompareTo(GetChannelDifference other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetChannelDifference x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetChannelDifference x, GetChannelDifference y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetChannelDifference x, GetChannelDifference y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetChannelDifference x, GetChannelDifference y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetChannelDifference x, GetChannelDifference y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Force: {Force}, Channel: {Channel}, Filter: {Filter}, Pts: {Pts}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

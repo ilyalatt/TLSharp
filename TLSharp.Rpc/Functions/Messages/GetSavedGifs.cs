@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetSavedGifs : Record<GetSavedGifs>, ITlFunc<T.Messages.SavedGifs>
+    public sealed class GetSavedGifs : ITlFunc<T.Messages.SavedGifs>, IEquatable<GetSavedGifs>, IComparable<GetSavedGifs>, IComparable
     {
         public int Hash { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             Hash = hash;
         }
+        
+        
+        int CmpTuple =>
+            Hash;
+
+        public bool Equals(GetSavedGifs other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetSavedGifs x && Equals(x);
+        public static bool operator ==(GetSavedGifs x, GetSavedGifs y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetSavedGifs x, GetSavedGifs y) => !(x == y);
+
+        public int CompareTo(GetSavedGifs other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetSavedGifs x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetSavedGifs x, GetSavedGifs y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetSavedGifs x, GetSavedGifs y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetSavedGifs x, GetSavedGifs y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetSavedGifs x, GetSavedGifs y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

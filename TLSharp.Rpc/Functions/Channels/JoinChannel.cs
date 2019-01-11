@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class JoinChannel : Record<JoinChannel>, ITlFunc<T.UpdatesType>
+    public sealed class JoinChannel : ITlFunc<T.UpdatesType>, IEquatable<JoinChannel>, IComparable<JoinChannel>, IComparable
     {
         public T.InputChannel Channel { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Channels
         ) {
             Channel = channel;
         }
+        
+        
+        T.InputChannel CmpTuple =>
+            Channel;
+
+        public bool Equals(JoinChannel other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is JoinChannel x && Equals(x);
+        public static bool operator ==(JoinChannel x, JoinChannel y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(JoinChannel x, JoinChannel y) => !(x == y);
+
+        public int CompareTo(JoinChannel other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is JoinChannel x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(JoinChannel x, JoinChannel y) => x.CompareTo(y) <= 0;
+        public static bool operator <(JoinChannel x, JoinChannel y) => x.CompareTo(y) < 0;
+        public static bool operator >(JoinChannel x, JoinChannel y) => x.CompareTo(y) > 0;
+        public static bool operator >=(JoinChannel x, JoinChannel y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

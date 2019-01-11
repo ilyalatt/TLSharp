@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetInlineBotResults : Record<GetInlineBotResults>, ITlFunc<T.Messages.BotResults>
+    public sealed class GetInlineBotResults : ITlFunc<T.Messages.BotResults>, IEquatable<GetInlineBotResults>, IComparable<GetInlineBotResults>, IComparable
     {
         public T.InputUser Bot { get; }
         public T.InputPeer Peer { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Query = query;
             Offset = offset;
         }
+        
+        
+        (T.InputUser, T.InputPeer, Option<T.InputGeoPoint>, string, string) CmpTuple =>
+            (Bot, Peer, GeoPoint, Query, Offset);
+
+        public bool Equals(GetInlineBotResults other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetInlineBotResults x && Equals(x);
+        public static bool operator ==(GetInlineBotResults x, GetInlineBotResults y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetInlineBotResults x, GetInlineBotResults y) => !(x == y);
+
+        public int CompareTo(GetInlineBotResults other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetInlineBotResults x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetInlineBotResults x, GetInlineBotResults y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetInlineBotResults x, GetInlineBotResults y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetInlineBotResults x, GetInlineBotResults y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetInlineBotResults x, GetInlineBotResults y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Bot: {Bot}, Peer: {Peer}, GeoPoint: {GeoPoint}, Query: {Query}, Offset: {Offset})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Auth
 {
-    public sealed class CancelCode : Record<CancelCode>, ITlFunc<bool>
+    public sealed class CancelCode : ITlFunc<bool>, IEquatable<CancelCode>, IComparable<CancelCode>, IComparable
     {
         public string PhoneNumber { get; }
         public string PhoneCodeHash { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Auth
             PhoneNumber = phoneNumber;
             PhoneCodeHash = phoneCodeHash;
         }
+        
+        
+        (string, string) CmpTuple =>
+            (PhoneNumber, PhoneCodeHash);
+
+        public bool Equals(CancelCode other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is CancelCode x && Equals(x);
+        public static bool operator ==(CancelCode x, CancelCode y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(CancelCode x, CancelCode y) => !(x == y);
+
+        public int CompareTo(CancelCode other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is CancelCode x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(CancelCode x, CancelCode y) => x.CompareTo(y) <= 0;
+        public static bool operator <(CancelCode x, CancelCode y) => x.CompareTo(y) < 0;
+        public static bool operator >(CancelCode x, CancelCode y) => x.CompareTo(y) > 0;
+        public static bool operator >=(CancelCode x, CancelCode y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(PhoneNumber: {PhoneNumber}, PhoneCodeHash: {PhoneCodeHash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

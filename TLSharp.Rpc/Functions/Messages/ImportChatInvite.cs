@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class ImportChatInvite : Record<ImportChatInvite>, ITlFunc<T.UpdatesType>
+    public sealed class ImportChatInvite : ITlFunc<T.UpdatesType>, IEquatable<ImportChatInvite>, IComparable<ImportChatInvite>, IComparable
     {
         public string Hash { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             Hash = hash;
         }
+        
+        
+        string CmpTuple =>
+            Hash;
+
+        public bool Equals(ImportChatInvite other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ImportChatInvite x && Equals(x);
+        public static bool operator ==(ImportChatInvite x, ImportChatInvite y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ImportChatInvite x, ImportChatInvite y) => !(x == y);
+
+        public int CompareTo(ImportChatInvite other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ImportChatInvite x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ImportChatInvite x, ImportChatInvite y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ImportChatInvite x, ImportChatInvite y) => x.CompareTo(y) < 0;
+        public static bool operator >(ImportChatInvite x, ImportChatInvite y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ImportChatInvite x, ImportChatInvite y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class GetBlocked : Record<GetBlocked>, ITlFunc<T.Contacts.Blocked>
+    public sealed class GetBlocked : ITlFunc<T.Contacts.Blocked>, IEquatable<GetBlocked>, IComparable<GetBlocked>, IComparable
     {
         public int Offset { get; }
         public int Limit { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Contacts
             Offset = offset;
             Limit = limit;
         }
+        
+        
+        (int, int) CmpTuple =>
+            (Offset, Limit);
+
+        public bool Equals(GetBlocked other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetBlocked x && Equals(x);
+        public static bool operator ==(GetBlocked x, GetBlocked y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetBlocked x, GetBlocked y) => !(x == y);
+
+        public int CompareTo(GetBlocked other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetBlocked x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetBlocked x, GetBlocked y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetBlocked x, GetBlocked y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetBlocked x, GetBlocked y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetBlocked x, GetBlocked y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Offset: {Offset}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

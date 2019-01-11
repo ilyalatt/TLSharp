@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SendEncrypted : Record<SendEncrypted>, ITlFunc<T.Messages.SentEncryptedMessage>
+    public sealed class SendEncrypted : ITlFunc<T.Messages.SentEncryptedMessage>, IEquatable<SendEncrypted>, IComparable<SendEncrypted>, IComparable
     {
         public T.InputEncryptedChat Peer { get; }
         public long RandomId { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             RandomId = randomId;
             Data = data;
         }
+        
+        
+        (T.InputEncryptedChat, long, Arr<byte>) CmpTuple =>
+            (Peer, RandomId, Data);
+
+        public bool Equals(SendEncrypted other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendEncrypted x && Equals(x);
+        public static bool operator ==(SendEncrypted x, SendEncrypted y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendEncrypted x, SendEncrypted y) => !(x == y);
+
+        public int CompareTo(SendEncrypted other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendEncrypted x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendEncrypted x, SendEncrypted y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendEncrypted x, SendEncrypted y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendEncrypted x, SendEncrypted y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendEncrypted x, SendEncrypted y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Peer: {Peer}, RandomId: {RandomId}, Data: {Data})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

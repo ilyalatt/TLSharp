@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Account
 {
-    public sealed class ResetAuthorization : Record<ResetAuthorization>, ITlFunc<bool>
+    public sealed class ResetAuthorization : ITlFunc<bool>, IEquatable<ResetAuthorization>, IComparable<ResetAuthorization>, IComparable
     {
         public long Hash { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Account
         ) {
             Hash = hash;
         }
+        
+        
+        long CmpTuple =>
+            Hash;
+
+        public bool Equals(ResetAuthorization other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ResetAuthorization x && Equals(x);
+        public static bool operator ==(ResetAuthorization x, ResetAuthorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ResetAuthorization x, ResetAuthorization y) => !(x == y);
+
+        public int CompareTo(ResetAuthorization other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ResetAuthorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ResetAuthorization x, ResetAuthorization y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ResetAuthorization x, ResetAuthorization y) => x.CompareTo(y) < 0;
+        public static bool operator >(ResetAuthorization x, ResetAuthorization y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ResetAuthorization x, ResetAuthorization y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

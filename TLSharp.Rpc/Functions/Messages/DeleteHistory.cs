@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class DeleteHistory : Record<DeleteHistory>, ITlFunc<T.Messages.AffectedHistory>
+    public sealed class DeleteHistory : ITlFunc<T.Messages.AffectedHistory>, IEquatable<DeleteHistory>, IComparable<DeleteHistory>, IComparable
     {
         public bool JustClear { get; }
         public T.InputPeer Peer { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Peer = peer;
             MaxId = maxId;
         }
+        
+        
+        (bool, T.InputPeer, int) CmpTuple =>
+            (JustClear, Peer, MaxId);
+
+        public bool Equals(DeleteHistory other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DeleteHistory x && Equals(x);
+        public static bool operator ==(DeleteHistory x, DeleteHistory y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DeleteHistory x, DeleteHistory y) => !(x == y);
+
+        public int CompareTo(DeleteHistory other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DeleteHistory x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DeleteHistory x, DeleteHistory y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DeleteHistory x, DeleteHistory y) => x.CompareTo(y) < 0;
+        public static bool operator >(DeleteHistory x, DeleteHistory y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DeleteHistory x, DeleteHistory y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(JustClear: {JustClear}, Peer: {Peer}, MaxId: {MaxId})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

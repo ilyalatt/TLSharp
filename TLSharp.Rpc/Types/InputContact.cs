@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types
 {
     public sealed class InputContact : ITlType, IEquatable<InputContact>, IComparable<InputContact>, IComparable
     {
-        public sealed class PhoneTag : Record<PhoneTag>, ITlTypeTag
+        public sealed class PhoneTag : ITlTypeTag, IEquatable<PhoneTag>, IComparable<PhoneTag>, IComparable
         {
             internal const uint TypeNumber = 0xf392b7f4;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -30,6 +30,26 @@ namespace TLSharp.Rpc.Types
                 FirstName = firstName;
                 LastName = lastName;
             }
+            
+            (long, string, string, string) CmpTuple =>
+                (ClientId, Phone, FirstName, LastName);
+
+            public bool Equals(PhoneTag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is PhoneTag x && Equals(x);
+            public static bool operator ==(PhoneTag x, PhoneTag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(PhoneTag x, PhoneTag y) => !(x == y);
+
+            public int CompareTo(PhoneTag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is PhoneTag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(PhoneTag x, PhoneTag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(PhoneTag x, PhoneTag y) => x.CompareTo(y) < 0;
+            public static bool operator >(PhoneTag x, PhoneTag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(PhoneTag x, PhoneTag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(ClientId: {ClientId}, Phone: {Phone}, FirstName: {FirstName}, LastName: {LastName})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -89,11 +109,6 @@ namespace TLSharp.Rpc.Types
             phoneTag ?? throw new ArgumentNullException(nameof(phoneTag))
         );
 
-        public bool Equals(InputContact other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is InputContact x && Equals(x);
-        public static bool operator ==(InputContact a, InputContact b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(InputContact a, InputContact b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -104,13 +119,20 @@ namespace TLSharp.Rpc.Types
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(InputContact other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is InputContact x && Equals(x);
+        public static bool operator ==(InputContact x, InputContact y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(InputContact x, InputContact y) => !(x == y);
+
         public int CompareTo(InputContact other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is InputContact x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(InputContact a, InputContact b) => a.CompareTo(b) <= 0;
-        public static bool operator <(InputContact a, InputContact b) => a.CompareTo(b) < 0;
-        public static bool operator >(InputContact a, InputContact b) => a.CompareTo(b) > 0;
-        public static bool operator >=(InputContact a, InputContact b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(InputContact x, InputContact y) => x.CompareTo(y) <= 0;
+        public static bool operator <(InputContact x, InputContact y) => x.CompareTo(y) < 0;
+        public static bool operator >(InputContact x, InputContact y) => x.CompareTo(y) > 0;
+        public static bool operator >=(InputContact x, InputContact y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"InputContact.{_tag.GetType().Name}{_tag}";
     }
 }

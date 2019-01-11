@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class Block : Record<Block>, ITlFunc<bool>
+    public sealed class Block : ITlFunc<bool>, IEquatable<Block>, IComparable<Block>, IComparable
     {
         public T.InputUser Id { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Contacts
         ) {
             Id = id;
         }
+        
+        
+        T.InputUser CmpTuple =>
+            Id;
+
+        public bool Equals(Block other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is Block x && Equals(x);
+        public static bool operator ==(Block x, Block y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(Block x, Block y) => !(x == y);
+
+        public int CompareTo(Block other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is Block x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(Block x, Block y) => x.CompareTo(y) <= 0;
+        public static bool operator <(Block x, Block y) => x.CompareTo(y) < 0;
+        public static bool operator >(Block x, Block y) => x.CompareTo(y) > 0;
+        public static bool operator >=(Block x, Block y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Id: {Id})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

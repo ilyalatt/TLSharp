@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class SetBotCallbackAnswer : Record<SetBotCallbackAnswer>, ITlFunc<bool>
+    public sealed class SetBotCallbackAnswer : ITlFunc<bool>, IEquatable<SetBotCallbackAnswer>, IComparable<SetBotCallbackAnswer>, IComparable
     {
         public bool Alert { get; }
         public long QueryId { get; }
@@ -28,6 +28,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Url = url;
             CacheTime = cacheTime;
         }
+        
+        
+        (bool, long, Option<string>, Option<string>, int) CmpTuple =>
+            (Alert, QueryId, Message, Url, CacheTime);
+
+        public bool Equals(SetBotCallbackAnswer other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SetBotCallbackAnswer x && Equals(x);
+        public static bool operator ==(SetBotCallbackAnswer x, SetBotCallbackAnswer y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SetBotCallbackAnswer x, SetBotCallbackAnswer y) => !(x == y);
+
+        public int CompareTo(SetBotCallbackAnswer other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SetBotCallbackAnswer x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SetBotCallbackAnswer x, SetBotCallbackAnswer y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SetBotCallbackAnswer x, SetBotCallbackAnswer y) => x.CompareTo(y) < 0;
+        public static bool operator >(SetBotCallbackAnswer x, SetBotCallbackAnswer y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SetBotCallbackAnswer x, SetBotCallbackAnswer y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Alert: {Alert}, QueryId: {QueryId}, Message: {Message}, Url: {Url}, CacheTime: {CacheTime})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

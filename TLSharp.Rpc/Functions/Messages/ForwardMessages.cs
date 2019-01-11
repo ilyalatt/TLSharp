@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class ForwardMessages : Record<ForwardMessages>, ITlFunc<T.UpdatesType>
+    public sealed class ForwardMessages : ITlFunc<T.UpdatesType>, IEquatable<ForwardMessages>, IComparable<ForwardMessages>, IComparable
     {
         public bool Silent { get; }
         public bool Background { get; }
@@ -34,6 +34,26 @@ namespace TLSharp.Rpc.Functions.Messages
             RandomId = randomId;
             ToPeer = toPeer;
         }
+        
+        
+        (bool, bool, bool, T.InputPeer, Arr<int>, Arr<long>, T.InputPeer) CmpTuple =>
+            (Silent, Background, WithMyScore, FromPeer, Id, RandomId, ToPeer);
+
+        public bool Equals(ForwardMessages other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ForwardMessages x && Equals(x);
+        public static bool operator ==(ForwardMessages x, ForwardMessages y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ForwardMessages x, ForwardMessages y) => !(x == y);
+
+        public int CompareTo(ForwardMessages other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ForwardMessages x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ForwardMessages x, ForwardMessages y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ForwardMessages x, ForwardMessages y) => x.CompareTo(y) < 0;
+        public static bool operator >(ForwardMessages x, ForwardMessages y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ForwardMessages x, ForwardMessages y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Silent: {Silent}, Background: {Background}, WithMyScore: {WithMyScore}, FromPeer: {FromPeer}, Id: {Id}, RandomId: {RandomId}, ToPeer: {ToPeer})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

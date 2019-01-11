@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Auth
 {
     public sealed class Authorization : ITlType, IEquatable<Authorization>, IComparable<Authorization>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xcd050916;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -24,6 +24,26 @@ namespace TLSharp.Rpc.Types.Auth
                 TmpSessions = tmpSessions;
                 User = user;
             }
+            
+            (Option<int>, T.User) CmpTuple =>
+                (TmpSessions, User);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(TmpSessions: {TmpSessions}, User: {User})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -81,11 +101,6 @@ namespace TLSharp.Rpc.Types.Auth
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(Authorization other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is Authorization x && Equals(x);
-        public static bool operator ==(Authorization a, Authorization b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(Authorization a, Authorization b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -96,13 +111,20 @@ namespace TLSharp.Rpc.Types.Auth
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(Authorization other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is Authorization x && Equals(x);
+        public static bool operator ==(Authorization x, Authorization y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(Authorization x, Authorization y) => !(x == y);
+
         public int CompareTo(Authorization other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is Authorization x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(Authorization a, Authorization b) => a.CompareTo(b) <= 0;
-        public static bool operator <(Authorization a, Authorization b) => a.CompareTo(b) < 0;
-        public static bool operator >(Authorization a, Authorization b) => a.CompareTo(b) > 0;
-        public static bool operator >=(Authorization a, Authorization b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(Authorization x, Authorization y) => x.CompareTo(y) <= 0;
+        public static bool operator <(Authorization x, Authorization y) => x.CompareTo(y) < 0;
+        public static bool operator >(Authorization x, Authorization y) => x.CompareTo(y) > 0;
+        public static bool operator >=(Authorization x, Authorization y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"Authorization.{_tag.GetType().Name}{_tag}";
     }
 }

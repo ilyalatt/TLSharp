@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class GetWebPage : Record<GetWebPage>, ITlFunc<T.WebPage>
+    public sealed class GetWebPage : ITlFunc<T.WebPage>, IEquatable<GetWebPage>, IComparable<GetWebPage>, IComparable
     {
         public string Url { get; }
         public int Hash { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Messages
             Url = url;
             Hash = hash;
         }
+        
+        
+        (string, int) CmpTuple =>
+            (Url, Hash);
+
+        public bool Equals(GetWebPage other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetWebPage x && Equals(x);
+        public static bool operator ==(GetWebPage x, GetWebPage y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetWebPage x, GetWebPage y) => !(x == y);
+
+        public int CompareTo(GetWebPage other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetWebPage x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetWebPage x, GetWebPage y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetWebPage x, GetWebPage y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetWebPage x, GetWebPage y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetWebPage x, GetWebPage y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Url: {Url}, Hash: {Hash})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

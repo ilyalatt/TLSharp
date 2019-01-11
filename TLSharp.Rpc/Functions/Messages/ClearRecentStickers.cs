@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Messages
 {
-    public sealed class ClearRecentStickers : Record<ClearRecentStickers>, ITlFunc<bool>
+    public sealed class ClearRecentStickers : ITlFunc<bool>, IEquatable<ClearRecentStickers>, IComparable<ClearRecentStickers>, IComparable
     {
         public bool Attached { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Messages
         ) {
             Attached = attached;
         }
+        
+        
+        bool CmpTuple =>
+            Attached;
+
+        public bool Equals(ClearRecentStickers other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ClearRecentStickers x && Equals(x);
+        public static bool operator ==(ClearRecentStickers x, ClearRecentStickers y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ClearRecentStickers x, ClearRecentStickers y) => !(x == y);
+
+        public int CompareTo(ClearRecentStickers other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ClearRecentStickers x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ClearRecentStickers x, ClearRecentStickers y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ClearRecentStickers x, ClearRecentStickers y) => x.CompareTo(y) < 0;
+        public static bool operator >(ClearRecentStickers x, ClearRecentStickers y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ClearRecentStickers x, ClearRecentStickers y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Attached: {Attached})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

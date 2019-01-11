@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Auth
 {
-    public sealed class SendInvites : Record<SendInvites>, ITlFunc<bool>
+    public sealed class SendInvites : ITlFunc<bool>, IEquatable<SendInvites>, IComparable<SendInvites>, IComparable
     {
         public Arr<string> PhoneNumbers { get; }
         public string Message { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Auth
             PhoneNumbers = phoneNumbers;
             Message = message;
         }
+        
+        
+        (Arr<string>, string) CmpTuple =>
+            (PhoneNumbers, Message);
+
+        public bool Equals(SendInvites other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is SendInvites x && Equals(x);
+        public static bool operator ==(SendInvites x, SendInvites y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(SendInvites x, SendInvites y) => !(x == y);
+
+        public int CompareTo(SendInvites other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is SendInvites x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(SendInvites x, SendInvites y) => x.CompareTo(y) <= 0;
+        public static bool operator <(SendInvites x, SendInvites y) => x.CompareTo(y) < 0;
+        public static bool operator >(SendInvites x, SendInvites y) => x.CompareTo(y) > 0;
+        public static bool operator >=(SendInvites x, SendInvites y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(PhoneNumbers: {PhoneNumbers}, Message: {Message})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

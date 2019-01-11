@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class Search : Record<Search>, ITlFunc<T.Contacts.Found>
+    public sealed class Search : ITlFunc<T.Contacts.Found>, IEquatable<Search>, IComparable<Search>, IComparable
     {
         public string Q { get; }
         public int Limit { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Contacts
             Q = q;
             Limit = limit;
         }
+        
+        
+        (string, int) CmpTuple =>
+            (Q, Limit);
+
+        public bool Equals(Search other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is Search x && Equals(x);
+        public static bool operator ==(Search x, Search y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(Search x, Search y) => !(x == y);
+
+        public int CompareTo(Search other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is Search x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(Search x, Search y) => x.CompareTo(y) <= 0;
+        public static bool operator <(Search x, Search y) => x.CompareTo(y) < 0;
+        public static bool operator >(Search x, Search y) => x.CompareTo(y) > 0;
+        public static bool operator >=(Search x, Search y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Q: {Q}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

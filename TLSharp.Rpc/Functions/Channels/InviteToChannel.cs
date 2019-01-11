@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class InviteToChannel : Record<InviteToChannel>, ITlFunc<T.UpdatesType>
+    public sealed class InviteToChannel : ITlFunc<T.UpdatesType>, IEquatable<InviteToChannel>, IComparable<InviteToChannel>, IComparable
     {
         public T.InputChannel Channel { get; }
         public Arr<T.InputUser> Users { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             Users = users;
         }
+        
+        
+        (T.InputChannel, Arr<T.InputUser>) CmpTuple =>
+            (Channel, Users);
+
+        public bool Equals(InviteToChannel other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is InviteToChannel x && Equals(x);
+        public static bool operator ==(InviteToChannel x, InviteToChannel y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(InviteToChannel x, InviteToChannel y) => !(x == y);
+
+        public int CompareTo(InviteToChannel other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is InviteToChannel x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(InviteToChannel x, InviteToChannel y) => x.CompareTo(y) <= 0;
+        public static bool operator <(InviteToChannel x, InviteToChannel y) => x.CompareTo(y) < 0;
+        public static bool operator >(InviteToChannel x, InviteToChannel y) => x.CompareTo(y) > 0;
+        public static bool operator >=(InviteToChannel x, InviteToChannel y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, Users: {Users})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

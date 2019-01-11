@@ -9,7 +9,7 @@ namespace TLSharp.Rpc.Types.Contacts
 {
     public sealed class ImportedContacts : ITlType, IEquatable<ImportedContacts>, IComparable<ImportedContacts>, IComparable
     {
-        public sealed class Tag : Record<Tag>, ITlTypeTag
+        public sealed class Tag : ITlTypeTag, IEquatable<Tag>, IComparable<Tag>, IComparable
         {
             internal const uint TypeNumber = 0xad524315;
             uint ITlTypeTag.TypeNumber => TypeNumber;
@@ -27,6 +27,26 @@ namespace TLSharp.Rpc.Types.Contacts
                 RetryContacts = retryContacts;
                 Users = users;
             }
+            
+            (Arr<T.ImportedContact>, Arr<long>, Arr<T.User>) CmpTuple =>
+                (Imported, RetryContacts, Users);
+
+            public bool Equals(Tag other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+            public override bool Equals(object other) => other is Tag x && Equals(x);
+            public static bool operator ==(Tag x, Tag y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+            public static bool operator !=(Tag x, Tag y) => !(x == y);
+
+            public int CompareTo(Tag other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+            int IComparable.CompareTo(object other) => other is Tag x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+            public static bool operator <=(Tag x, Tag y) => x.CompareTo(y) <= 0;
+            public static bool operator <(Tag x, Tag y) => x.CompareTo(y) < 0;
+            public static bool operator >(Tag x, Tag y) => x.CompareTo(y) > 0;
+            public static bool operator >=(Tag x, Tag y) => x.CompareTo(y) >= 0;
+
+            public override int GetHashCode() => CmpTuple.GetHashCode();
+
+            public override string ToString() => $"(Imported: {Imported}, RetryContacts: {RetryContacts}, Users: {Users})";
+            
             
             void ITlSerializable.Serialize(BinaryWriter bw)
             {
@@ -84,11 +104,6 @@ namespace TLSharp.Rpc.Types.Contacts
             tag ?? throw new ArgumentNullException(nameof(tag))
         );
 
-        public bool Equals(ImportedContacts other) => !ReferenceEquals(other, null) && _tag.Equals(other._tag);
-        public override bool Equals(object obj) => obj is ImportedContacts x && Equals(x);
-        public static bool operator ==(ImportedContacts a, ImportedContacts b) => a?.Equals(b) ?? ReferenceEquals(b, null);
-        public static bool operator !=(ImportedContacts a, ImportedContacts b) => !(a == b);
-
         int GetTagOrder()
         {
             switch (_tag)
@@ -99,13 +114,20 @@ namespace TLSharp.Rpc.Types.Contacts
         }
         (int, object) CmpPair => (GetTagOrder(), _tag);
 
+        public bool Equals(ImportedContacts other) => !ReferenceEquals(other, null) && CmpPair == other.CmpPair;
+        public override bool Equals(object other) => other is ImportedContacts x && Equals(x);
+        public static bool operator ==(ImportedContacts x, ImportedContacts y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ImportedContacts x, ImportedContacts y) => !(x == y);
+
         public int CompareTo(ImportedContacts other) => !ReferenceEquals(other, null) ? CmpPair.CompareTo(other.CmpPair) : throw new ArgumentNullException(nameof(other));
         int IComparable.CompareTo(object other) => other is ImportedContacts x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
-        public static bool operator <=(ImportedContacts a, ImportedContacts b) => a.CompareTo(b) <= 0;
-        public static bool operator <(ImportedContacts a, ImportedContacts b) => a.CompareTo(b) < 0;
-        public static bool operator >(ImportedContacts a, ImportedContacts b) => a.CompareTo(b) > 0;
-        public static bool operator >=(ImportedContacts a, ImportedContacts b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(ImportedContacts x, ImportedContacts y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ImportedContacts x, ImportedContacts y) => x.CompareTo(y) < 0;
+        public static bool operator >(ImportedContacts x, ImportedContacts y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ImportedContacts x, ImportedContacts y) => x.CompareTo(y) >= 0;
 
         public override int GetHashCode() => CmpPair.GetHashCode();
+
+        public override string ToString() => $"ImportedContacts.{_tag.GetType().Name}{_tag}";
     }
 }

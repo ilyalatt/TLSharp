@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Upload
 {
-    public sealed class GetWebFile : Record<GetWebFile>, ITlFunc<T.Upload.WebFile>
+    public sealed class GetWebFile : ITlFunc<T.Upload.WebFile>, IEquatable<GetWebFile>, IComparable<GetWebFile>, IComparable
     {
         public T.InputWebFileLocation Location { get; }
         public int Offset { get; }
@@ -22,6 +22,26 @@ namespace TLSharp.Rpc.Functions.Upload
             Offset = offset;
             Limit = limit;
         }
+        
+        
+        (T.InputWebFileLocation, int, int) CmpTuple =>
+            (Location, Offset, Limit);
+
+        public bool Equals(GetWebFile other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is GetWebFile x && Equals(x);
+        public static bool operator ==(GetWebFile x, GetWebFile y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(GetWebFile x, GetWebFile y) => !(x == y);
+
+        public int CompareTo(GetWebFile other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is GetWebFile x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(GetWebFile x, GetWebFile y) => x.CompareTo(y) <= 0;
+        public static bool operator <(GetWebFile x, GetWebFile y) => x.CompareTo(y) < 0;
+        public static bool operator >(GetWebFile x, GetWebFile y) => x.CompareTo(y) > 0;
+        public static bool operator >=(GetWebFile x, GetWebFile y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Location: {Location}, Offset: {Offset}, Limit: {Limit})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

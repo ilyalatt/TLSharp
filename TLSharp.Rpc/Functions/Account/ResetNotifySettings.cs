@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Account
 {
-    public sealed class ResetNotifySettings : Record<ResetNotifySettings>, ITlFunc<bool>
+    public sealed class ResetNotifySettings : ITlFunc<bool>, IEquatable<ResetNotifySettings>, IComparable<ResetNotifySettings>, IComparable
     {
 
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Account
         ) {
 
         }
+        
+        
+        Unit CmpTuple =>
+            Unit.Default;
+
+        public bool Equals(ResetNotifySettings other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ResetNotifySettings x && Equals(x);
+        public static bool operator ==(ResetNotifySettings x, ResetNotifySettings y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ResetNotifySettings x, ResetNotifySettings y) => !(x == y);
+
+        public int CompareTo(ResetNotifySettings other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ResetNotifySettings x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ResetNotifySettings x, ResetNotifySettings y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ResetNotifySettings x, ResetNotifySettings y) => x.CompareTo(y) < 0;
+        public static bool operator >(ResetNotifySettings x, ResetNotifySettings y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ResetNotifySettings x, ResetNotifySettings y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"()";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

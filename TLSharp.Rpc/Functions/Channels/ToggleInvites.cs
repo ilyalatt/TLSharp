@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Channels
 {
-    public sealed class ToggleInvites : Record<ToggleInvites>, ITlFunc<T.UpdatesType>
+    public sealed class ToggleInvites : ITlFunc<T.UpdatesType>, IEquatable<ToggleInvites>, IComparable<ToggleInvites>, IComparable
     {
         public T.InputChannel Channel { get; }
         public bool Enabled { get; }
@@ -19,6 +19,26 @@ namespace TLSharp.Rpc.Functions.Channels
             Channel = channel;
             Enabled = enabled;
         }
+        
+        
+        (T.InputChannel, bool) CmpTuple =>
+            (Channel, Enabled);
+
+        public bool Equals(ToggleInvites other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is ToggleInvites x && Equals(x);
+        public static bool operator ==(ToggleInvites x, ToggleInvites y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(ToggleInvites x, ToggleInvites y) => !(x == y);
+
+        public int CompareTo(ToggleInvites other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is ToggleInvites x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(ToggleInvites x, ToggleInvites y) => x.CompareTo(y) <= 0;
+        public static bool operator <(ToggleInvites x, ToggleInvites y) => x.CompareTo(y) < 0;
+        public static bool operator >(ToggleInvites x, ToggleInvites y) => x.CompareTo(y) > 0;
+        public static bool operator >=(ToggleInvites x, ToggleInvites y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Channel: {Channel}, Enabled: {Enabled})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {

@@ -7,7 +7,7 @@ using T = TLSharp.Rpc.Types;
 
 namespace TLSharp.Rpc.Functions.Contacts
 {
-    public sealed class DeleteContact : Record<DeleteContact>, ITlFunc<T.Contacts.Link>
+    public sealed class DeleteContact : ITlFunc<T.Contacts.Link>, IEquatable<DeleteContact>, IComparable<DeleteContact>, IComparable
     {
         public T.InputUser Id { get; }
         
@@ -16,6 +16,26 @@ namespace TLSharp.Rpc.Functions.Contacts
         ) {
             Id = id;
         }
+        
+        
+        T.InputUser CmpTuple =>
+            Id;
+
+        public bool Equals(DeleteContact other) => !ReferenceEquals(other, null) && CmpTuple == other.CmpTuple;
+        public override bool Equals(object other) => other is DeleteContact x && Equals(x);
+        public static bool operator ==(DeleteContact x, DeleteContact y) => x?.Equals(y) ?? ReferenceEquals(y, null);
+        public static bool operator !=(DeleteContact x, DeleteContact y) => !(x == y);
+
+        public int CompareTo(DeleteContact other) => !ReferenceEquals(other, null) ? CmpTuple.CompareTo(other.CmpTuple) : throw new ArgumentNullException(nameof(other));
+        int IComparable.CompareTo(object other) => other is DeleteContact x ? CompareTo(x) : throw new ArgumentException("bad type", nameof(other));
+        public static bool operator <=(DeleteContact x, DeleteContact y) => x.CompareTo(y) <= 0;
+        public static bool operator <(DeleteContact x, DeleteContact y) => x.CompareTo(y) < 0;
+        public static bool operator >(DeleteContact x, DeleteContact y) => x.CompareTo(y) > 0;
+        public static bool operator >=(DeleteContact x, DeleteContact y) => x.CompareTo(y) >= 0;
+
+        public override int GetHashCode() => CmpTuple.GetHashCode();
+
+        public override string ToString() => $"(Id: {Id})";
         
         void ITlSerializable.Serialize(BinaryWriter bw)
         {
