@@ -3,9 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using LanguageExt;
 using Newtonsoft.Json;
-using TLSharp;
-using TLSharp.Rpc;
 using TLSharp.Rpc.Functions;
+using static LanguageExt.Prelude;
 
 namespace TLSharp.Example
 {
@@ -17,37 +16,49 @@ namespace TLSharp.Example
         public string Password { get; set; }
     }
 
-    class Program
+    static class Program
     {
-        static async Task Main()
+        static async Task SignIn(TelegramClient tg, Config cfg)
         {
-            var cfg = await File.ReadAllTextAsync("config.json").Map(JsonConvert.DeserializeObject<Config>);
-            var tg = new TelegramClient(cfg.ApiId, cfg.ApiHash);
-
-            await tg.Connect();
-            Console.WriteLine("Connected");
-            while (!tg.IsUserAuthorized())
+            if (tg.IsAuthenticated())
             {
-                var codeHash = await tg.SendCodeRequest(cfg.Phone);
-                Console.WriteLine("Enter the telegram code");
-                var code = Console.ReadLine();
+                Console.WriteLine("Authenticated");
+                return;
+            }
+
+            while (!tg.IsAuthenticated())
+            {
                 try
                 {
+                    var codeHash = await tg.SendCodeRequest(cfg.Phone);
+                    Console.WriteLine("Enter the telegram code");
+                    var code = Console.ReadLine();
                     await tg.MakeAuth(cfg.Phone, codeHash, code);
                 }
                 catch (TlPasswordNeededException)
                 {
-                    var pwd = await tg.GetPasswordSetting();
+                    var pwdSettings = await tg.GetPasswordSetting();
+                    var pwd = pwdSettings.Match(
+                        noTag: _ => throw new Exception("WTF"),
+                        tag: identity
+                    );
                     await tg.MakeAuthWithPassword(pwd, cfg.Password);
                 }
             }
 
-            Console.WriteLine("Login completed");
+            Console.WriteLine("Authentication completed");
+        }
 
-            await Task.Delay(1500);
-            await tg.Call(new Ping(2344254363452));
-
-            tg.Dispose();
+        static async Task Main()
+        {
+            var cfg = await File.ReadAllTextAsync("config.json").Map(JsonConvert.DeserializeObject<Config>);
+            using (var tg = await TelegramClient.Connect(cfg.ApiId, cfg.ApiHash))
+            {
+                await SignIn(tg, cfg);
+                await Task.Delay(1300);
+                await tg.Call(new Ping(2344254363452));
+                await Task.Delay(1000);
+            }
         }
     }
 }

@@ -6,12 +6,12 @@ using static LanguageExt.Prelude;
 
 namespace TLSharp.Rpc
 {
-    class TlRpcResultUnknownError : TlInternalException
+    class TlRpcResultUnknownErrorException : TlInternalException
     {
         public int Code { get; }
         public string Message { get; }
 
-        public TlRpcResultUnknownError(int code, Some<string> message) : base(
+        public TlRpcResultUnknownErrorException(int code, Some<string> message) : base(
             $"Unknown rpc error ({code}, '{message}').",
             None
         ) {
@@ -46,9 +46,10 @@ namespace TLSharp.Rpc
             if (msg.StartsWith("NETWORK_MIGRATE_")) return ExtractDcMigration(DcMigrationReason.Network);
 
             if (msg == "PHONE_CODE_INVALID") return new TlInvalidPhoneCodeException();
+            if (msg == "PHONE_NUMBER_UNOCCUPIED") return new TlPhoneNumberUnoccupiedException(); // 400
             if (msg == "SESSION_PASSWORD_NEEDED") return new TlPasswordNeededException();
 
-            return new TlRpcResultUnknownError(code, msg);
+            return new TlRpcResultUnknownErrorException(code, msg);
         }
     }
 }

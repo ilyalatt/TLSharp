@@ -68,10 +68,10 @@ namespace TLSharp.Rpc
         {
             var body = await _transport.Receive();
 
-            const uint protocolViolationCode = 0xfffffe6c; // i dunno why
+            const uint protocolViolationCode = 0xfffffe6c;
             if (body.Length == 4 && BitConverter.ToUInt32(body, 0) ==  protocolViolationCode)
             {
-                throw new TlInternalException("The protocol is violated.", None);
+                throw new TlProtocolViolation();
             }
             // TODO: include the message in an exception
             // if (body.Length < 8) throw new InvalidOperationException("Can't decode packet");

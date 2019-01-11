@@ -12,7 +12,7 @@ namespace TLSharp
     {
         public long Id { get; set; }
         public AuthKey AuthKey { get; set; }
-        public bool IsAuthorized { get; set; }
+        public bool IsAuthenticated { get; set; }
         public int Sequence { get; set; }
         public long Salt { get; set; }
         public int TimeOffset { get; set; }
@@ -39,6 +39,7 @@ namespace TLSharp
             TlMarshal.WriteBytes(bw, Endpoint.Address.GetAddressBytes());
             TlMarshal.WriteInt(bw, Endpoint.Port);
             TlMarshal.WriteBytes(bw, AuthKey.Key);
+            TlMarshal.WriteBool(bw, IsAuthenticated);
         }
 
         public static Session Deserialize(BinaryReader br)
@@ -54,6 +55,7 @@ namespace TLSharp
             var ep = new IPEndPoint(serverAddress, port);
 
             var authData = TlMarshal.ReadBytes(br);
+            var isAuthenticated = TlMarshal.ReadBool(br);
 
             return new Session
             {
@@ -64,6 +66,7 @@ namespace TLSharp
                 TimeOffset = timeOffset,
                 Endpoint = ep,
                 AuthKey = AuthKey.Deserialize(authData),
+                IsAuthenticated = isAuthenticated
             };
         }
     }

@@ -16,5 +16,5 @@ obj
 *.tl
 
 # TLSharp.Example
-config.json
+config*.json
 session.dat

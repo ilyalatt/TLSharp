@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Ionic.Crc;
@@ -12,12 +13,11 @@ namespace TLSharp.Rpc
         int _sendCounter;
 
         public TcpTransport(TcpClient tcpClient) => _tcpClient = tcpClient;
+        public void Dispose() => _tcpClient.Dispose();
 
-        public async Task Send(byte[] packet)
+
+        async Task SendImpl(byte[] packet)
         {
-            if (!_tcpClient.Connected)
-                throw new InvalidOperationException("Client not connected to server.");
-
             // https://core.telegram.org/mtproto#tcp-transport
             /*
                 4 length bytes are added at the front
@@ -48,32 +48,48 @@ namespace TLSharp.Rpc
             await _tcpClient.GetStream().WriteAsync(bts, 0, bts.Length);
         }
 
-        public async Task<byte[]> Receive()
+        public async Task Send(byte[] packet)
+        {
+            try
+            {
+                await SendImpl(packet);
+            }
+            catch (IOException exc)
+            {
+                throw new TlTransportException("TcpTransport.Send IO exception.", exc);
+            }
+        }
+
+
+        async Task<byte[]> ReadBytes(Stream stream, int count)
+        {
+            var res = new byte[count];
+
+            var totalReceived = 0;
+            while (totalReceived < count)
+            {
+                var received = await stream.ReadAsync(res, totalReceived, count - totalReceived);
+                if (received == 0) throw new TlClosedConnectionException();
+                totalReceived += received;
+            }
+
+            return res;
+        }
+
+        async Task<byte[]> ReceiveImpl()
         {
             var stream = _tcpClient.GetStream();
 
-            var packetLengthBytes = new byte[4];
-            if (await stream.ReadAsync(packetLengthBytes, 0, 4) != 4)
-                throw new InvalidOperationException("Couldn't read the packet length");
+            var packetLengthBytes = await ReadBytes(stream, 4);
             var packetLength = BitConverter.ToInt32(packetLengthBytes, 0);
 
-            var seqBytes = new byte[4];
-            if (await stream.ReadAsync(seqBytes, 0, 4) != 4)
-                throw new InvalidOperationException("Couldn't read the sequence");
+            var seqBytes = await ReadBytes(stream, 4);
             var seqNo = BitConverter.ToInt32(seqBytes, 0);
 
-            var readBytes = 0;
             var bodyLen = packetLength - 12;
-            var body = new byte[bodyLen];
+            var body = await ReadBytes(stream, bodyLen);
 
-            while (readBytes != bodyLen)
-            {
-                readBytes += await stream.ReadAsync(body, readBytes, bodyLen - readBytes);
-            }
-
-            var crcBytes = new byte[4];
-            if (await stream.ReadAsync(crcBytes, 0, 4) != 4)
-                throw new InvalidOperationException("Couldn't read the crc");
+            var crcBytes = await ReadBytes(stream, 4);
             var checksum = BitConverter.ToInt32(crcBytes, 0);
 
             var crc32 = new CRC32();
@@ -81,16 +97,21 @@ namespace TLSharp.Rpc
             crc32.SlurpBlock(seqBytes, 0, seqBytes.Length);
             crc32.SlurpBlock(body, 0, body.Length);
             var validChecksum = crc32.Crc32Result;
+            if (checksum != validChecksum) Helpers.Assert(checksum == validChecksum, "TcpTransport.Receive bad checksum");
 
-            if (checksum != validChecksum)
-            {
-                throw new InvalidOperationException("invalid checksum! skip");
-            }
-
-            return  body;
+            return body;
         }
 
-        public bool IsConnected => _tcpClient.Connected;
-        public void Dispose() => _tcpClient.Dispose();
+        public async Task<byte[]> Receive()
+        {
+            try
+            {
+                return await ReceiveImpl();
+            }
+            catch (IOException exc)
+            {
+                throw new TlTransportException("TcpTransport.Receive IO exception.", exc);
+            }
+        }
     }
 }

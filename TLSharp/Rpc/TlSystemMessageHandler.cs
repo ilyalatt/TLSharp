@@ -80,8 +80,6 @@ namespace TLSharp.Rpc
         }
 
 
-
-
         static RpcResult HandleRpcResult(BinaryReader br)
         {
             EnsureTypeNumber(br, RpcResultTypeNumber);
@@ -135,7 +133,7 @@ namespace TLSharp.Rpc
 
             session.Salt = newSession.ServerSalt;
 
-            Console.WriteLine(newSession);
+            Console.WriteLine("NewSession: " + newSession);
         }
 
         public static Func<Message, IEnumerable<RpcResult>> Handle(Session session) => message =>
@@ -174,8 +172,10 @@ namespace TLSharp.Rpc
                 //case MsgDetailedInfo.Tag.TypeNumber:
                 //case MsgDetailedInfo.NewTag.TypeNumber:
 
+                // TODO: throw on updatesTooLong
+
                 default:
-                    Console.WriteLine("Unhandled msg " + code.ToString("x8"));
+                    Console.WriteLine("TlSystemMessageHandler: Unhandled msg " + code.ToString("x8"));
                     break;
             }
 

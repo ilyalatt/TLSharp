@@ -5,10 +5,33 @@ using static LanguageExt.Prelude;
 
 namespace TLSharp
 {
+    public class TlTransportException : TlException
+    {
+        internal TlTransportException(
+            Some<string> message,
+            Option<Exception> innerException
+        ) : base(message, innerException) { }
+    }
+
+    // TODO: make a client disposable-only after this
+    public sealed class TlClosedConnectionException : TlTransportException
+    {
+        internal TlClosedConnectionException() : base(
+            "The connection is closed.",
+            None
+        ) { }
+    }
+
+    sealed class TlProtocolViolation : TlInternalException
+    {
+        public TlProtocolViolation() : base("The protocol is violated and now your session is doomed.", None) { }
+    }
+
     public sealed class TlFloodException : TlException
     {
         public TimeSpan Delay { get; }
 
+        // TODO
         internal TlFloodException(TimeSpan delay) : base(
             $"Flood prevention. Wait {delay.TotalMinutes} minutes.",
             None
@@ -29,7 +52,7 @@ namespace TLSharp
             Some<string> additionalMessage,
             Option<Exception> innerException
         ) : base(
-            "Internal exception. Should be handled by the library." + Environment.NewLine + additionalMessage,
+            "TLSharp internal exception, " + additionalMessage,
             innerException
         ) { }
     }
@@ -60,6 +83,14 @@ namespace TLSharp
     {
         internal TlInvalidPhoneCodeException() : base(
             "The numeric code used to authenticate does not match the numeric code sent by SMS/Telegram.",
+            None
+        ) { }
+    }
+
+    public sealed class TlPhoneNumberUnoccupiedException : TlException
+    {
+        internal TlPhoneNumberUnoccupiedException() : base(
+            "The phone number is not occupied.",
             None
         ) { }
     }

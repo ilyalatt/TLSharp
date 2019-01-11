@@ -1,25 +1,16 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using Ionic.Zlib;
 using LanguageExt;
-using LanguageExt.UnsafeValueAccess;
-using TLSharp.Auth;
-using TLSharp.Rpc;
-using TLSharp.Rpc.Functions;
 using TLSharp.Rpc.Types;
 using TLSharp.Utils;
 using static LanguageExt.Prelude;
 
 namespace TLSharp.Rpc
 {
-    class TlTransport
+    class TlTransport : IDisposable
     {
         readonly MtProtoCipherTransport _transport;
         readonly Session _session;
@@ -28,9 +19,8 @@ namespace TLSharp.Rpc
         readonly ConcurrentStack<long> _unconfirmedMsgIds = new ConcurrentStack<long>(); // such a bad design
 
         readonly Task _receiveLoopTask;
-        // TODO
-        readonly Dictionary<long, TaskCompletionSource<RpcResult>> _rpcFlow =
-            new Dictionary<long, TaskCompletionSource<RpcResult>>();
+        readonly ConcurrentDictionary<long, TaskCompletionSource<RpcResult>> _rpcFlow =
+            new ConcurrentDictionary<long, TaskCompletionSource<RpcResult>>();
         async Task ReceiveLoop()
         {
             while (true)
@@ -40,7 +30,9 @@ namespace TLSharp.Rpc
                 _unconfirmedMsgIds.Push(msg.Id);
 
                 Option<TaskCompletionSource<RpcResult>> CaptureFlow(long id) =>
-                    _rpcFlow.TryGetValue(id, out var flow) ? Some(flow).Do(_ => _rpcFlow.Remove(id)) : None;
+                    _rpcFlow.TryGetValue(id, out var flow)
+                    ? Some(flow).Do(_ => _rpcFlow.TryRemove(id, out var _))
+                    : None;
                 var callResults = msg.Apply(TlSystemMessageHandler.Handle(_session)).ToArray();
                 await _sessionStore.Save(_session);
                 callResults.Iter(res => CaptureFlow(res.Id).Match(
@@ -57,6 +49,8 @@ namespace TLSharp.Rpc
             _sessionStore = sessionStore;
             _receiveLoopTask = Task.Run(ReceiveLoop);
         }
+
+        public void Dispose() => _transport.Dispose();
 
 
         async Task SendConfirmations()
