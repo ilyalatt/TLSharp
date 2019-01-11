@@ -99,11 +99,11 @@ namespace TLSharp.Rpc
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ReadString(BinaryReader br) =>
-            System.Text.Encoding.UTF8.GetString(ReadBytes(br).ToArray()); // the netstandard limitation
+            System.Text.Encoding.UTF8.GetString(ReadRawBytes(br));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void WriteString(BinaryWriter bw, string value) =>
-            WriteBytes(bw, System.Text.Encoding.UTF8.GetBytes(value));
+            WriteRawBytes(bw, System.Text.Encoding.UTF8.GetBytes(value));
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
