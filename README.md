@@ -4,6 +4,7 @@
 
 # dev branch
 
+* layer 82
 * a new RPC transport generator which is based on .tl schema files
 * completely redesigned function-oriented RPC transport (based on [LanguageExt](https://github.com/louthy/language-ext))
 * elimination of all reflection usages (even in deserialization)
