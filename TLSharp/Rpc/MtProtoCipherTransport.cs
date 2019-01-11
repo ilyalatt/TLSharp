@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LanguageExt;
 using TLSharp.Rpc;
 using TLSharp.Utils;
+using static LanguageExt.Prelude;
 
 namespace TLSharp.Rpc
 {
@@ -12,11 +13,13 @@ namespace TLSharp.Rpc
     {
         readonly TcpTransport _transport;
         readonly Session _session;
+        readonly ISessionStore _sessionStore;
 
-        public MtProtoCipherTransport(TcpTransport transport, Session session)
+        public MtProtoCipherTransport(TcpTransport transport, Session session, ISessionStore sessionStore)
         {
             _transport = transport;
             _session = session;
+            _sessionStore = sessionStore;
         }
 
         public void Dispose() => _transport.Dispose();
@@ -28,7 +31,7 @@ namespace TLSharp.Rpc
         async Task SendMsgBody(long messageId, bool incSeqNum, byte[] msg)
         {
             var msgSeqNum = GetSeqNum(incSeqNum);
-            _session.Save();
+            await _sessionStore.Save(_session);
 
             var plainText = BtHelpers.UsingMemBinWriter(bw =>
             {
@@ -66,10 +69,10 @@ namespace TLSharp.Rpc
         {
             var body = await _transport.Receive();
 
-            const uint sessionClosed = 0xfffffe6c; // i dunno why
-            if (body.Length == 4 && BitConverter.ToUInt32(body, 0) == sessionClosed)
+            const uint protocolViolationCode = 0xfffffe6c; // i dunno why
+            if (body.Length == 4 && BitConverter.ToUInt32(body, 0) ==  protocolViolationCode)
             {
-                throw new InvalidOperationException("The session is closed.");
+                throw new TlInternalException("The protocol is violated.", None);
             }
             // TODO: include the message in an exception
             // if (body.Length < 8) throw new InvalidOperationException("Can't decode packet");

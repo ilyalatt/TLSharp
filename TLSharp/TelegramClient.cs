@@ -34,12 +34,13 @@ namespace TLSharp
         readonly string _apiHash;
         readonly int _apiId;
         readonly Session _session;
+        readonly ISessionStore _sessionStore;
         List<DcOption.Tag> _dcOptions;
         readonly TcpClientConnectionHandler _handler;
 
         async Task<System.Net.Sockets.TcpClient> CreateTcpClient()
         {
-            var ep = new IPEndPoint(IPAddress.Parse(_session.ServerAddress), _session.Port);
+            var ep = _session.Endpoint;
             if (_handler != null) return await _handler(ep);
 
             var res = new System.Net.Sockets.TcpClient();
@@ -50,13 +51,14 @@ namespace TLSharp
         async Task<TcpTransport> CreateTcpTransport() =>
             new TcpTransport(await CreateTcpClient());
 
+        static readonly IPEndPoint DefaultEndpoint = new IPEndPoint(IPAddress.Parse("149.154.175.100"), 443);
+
         public TelegramClient(
             int apiId,
             string apiHash,
             ISessionStore store = null,
-            string sessionUserId = "session",
             TcpClientConnectionHandler handler = null,
-            IPEndPoint connectionAddress = null
+            IPEndPoint endpoint = null
         ) {
             if (apiId == default(int)) throw new ArgumentNullException(nameof(apiId));
             if (apiHash == null) throw new ArgumentNullException(nameof(apiHash));
@@ -65,12 +67,9 @@ namespace TLSharp
             _apiId = apiId;
             _handler = handler;
 
-            store = store ?? new FileSessionStore();
-            _session =
-                Session.TryLoad(store, sessionUserId) ?? (connectionAddress != null
-                   ? Session.Create(store, sessionUserId, connectionAddress.Address.ToString(), connectionAddress.Port)
-                   : Session.Create(store, sessionUserId)
-                );
+            _sessionStore = store ?? new FileSessionStore("session.dat");
+            _session = _sessionStore.Load().Result.IfNone(Session.New); // TODO
+            _session.Endpoint = endpoint ?? DefaultEndpoint;
         }
 
         static async Task<T> Wrap<T>(Func<Task<T>> wrapper)
@@ -98,8 +97,9 @@ namespace TLSharp
                 _session.TimeOffset = result.TimeOffset;
             }
 
-            var mtCipherTransport = new MtProtoCipherTransport(_tcpTransport, _session);
-            _tlTransport = new TlTransport(mtCipherTransport, _session);
+            Console.WriteLine(_session.AuthKey);
+            var mtCipherTransport = new MtProtoCipherTransport(_tcpTransport, _session, _sessionStore);
+            _tlTransport = new TlTransport(mtCipherTransport, _session, _sessionStore);
 
             //set-up layer
             var config = new GetConfig();
@@ -125,12 +125,22 @@ namespace TLSharp
             Wrap(() => ConnectImpl(forceReconnect));
 
 
+
+        public bool IsUserAuthorized() => _session.IsAuthorized;
+
+        async Task SetAuthorized(User user)
+        {
+            Console.WriteLine(user);
+            _session.IsAuthorized = true;
+            await _sessionStore.Save(_session);
+        }
+
         async Task ReconnectToDc(int dcId)
         {
             Helpers.Assert(_dcOptions != null && _dcOptions.Count > 0, "bad dc options");
 
             ExportedAuthorization.Tag exported = null;
-            if (_session.TlUser != null)
+            if (IsUserAuthorized())
             {
                 var exportAuthorization = new ExportAuthorization(dcId: dcId);
                 var resp = await _tlTransport.Call(exportAuthorization);
@@ -138,8 +148,7 @@ namespace TLSharp
             }
 
             var dc = _dcOptions.First(d => d.Id == dcId);
-            _session.ServerAddress = dc.IpAddress;
-            _session.Port = dc.Port;
+            _session.Endpoint = new IPEndPoint(IPAddress.Parse(dc.IpAddress), dc.Port);
             await Connect(forceReconnect: true);
 
             if (exported != null)
@@ -147,7 +156,6 @@ namespace TLSharp
                 var importAuthorization = new ImportAuthorization(id: exported.Id, bytes: exported.Bytes);
                 var resp = await _tlTransport.Call(importAuthorization);
                 var user = resp.Match(identity).User;
-                OnUserAuthenticated(user);
             }
         }
 
@@ -174,8 +182,6 @@ namespace TLSharp
         public Task<T> Call<T>(ITlFunc<T> func) =>
             Wrap(() => RequestWithDcMigration(func ?? throw new ArgumentNullException(nameof(func))));
 
-
-        public bool IsUserAuthorized() => _session.TlUser != null;
 
         public async Task<string> SendCodeRequest(string phoneNumber)
         {
@@ -206,7 +212,7 @@ namespace TLSharp
             var resp = await Call(new SignIn(phoneNumber: phoneNumber, phoneCodeHash: phoneCodeHash, phoneCode: code));
             var user = resp.Match(identity).User;
 
-            OnUserAuthenticated(user);
+            await SetAuthorized(user);
             return user;
         }
 
@@ -231,7 +237,7 @@ namespace TLSharp
 
             var res = await Call(request);
 
-            OnUserAuthenticated(res.Match(identity).User);
+            SetAuthorized(res.Match(identity).User);
 
             return (res.Match(identity).User);
         }
@@ -247,7 +253,7 @@ namespace TLSharp
             ));
             var user = res.Match(identity).User;
 
-            OnUserAuthenticated(user);
+            await SetAuthorized(user);
             return user;
         }
 
@@ -379,14 +385,6 @@ namespace TLSharp
             q: q,
             limit: limit
         ));
-
-        void OnUserAuthenticated(User tlUser)
-        {
-            _session.TlUser = tlUser;
-            _session.SessionExpires = int.MaxValue;
-
-            _session.Save();
-        }
 
         public bool IsConnected => _tcpTransport != null && _tcpTransport.IsConnected;
 

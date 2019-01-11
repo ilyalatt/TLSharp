@@ -74,7 +74,7 @@ namespace TLSharp.Rpc
         }
 
 
-        
+
 
         static RpcResult HandleRpcResult(BinaryReader br)
         {
@@ -111,7 +111,6 @@ namespace TLSharp.Rpc
             var msg = BadMsgNotification.ServerSaltTag.DeserializeTag(br);
 
             session.Salt = msg.NewServerSalt;
-            session.Save();
 
             return RpcResult.OfFail(msg.BadMsgId, new TlBadSalt());
         }
@@ -122,7 +121,6 @@ namespace TLSharp.Rpc
             var newSession = NewSession.CreatedTag.DeserializeTag(messageReader);
 
             session.Salt = newSession.ServerSalt;
-            session.Save();
 
             Console.WriteLine(newSession);
         }

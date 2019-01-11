@@ -23,6 +23,8 @@ namespace TLSharp.Rpc
     {
         readonly MtProtoCipherTransport _transport;
         readonly Session _session;
+        readonly ISessionStore _sessionStore;
+        readonly TaskQueue _rpcQueue = new TaskQueue();
         readonly ConcurrentStack<long> _unconfirmedMsgIds = new ConcurrentStack<long>(); // such a bad design
 
         readonly Task _receiveLoopTask;
@@ -39,14 +41,16 @@ namespace TLSharp.Rpc
                 Option<TaskCompletionSource<RpcResult>> FindFlow(long id) =>
                     _rpcFlow.TryGetValue(id, out var flow) ? Some(flow) : None;
                 var callResults = msg.Apply(TlSystemMessageHandler.Handle(_session));
+                await _sessionStore.Save(_session);
                 callResults.Iter(res => FindFlow(res.Id).Iter(flow => flow.SetResult(res)));
             }
         }
 
-        public TlTransport(MtProtoCipherTransport transport, Session session)
+        public TlTransport(MtProtoCipherTransport transport, Session session, ISessionStore sessionStore)
         {
             _transport = transport;
             _session = session;
+            _sessionStore = sessionStore;
             _receiveLoopTask = Task.Run(ReceiveLoop);
         }
 
@@ -72,21 +76,6 @@ namespace TLSharp.Rpc
             }
         }
 
-
-        readonly SemaphoreSlim _rpcQueue = new SemaphoreSlim(1, 1);
-        async Task<T> WithRpcQueue<T>(Func<Task<T>> func)
-        {
-            await _rpcQueue.WaitAsync();
-            try
-            {
-                return await func();
-            }
-            finally
-            {
-                _rpcQueue.Release(1);
-            }
-        }
-
         public async Task<T> Call<T>(ITlFunc<T> request)
         {
             async Task CheckReceiveLoop()
@@ -98,7 +87,7 @@ namespace TLSharp.Rpc
             {
                 await CheckReceiveLoop();
 
-                var respTask = await WithRpcQueue(async () =>
+                var respTask = await _rpcQueue.Put(async () =>
                 {
                     await SendConfirmations();
 

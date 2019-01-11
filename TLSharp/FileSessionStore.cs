@@ -12,15 +12,6 @@ namespace TLSharp
 
         public FileSessionStore(Some<string> name) => _fileName = name;
 
-        // TODO implement save with backup
-        async Task SaveImpl(Session session)
-        {
-            var bts = session.ToBytes();
-            File.WriteAllBytes(_fileName, bts);
-        }
-
-        public async Task Save(Session session) =>
-            await _taskQueue.Put(() => SaveImpl(session));
 
         // TODO
         public async Task<Option<Session>> Load()
@@ -28,7 +19,18 @@ namespace TLSharp
             if (!File.Exists(_fileName)) return Prelude.None;
 
             var bts = File.ReadAllBytes(_fileName);
-            return Session.FromBytes(bts);
+            return bts.Apply(BtHelpers.Deserialize(Session.Deserialize));
         }
+
+
+        // TODO implement save with backup
+        async Task SaveImpl(Session session)
+        {
+            var bts = BtHelpers.UsingMemBinWriter(session.Serialize);
+            File.WriteAllBytes(_fileName, bts);
+        }
+
+        public async Task Save(Some<Session> someSession) =>
+            await _taskQueue.Put(() => SaveImpl(someSession));
     }
 }

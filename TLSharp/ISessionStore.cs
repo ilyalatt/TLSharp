@@ -1,10 +1,11 @@
 using System.Threading.Tasks;
+using LanguageExt;
 
 namespace TLSharp
 {
     public interface ISessionStore
     {
-        Task Save(Session session);
-        Task<Session> Load(string sessionUserId);
+        Task<Option<Session>> Load();
+        Task Save(Some<Session> someSession);
     }
 }
